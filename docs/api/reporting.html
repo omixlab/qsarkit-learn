@@ -335,11 +335,53 @@ are visible in one picture:</p>
 <span class="go">True</span>
 </pre></div>
 </div>
-<p>The same report renders three ways — Markdown for a repository, HTML for
-sharing, JSON for a downstream system:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">set</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;sections&quot;</span><span class="p">}</span>
-<span class="go">True</span>
+</section>
+<section id="five-output-formats">
+<h2>Five output formats<a class="headerlink" href="#five-output-formats" title="Link to this heading">¶</a></h2>
+<p>The same report object renders every way you might need it, and each
+carries the tables:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">44</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">Demo model</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="o">.</span><span class="n">to_html</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&lt;!DOCTYPE html&gt;&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">set</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;sections&quot;</span><span class="p">}</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Plain text for a terminal or an email; Markdown for a repository; HTML
+for sharing; JSON for a downstream system; PDF for a submission:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(),</span> <span class="s2">&quot;report.pdf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">to_pdf</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">to_pdf</span></code> needs <code class="docutils literal notranslate"><span class="pre">reportlab</span></code>; embedding plots into PDF or Markdown
+additionally needs <code class="docutils literal notranslate"><span class="pre">kaleido</span></code> (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">qsarkit[reporting]</span></code>).</p>
+</section>
+<section id="figures-and-tables">
+<h2>Figures and tables<a class="headerlink" href="#figures-and-tables" title="Link to this heading">¶</a></h2>
+<p>A section can carry prose, a property table, a DataFrame and figures, and
+all four survive into every format:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;Outliers&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">content</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;n_flagged&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Two compounds sit outside the applicability domain.&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">table</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;compound&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">],</span> <span class="s2">&quot;residual&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.9</span><span class="p">]}),</span>
+<span class="gp">... </span>    <span class="n">figures</span><span class="o">=</span><span class="p">[</span><span class="n">figure</span><span class="p">],</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">text</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">to_text</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;n_flagged&quot;</span> <span class="ow">in</span> <span class="n">text</span> <span class="ow">and</span> <span class="s2">&quot;residual&quot;</span> <span class="ow">in</span> <span class="n">text</span> <span class="ow">and</span> <span class="s2">&quot;[figure:&quot;</span> <span class="ow">in</span> <span class="n">text</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Nested values are flattened rather than printed as a Python repr, which
+matters because a validation report routinely contains one:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARReport</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">small</span> <span class="o">=</span> <span class="n">QSARReport</span><span class="p">()</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;criteria&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;passed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;r2&quot;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">}})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;passed=yes; r2=0.95&quot;</span> <span class="ow">in</span> <span class="n">small</span><span class="o">.</span><span class="n">to_text</span><span class="p">()</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -572,17 +614,29 @@ the fit is not chance correlation.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="qsarkit.reporting.QSARReport.to_markdown">
-<span class="sig-name descname"><span class="pre">to_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/reporting/_report.html#QSARReport.to_markdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.reporting.QSARReport.to_markdown" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">to_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_figures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/reporting/_report.html#QSARReport.to_markdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.reporting.QSARReport.to_markdown" title="Link to this definition">¶</a></dt>
 <dd><p>Render as Markdown, optionally writing it to <code class="docutils literal notranslate"><span class="pre">path</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span>) – Write the Markdown here as well as returning it. When given,
+figures are written as PNG files in a sibling directory and
+linked relatively, which is what a Markdown file in a
+repository needs.</p></li>
+<li><p><strong>include_figures</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Embed the report’s figures. Requires <code class="docutils literal notranslate"><span class="pre">kaleido</span></code>
+(<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">qsarkit[reporting]</span></code>); pass <code class="docutils literal notranslate"><span class="pre">False</span></code> for a
+text-and-tables document without it.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The Markdown text.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="base.html#qsarkit.base.OptionalDependencyError" title="qsarkit.base.OptionalDependencyError"><strong>OptionalDependencyError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">include_figures</span></code> is set, the report has figures, and
+    <code class="docutils literal notranslate"><span class="pre">kaleido</span></code> is missing.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -591,9 +645,8 @@ the fit is not chance correlation.</p></li>
 <dt class="sig sig-object py" id="qsarkit.reporting.QSARReport.to_html">
 <span class="sig-name descname"><span class="pre">to_html</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_plotlyjs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cdn'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/reporting/_report.html#QSARReport.to_html"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.reporting.QSARReport.to_html" title="Link to this definition">¶</a></dt>
 <dd><p>Render as a self-describing HTML document with embedded figures.</p>
-<p>Uses Jinja2 when available for templating, and falls back to
-direct string assembly otherwise so the core report never depends
-on an optional package.</p>
+<p>Assembled directly rather than through a template engine, so the
+core report has no optional dependency at all.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -609,6 +662,96 @@ the report works with no network.</p></li>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.reporting.QSARReport.to_text">
+<span class="sig-name descname"><span class="pre">to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">78</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/reporting/_report.html#QSARReport.to_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.reporting.QSARReport.to_text" title="Link to this definition">¶</a></dt>
+<dd><p>Render as plain text, optionally writing it to <code class="docutils literal notranslate"><span class="pre">path</span></code>.</p>
+<p>The format for a terminal, a log, or an email: no markup, ASCII
+tables, and figures listed by title rather than dropped silently.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>]</span>) – Write the text here as well as returning it.</p></li>
+<li><p><strong>width</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Column width for rules and wrapping.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The plain-text report.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARReport</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">QSARReport</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Demo&quot;</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;pIC50&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">add_dataset_section</span><span class="p">(</span><span class="n">n_compounds</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">n_train</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">n_test</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">40</span><span class="p">))</span>
+<span class="go">========================================</span>
+<span class="go">Demo</span>
+<span class="go">========================================</span>
+<span class="go">Endpoint: pIC50</span>
+<span class="go">Created: ...</span>
+
+<span class="go">Dataset</span>
+<span class="go">----------------------------------------</span>
+<span class="go">  n_compounds  24</span>
+<span class="go">  n_train      18</span>
+<span class="go">  n_test       6</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.reporting.QSARReport.to_pdf">
+<span class="sig-name descname"><span class="pre">to_pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_figures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'A4'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/reporting/_report.html#QSARReport.to_pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.reporting.QSARReport.to_pdf" title="Link to this definition">¶</a></dt>
+<dd><p>Render as a PDF with tables and embedded plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a>]</span>) – Output file. Unlike the other renderers this one is
+file-only: a PDF is binary and there is nothing useful to
+return as a string.</p></li>
+<li><p><strong>include_figures</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Rasterize and embed the report’s Plotly figures. Requires
+<code class="docutils literal notranslate"><span class="pre">kaleido</span></code> (<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">qsarkit[reporting]</span></code>). Pass
+<code class="docutils literal notranslate"><span class="pre">False</span></code> to produce a tables-and-text PDF without it.</p></li>
+<li><p><strong>page_size</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path written.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="base.html#qsarkit.base.OptionalDependencyError" title="qsarkit.base.OptionalDependencyError"><strong>OptionalDependencyError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">reportlab</span></code> is missing, or if <code class="docutils literal notranslate"><span class="pre">include_figures</span></code> is set,
+    the report has figures, and <code class="docutils literal notranslate"><span class="pre">kaleido</span></code> is missing. The second
+    case raises rather than quietly dropping the plots: a report
+    silently missing its evidence is worse than no report.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">page_size</span></code> is not recognized.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARReport</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">QSARReport</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Demo&quot;</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;pIC50&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">add_dataset_section</span><span class="p">(</span><span class="n">n_compounds</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(),</span> <span class="s2">&quot;report.pdf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">report</span><span class="o">.</span><span class="n">to_pdf</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>ReportLab documentation:
+<a class="reference external" href="https://docs.reportlab.com/">https://docs.reportlab.com/</a></p></li>
+</ul>
 </dd></dl>
 
 </dd></dl>
@@ -692,6 +835,26 @@ fail review.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;OECD&quot;</span> <span class="ow">in</span> <span class="n">report</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">()</span>
 <span class="go">True</span>
+</pre></div>
+</div>
+<p>Principles you have not addressed are tracked, and appear in the
+report as explicit gaps:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="o">.</span><span class="n">unaddressed</span>
+<span class="go">[1, 2, 3, 4, 5]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">add_evidence</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;pIC50, CHEMBL204&quot;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="o">.</span><span class="n">unaddressed</span>
+<span class="go">[2, 3, 4, 5]</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#qsarkit.reporting.OECDReportBuilder.build" title="qsarkit.reporting.OECDReportBuilder.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a> returns a <a class="reference internal" href="#qsarkit.reporting.QSARReport" title="qsarkit.reporting.QSARReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">QSARReport</span></code></a>, which renders to plain
+text, Markdown, HTML, JSON and PDF – tables and plots included:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">48</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">EGFR model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="o">.</span><span class="n">to_html</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&lt;!DOCTYPE html&gt;&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+<span class="go">[&#39;author&#39;, &#39;created&#39;, &#39;endpoint&#39;, &#39;sections&#39;, &#39;title&#39;]</span>
 </pre></div>
 </div>
 <p class="rubric">References</p>
@@ -1045,7 +1208,7 @@ and External.” QSAR Comb. Sci., 26(5), 694-701.
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-10</div>
           </div>
           <div class="right-details">
             
@@ -1069,6 +1232,8 @@ and External.” QSAR Comb. Sci., 26(5), 694-701.
 <li><a class="reference internal" href="#">Reporting</a><ul>
 <li><a class="reference internal" href="#figures">Figures</a></li>
 <li><a class="reference internal" href="#model-reports">Model reports</a></li>
+<li><a class="reference internal" href="#five-output-formats">Five output formats</a></li>
+<li><a class="reference internal" href="#figures-and-tables">Figures and tables</a></li>
 <li><a class="reference internal" href="#oecd-reporting">OECD reporting</a></li>
 <li><a class="reference internal" href="#module-qsarkit.reporting">API</a><ul>
 <li><a class="reference internal" href="#qsarkit.reporting.QSARReport"><code class="docutils literal notranslate"><span class="pre">QSARReport</span></code></a><ul>
@@ -1081,6 +1246,8 @@ and External.” QSAR Comb. Sci., 26(5), 694-701.
 <li><a class="reference internal" href="#qsarkit.reporting.QSARReport.to_json"><code class="docutils literal notranslate"><span class="pre">QSARReport.to_json()</span></code></a></li>
 <li><a class="reference internal" href="#qsarkit.reporting.QSARReport.to_markdown"><code class="docutils literal notranslate"><span class="pre">QSARReport.to_markdown()</span></code></a></li>
 <li><a class="reference internal" href="#qsarkit.reporting.QSARReport.to_html"><code class="docutils literal notranslate"><span class="pre">QSARReport.to_html()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.reporting.QSARReport.to_text"><code class="docutils literal notranslate"><span class="pre">QSARReport.to_text()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.reporting.QSARReport.to_pdf"><code class="docutils literal notranslate"><span class="pre">QSARReport.to_pdf()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#qsarkit.reporting.ReportSection"><code class="docutils literal notranslate"><span class="pre">ReportSection</span></code></a><ul>

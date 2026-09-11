@@ -297,7 +297,8 @@ acceptable for regulatory use. qsarkit is organized around them.</p>
 </tr>
 <tr class="row-odd"><td><p>2</p></td>
 <td><p>An unambiguous algorithm</p></td>
-<td><p>Every estimator’s documented hyperparameters and citation</p></td>
+<td><p>Every estimator’s documented hyperparameters and citation;
+<a class="reference internal" href="../api/functional.html#qsarkit.functional.MoleculeSet.history" title="qsarkit.functional.MoleculeSet.history"><code class="xref py py-attr docutils literal notranslate"><span class="pre">history</span></code></a></p></td>
 </tr>
 <tr class="row-even"><td><p>3</p></td>
 <td><p>A defined applicability domain</p></td>
@@ -314,58 +315,192 @@ acceptable for regulatory use. qsarkit is organized around them.</p>
 </tbody>
 </table>
 </div>
-<section id="checking-a-model">
-<h2>Checking a model<a class="headerlink" href="#checking-a-model" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">OECDValidator</span>
-
-<span class="n">validator</span> <span class="o">=</span> <span class="n">OECDValidator</span><span class="p">()</span>
-<span class="n">report</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span>
-    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
-    <span class="n">X_train</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span>
-    <span class="n">X_test</span><span class="o">=</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="o">=</span><span class="n">y_test</span><span class="p">,</span>
-    <span class="n">applicability_domain</span><span class="o">=</span><span class="n">domain</span><span class="p">,</span>
-    <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;pIC50 (CHEMBL204, IC50)&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">report</span>   <span class="c1"># per-principle pass/fail with the evidence for each</span>
-</pre></div>
-</div>
-</section>
 <section id="principle-4-in-practice">
 <h2>Principle 4 in practice<a class="headerlink" href="#principle-4-in-practice" title="Link to this heading">¶</a></h2>
 <p>Goodness of fit alone proves nothing — a sufficiently flexible model fits
-noise perfectly. The OECD asks for three separate things:</p>
-<p><strong>Goodness of fit</strong> — R² on the training set.</p>
-<p><strong>Robustness</strong> — cross-validated Q², plus y-scrambling to show the model has
-not simply memorized:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CrossValidator</span><span class="p">,</span> <span class="n">YScrambling</span>
-
-<span class="n">CrossValidator</span><span class="p">(</span><span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>   <span class="c1"># Q²</span>
-<span class="n">scramble</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;p_value&quot;</span><span class="p">]</span>   <span class="c1"># low = the real model beats chance</span>
+noise perfectly. The OECD asks for three separate things.</p>
+<p><strong>Goodness of fit</strong> is R² on the training set. It is the least
+informative of the three, and the one most often reported alone:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARRegressor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomSplitter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">demo_fingerprints</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">DEMO_Y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">RandomSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">]),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.921</span>
 </pre></div>
 </div>
-<p><strong>Predictivity</strong> — external validation on compounds the model never saw,
+<p><strong>Robustness</strong> is cross-validated Q², plus y-scrambling to show the model
+has not simply memorized:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CrossValidator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv</span> <span class="o">=</span> <span class="n">CrossValidator</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">cv</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.225</span>
+</pre></div>
+</div>
+<p>Training R² of 0.92 against a cross-validated Q² of 0.23. The first
+number describes how well the model memorized 18 compounds; the second
+is the one that describes prediction.</p>
+<p>y-scrambling refits the model on randomly permuted activities. If the
+scrambled models score anywhere near the real one, the apparent
+performance came from the model’s flexibility relative to the dataset
+size, not from a structure-activity relationship:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">YScrambling</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scramble</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.921</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.837</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;max_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.907</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;p_value&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>Read those numbers again. The model fits <strong>randomly permuted
+activities</strong> to R² = 0.84 on average, and one permutation reached
+0.907 against the real model’s 0.921. The p-value technically clears
+0.05, but the honest reading is that almost all of this model’s
+apparent fit is capacity, not chemistry: 18 compounds described by 256
+features will fit essentially anything.</p>
+<p>This is precisely the failure y-scrambling exists to expose, and it is
+invisible in the training R² that would otherwise be reported. It is
+also cheap to run, so there is no excuse for omitting it.</p>
+</div>
+<p>The bootstrap gives the same score an error bar, which is what tells you
+whether a difference between two models means anything:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">BootstrapValidator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">boot</span> <span class="o">=</span> <span class="n">BootstrapValidator</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">boot</span><span class="p">[</span><span class="s2">&quot;mean_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">boot</span><span class="p">[</span><span class="s2">&quot;ci_upper&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">boot</span><span class="p">[</span><span class="s2">&quot;ci_lower&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">(0.26, 2.87)</span>
+</pre></div>
+</div>
+<p>An out-of-bag R² of 0.26 with a 95% interval nearly three R² units wide.
+Any comparison between two models on this dataset that turns on less than
+that is noise, and the interval is the only thing that says so.</p>
+<p><strong>Predictivity</strong> is external validation on compounds the model never saw,
 scored with metrics designed for it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">golbraikh_tropsha_criteria</span><span class="p">,</span> <span class="n">q2_f3</span><span class="p">,</span> <span class="n">qsar_regression_report</span>
-
-<span class="n">qsar_regression_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-<span class="n">golbraikh_tropsha_criteria</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-<span class="c1"># {&#39;r2&#39;: ..., &#39;k&#39;: ..., &#39;r2_r02_ratio&#39;: ..., &#39;passes&#39;: True}</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExternalValidator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">ExternalValidator</span><span class="p">(</span><span class="n">q2</span><span class="o">=</span><span class="n">cv</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;r2&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;q2_f1&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">(0.816, 0.818)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;golbraikh_tropsha&quot;</span><span class="p">][</span><span class="s2">&quot;passed&quot;</span><span class="p">]</span>
+<span class="go">False</span>
 </pre></div>
 </div>
-<p>Use Q²F3 rather than plain R² on the test set: it is scaled by the
-<em>training</em> set variance, so it cannot be inflated by choosing a test set
+<p>The Golbraikh–Tropsha check fails. Reading which criterion failed is the
+point of running it:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gt</span> <span class="o">=</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;golbraikh_tropsha&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">gt</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;criterion&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">gt</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">]</span>
+<span class="go">[&#39;criterion_1_q2&#39;, &#39;criterion_3_r0&#39;, &#39;criterion_5_delta_r0&#39;]</span>
+</pre></div>
+</div>
+<p>Three of the five fail. Criterion 1 fails because Q² = 0.23 is below the
+0.5 threshold; criteria 3 and 5 concern regression through the origin —
+the predictions correlate with the truth but are systematically offset.</p>
+<p>An R² of 0.82 on the test set looks respectable and would have been
+reported as a success. Running the full check is what turns that into an
+accurate picture.</p>
+<p>Use Q²F1–F3 rather than plain R² on the test set: they are scaled by the
+<em>training</em> set variance, so they cannot be inflated by choosing a test set
 that happens to span a wide activity range.</p>
+</section>
+<section id="principle-3-the-applicability-domain">
+<h2>Principle 3: the applicability domain<a class="headerlink" href="#principle-3-the-applicability-domain" title="Link to this heading">¶</a></h2>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.applicability</span><span class="w"> </span><span class="kn">import</span> <span class="n">ADAnalyzer</span><span class="p">,</span> <span class="n">TanimotoSimilarityAD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">ADAnalyzer</span><span class="p">(</span><span class="n">TanimotoSimilarityAD</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.6</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ad</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ad</span><span class="p">[</span><span class="s2">&quot;n_inside&quot;</span><span class="p">],</span> <span class="n">ad</span><span class="p">[</span><span class="s2">&quot;n_outside&quot;</span><span class="p">]</span>
+<span class="go">(3, 3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">ad</span><span class="p">[</span><span class="s2">&quot;rmse_ratio&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">1.15</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">rmse_ratio</span></code> above 1 is the evidence principle 3 asks for: predictions
+inside the domain really are more accurate than those outside it.</p>
+<p>The threshold is a real choice, not a formality. At 0.35 every test
+compound falls inside, the ratio is undefined, and the domain has told
+you nothing:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loose</span> <span class="o">=</span> <span class="n">ADAnalyzer</span><span class="p">(</span><span class="n">TanimotoSimilarityAD</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.35</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loose_report</span> <span class="o">=</span> <span class="n">loose</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loose_report</span><span class="p">[</span><span class="s2">&quot;coverage&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">loose_report</span><span class="p">[</span><span class="s2">&quot;rmse_ratio&quot;</span><span class="p">]))</span>
+<span class="go">(1.0, True)</span>
+</pre></div>
+</div>
 </section>
 <section id="reporting">
 <h2>Reporting<a class="headerlink" href="#reporting" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">OECDReportBuilder</span>
-
-<span class="n">builder</span> <span class="o">=</span> <span class="n">OECDReportBuilder</span><span class="p">()</span>
-<span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">validation</span><span class="o">=</span><span class="n">report</span><span class="p">)</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="s2">&quot;model_qmrf.html&quot;</span><span class="p">)</span>
+<p><a class="reference internal" href="../api/reporting.html#qsarkit.reporting.OECDReportBuilder" title="qsarkit.reporting.OECDReportBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">OECDReportBuilder</span></code></a> structures all of the above
+into a QMRF-style document — and refuses to be quiet about what you
+skipped:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">OECDReportBuilder</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span> <span class="o">=</span> <span class="n">OECDReportBuilder</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Demo QMRF&quot;</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;pIC50&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="o">.</span><span class="n">unaddressed</span>
+<span class="go">[1, 2, 3, 4, 5]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">add_evidence</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;endpoint&quot;</span><span class="p">:</span> <span class="s2">&quot;pIC50&quot;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">add_evidence</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;q2&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">cv</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span>
+<span class="gp">... </span>                                   <span class="s2">&quot;y_scrambling_p&quot;</span><span class="p">:</span> <span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;p_value&quot;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">builder</span><span class="o">.</span><span class="n">unaddressed</span>
+<span class="go">[2, 3, 5]</span>
 </pre></div>
 </div>
-<p>The output follows the JRC QSAR Model Reporting Format (QMRF) sections.</p>
+<p>A submission fails review over a principle nobody noticed was missing, so
+an unaddressed principle is recorded as an explicit gap rather than
+omitted silently:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">report_doc</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;not addressed&quot;</span> <span class="ow">in</span> <span class="n">report_doc</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</section>
+<section id="output-formats">
+<h2>Output formats<a class="headerlink" href="#output-formats" title="Link to this heading">¶</a></h2>
+<p>The same report renders five ways, and every one carries the tables:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">report_doc</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">report_doc</span><span class="o">.</span><span class="n">to_text</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">52</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">Demo QMRF</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report_doc</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;# Demo QMRF&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report_doc</span><span class="o">.</span><span class="n">to_html</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&lt;!DOCTYPE html&gt;&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">report_doc</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+<span class="go">[&#39;author&#39;, &#39;created&#39;, &#39;endpoint&#39;, &#39;sections&#39;, &#39;title&#39;]</span>
+</pre></div>
+</div>
+<p>PDF needs <code class="docutils literal notranslate"><span class="pre">reportlab</span></code>, and embedding the plots needs <code class="docutils literal notranslate"><span class="pre">kaleido</span></code>
+(<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">qsarkit[reporting]</span></code>):</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(),</span> <span class="s2">&quot;qmrf.pdf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">report_doc</span><span class="o">.</span><span class="n">to_pdf</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Attach figures to a section and they travel with it into HTML, Markdown
+and PDF:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_predicted_vs_observed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">report_doc</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;Predicted vs observed&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">figures</span><span class="o">=</span><span class="p">[</span><span class="n">plot_predicted_vs_observed</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;[figure:&quot;</span> <span class="ow">in</span> <span class="n">report_doc</span><span class="o">.</span><span class="n">to_text</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">to_pdf</span></code> and <code class="docutils literal notranslate"><span class="pre">to_markdown</span></code> raise rather than silently dropping
+plots when <code class="docutils literal notranslate"><span class="pre">kaleido</span></code> is missing. A report that quietly lost its
+evidence looks complete and is not; pass <code class="docutils literal notranslate"><span class="pre">include_figures=False</span></code> if
+you deliberately want the tables alone.</p>
+</div>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
@@ -382,6 +517,9 @@ Model.</em>, 49(7), 1669-1678. <a class="extlink-doi reference external" href="h
 <li><p>Rücker, C., Rücker, G. &amp; Meringer, M. (2007). “y-Randomization and Its
 Variants in QSPR/QSAR.” <em>J. Chem. Inf. Model.</em>, 47(6), 2345-2357.
 <a class="extlink-doi reference external" href="https://doi.org/10.1021/ci700157b">doi:10.1021/ci700157b</a></p></li>
+<li><p>Tropsha, A., Gramatica, P. &amp; Gombar, V. K. (2003). “The Importance of
+Being Earnest.” <em>QSAR Comb. Sci.</em>, 22(1), 69-77.
+<a class="extlink-doi reference external" href="https://doi.org/10.1002/qsar.200390007">doi:10.1002/qsar.200390007</a></p></li>
 <li><p>Gramatica, P. (2007). <em>QSAR Comb. Sci.</em>, 26(5), 694-701.
 <a class="extlink-doi reference external" href="https://doi.org/10.1002/qsar.200610151">doi:10.1002/qsar.200610151</a></p></li>
 </ul>
@@ -423,7 +561,7 @@ Variants in QSPR/QSAR.” <em>J. Chem. Inf. Model.</em>, 47(6), 2345-2357.
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-10</div>
           </div>
           <div class="right-details">
             
@@ -445,9 +583,10 @@ Variants in QSPR/QSAR.” <em>J. Chem. Inf. Model.</em>, 47(6), 2345-2357.
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">OECD validation</a><ul>
-<li><a class="reference internal" href="#checking-a-model">Checking a model</a></li>
 <li><a class="reference internal" href="#principle-4-in-practice">Principle 4 in practice</a></li>
+<li><a class="reference internal" href="#principle-3-the-applicability-domain">Principle 3: the applicability domain</a></li>
 <li><a class="reference internal" href="#reporting">Reporting</a></li>
+<li><a class="reference internal" href="#output-formats">Output formats</a></li>
 <li><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>

@@ -368,6 +368,8 @@
 </li>
         <li><a href="api/metrics.html#qsarkit.metrics.bias">bias() (in module qsarkit.metrics)</a>
 </li>
+        <li><a href="api/validation.html#qsarkit.validation.BootstrapValidator">BootstrapValidator (class in qsarkit.validation)</a>
+</li>
         <li><a href="api/feature_selection.html#qsarkit.feature_selection.BorutaSelector">BorutaSelector (class in qsarkit.feature_selection)</a>
 </li>
         <li><a href="api/applicability.html#qsarkit.applicability.BoundingBoxAD">BoundingBoxAD (in module qsarkit.applicability)</a>
@@ -600,10 +602,10 @@
           <li><a href="api/models.html#qsarkit.models.QSARRegressor.estimator_">(qsarkit.models.QSARRegressor attribute)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/uncertainty.html#qsarkit.uncertainty.EnsembleUncertainty.estimators_">estimators_ (qsarkit.uncertainty.EnsembleUncertainty attribute)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.evaluate">evaluate() (qsarkit.uncertainty.ConformalClassifier method)</a>
 
         <ul>
@@ -630,6 +632,8 @@
           <li><a href="api/explainability.html#qsarkit.explainability.SHAPExplainer.explainer">(qsarkit.explainability.SHAPExplainer property)</a>
 </li>
         </ul></li>
+        <li><a href="api/validation.html#qsarkit.validation.ExternalValidator">ExternalValidator (class in qsarkit.validation)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -1356,6 +1360,8 @@
 </li>
           <li><a href="api/sar.html#qsarkit.sar.ActivityLandscapePlotter.plot">(qsarkit.sar.ActivityLandscapePlotter method)</a>
 </li>
+          <li><a href="api/validation.html#qsarkit.validation.YScrambling.plot">(qsarkit.validation.YScrambling method)</a>
+</li>
         </ul></li>
         <li><a href="api/applicability.html#qsarkit.applicability.ADAnalyzer.plot_accuracy_vs_coverage">plot_accuracy_vs_coverage() (qsarkit.applicability.ADAnalyzer method)</a>
 </li>
@@ -1371,10 +1377,10 @@
 </li>
         <li><a href="api/reporting.html#qsarkit.reporting.plot_predicted_vs_observed">plot_predicted_vs_observed() (in module qsarkit.reporting)</a>
 </li>
-        <li><a href="api/reporting.html#qsarkit.reporting.plot_residuals">plot_residuals() (in module qsarkit.reporting)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_residuals">plot_residuals() (in module qsarkit.reporting)</a>
+</li>
         <li><a href="api/reporting.html#qsarkit.reporting.plot_roc_curve">plot_roc_curve() (in module qsarkit.reporting)</a>
 </li>
         <li><a href="api/reporting.html#qsarkit.reporting.plot_williams">plot_williams() (in module qsarkit.reporting)</a>
@@ -1656,6 +1662,8 @@
 </li>
         <li><a href="api/utils.html#qsarkit.utils.read_smiles">read_smiles() (in module qsarkit.utils)</a>
 </li>
+        <li><a href="api/validation.html#qsarkit.validation.YScrambling.real_score_">real_score_ (qsarkit.validation.YScrambling attribute)</a>
+</li>
         <li><a href="api/metrics.html#qsarkit.metrics.recall">recall() (in module qsarkit.metrics)</a>
 </li>
         <li><a href="api/chemspace.html#qsarkit.chemspace.NearestNeighborAnalyzer.redundancy">redundancy() (qsarkit.chemspace.NearestNeighborAnalyzer method)</a>
@@ -1664,10 +1672,10 @@
 </li>
         <li><a href="api/functional.html#qsarkit.functional.remove_duplicates">remove_duplicates() (in module qsarkit.functional)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/functional.html#qsarkit.functional.remove_protecting_groups">remove_protecting_groups() (in module qsarkit.functional)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.removed">removed (qsarkit.data_quality.CurationReport attribute)</a>
 </li>
         <li><a href="api/functional.html#qsarkit.functional.FeatureSet.render">render() (qsarkit.functional.FeatureSet method)</a>
@@ -1718,6 +1726,10 @@
 
         <ul>
           <li><a href="api/model_selection.html#qsarkit.model_selection.NestedCV.run">(qsarkit.model_selection.NestedCV method)</a>
+</li>
+          <li><a href="api/validation.html#qsarkit.validation.BootstrapValidator.run">(qsarkit.validation.BootstrapValidator method)</a>
+</li>
+          <li><a href="api/validation.html#qsarkit.validation.YScrambling.run">(qsarkit.validation.YScrambling method)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -1797,7 +1809,11 @@
         <ul>
           <li><a href="api/model_selection.html#qsarkit.model_selection.NestedCV.scores_">(qsarkit.model_selection.NestedCV attribute)</a>
 </li>
+          <li><a href="api/validation.html#qsarkit.validation.BootstrapValidator.scores_">(qsarkit.validation.BootstrapValidator attribute)</a>
+</li>
         </ul></li>
+        <li><a href="api/validation.html#qsarkit.validation.YScrambling.scrambled_scores_">scrambled_scores_ (qsarkit.validation.YScrambling attribute)</a>
+</li>
         <li><a href="api/metrics.html#qsarkit.metrics.see">see() (in module qsarkit.metrics)</a>
 </li>
         <li><a href="api/functional.html#qsarkit.functional.select_features">select_features() (in module qsarkit.functional)</a>
@@ -2138,7 +2154,11 @@
           <li><a href="api/utils.html#qsarkit.utils.to_pactivity">(in module qsarkit.utils)</a>
 </li>
         </ul></li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.to_pdf">to_pdf() (qsarkit.reporting.QSARReport method)</a>
+</li>
         <li><a href="api/explainability.html#qsarkit.explainability.AtomicContributionMap.to_similarity_map_weights">to_similarity_map_weights() (qsarkit.explainability.AtomicContributionMap method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.to_text">to_text() (qsarkit.reporting.QSARReport method)</a>
 </li>
         <li><a href="api/representation.html#qsarkit.representation.TopologicalTorsionFingerprint">TopologicalTorsionFingerprint (class in qsarkit.representation)</a>
 </li>
@@ -2201,13 +2221,17 @@
         <li><a href="api/data_quality.html#qsarkit.data_quality.StructureValidator.valid_mask">valid_mask() (qsarkit.data_quality.StructureValidator method)</a>
 </li>
         <li><a href="api/data_quality.html#qsarkit.data_quality.StructureValidator.validate">validate() (qsarkit.data_quality.StructureValidator method)</a>
+
+        <ul>
+          <li><a href="api/validation.html#qsarkit.validation.ExternalValidator.validate">(qsarkit.validation.ExternalValidator method)</a>
 </li>
+        </ul></li>
         <li><a href="api/data_quality.html#qsarkit.data_quality.ValidationIssue">ValidationIssue (class in qsarkit.data_quality)</a>
-</li>
-        <li><a href="api/feature_selection.html#qsarkit.feature_selection.VarianceFilter">VarianceFilter (class in qsarkit.feature_selection)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.VarianceFilter">VarianceFilter (class in qsarkit.feature_selection)</a>
+</li>
         <li><a href="api/feature_selection.html#qsarkit.feature_selection.VarianceFilter.variances_">variances_ (qsarkit.feature_selection.VarianceFilter attribute)</a>
 
         <ul>
@@ -2267,6 +2291,10 @@
 </li>
         </ul></li>
     </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/validation.html#qsarkit.validation.YScrambling">YScrambling (class in qsarkit.validation)</a>
+</li>
+    </ul></td>
   </tr></table>
 </section>
 
@@ -2288,7 +2316,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-10</div>
           </div>
           <div class="right-details">
             

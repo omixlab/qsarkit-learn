@@ -71,14 +71,63 @@ Model reports
    >>> "pIC50" in markdown
    True
 
-The same report renders three ways — Markdown for a repository, HTML for
-sharing, JSON for a downstream system:
+Five output formats
+-------------------
+
+The same report object renders every way you might need it, and each
+carries the tables:
 
 .. doctest::
 
+   >>> print(report.to_text(width=44).splitlines()[1])
+   Demo model
+   >>> report.to_html().startswith("<!DOCTYPE html>")
+   True
    >>> set(report.to_dict()) >= {"title", "sections"}
    True
-   >>> report.to_html().startswith("<!DOCTYPE html>")
+
+Plain text for a terminal or an email; Markdown for a repository; HTML
+for sharing; JSON for a downstream system; PDF for a submission:
+
+.. doctest::
+
+   >>> import os, tempfile
+   >>> out = os.path.join(tempfile.mkdtemp(), "report.pdf")
+   >>> _ = report.to_pdf(out)
+   >>> os.path.getsize(out) > 0
+   True
+
+``to_pdf`` needs ``reportlab``; embedding plots into PDF or Markdown
+additionally needs ``kaleido`` (``pip install qsarkit[reporting]``).
+
+Figures and tables
+------------------
+
+A section can carry prose, a property table, a DataFrame and figures, and
+all four survive into every format:
+
+.. doctest::
+
+   >>> import pandas as pd
+   >>> _ = report.add_section(
+   ...     "Outliers",
+   ...     content={"n_flagged": 2},
+   ...     text="Two compounds sit outside the applicability domain.",
+   ...     table=pd.DataFrame({"compound": ["a", "b"], "residual": [1.4, -1.9]}),
+   ...     figures=[figure],
+   ... )
+   >>> text = report.to_text()
+   >>> "n_flagged" in text and "residual" in text and "[figure:" in text
+   True
+
+Nested values are flattened rather than printed as a Python repr, which
+matters because a validation report routinely contains one:
+
+.. doctest::
+
+   >>> from qsarkit.reporting import QSARReport
+   >>> small = QSARReport().add_section("S", {"criteria": {"passed": True, "r2": 0.95}})
+   >>> "passed=yes; r2=0.95" in small.to_text()
    True
 
 OECD reporting

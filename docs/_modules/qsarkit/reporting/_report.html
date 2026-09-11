@@ -267,6 +267,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
@@ -627,18 +628,48 @@
 
 <div class="viewcode-block" id="QSARReport.to_markdown">
 <a class="viewcode-back" href="../../../api/reporting.html#qsarkit.reporting.QSARReport.to_markdown">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_markdown</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PathLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_markdown</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PathLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">include_figures</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Render as Markdown, optionally writing it to ``path``.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        path : str or Path, optional</span>
+<span class="sd">            Write the Markdown here as well as returning it. When given,</span>
+<span class="sd">            figures are written as PNG files in a sibling directory and</span>
+<span class="sd">            linked relatively, which is what a Markdown file in a</span>
+<span class="sd">            repository needs.</span>
+<span class="sd">        include_figures : bool, default True</span>
+<span class="sd">            Embed the report&#39;s figures. Requires ``kaleido``</span>
+<span class="sd">            (``pip install qsarkit[reporting]``); pass ``False`` for a</span>
+<span class="sd">            text-and-tables document without it.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        str</span>
 <span class="sd">            The Markdown text.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        OptionalDependencyError</span>
+<span class="sd">            If ``include_figures`` is set, the report has figures, and</span>
+<span class="sd">            ``kaleido`` is missing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">figures</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sections</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">section</span><span class="o">.</span><span class="n">figures</span><span class="p">]</span>
+        <span class="n">images</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">asset_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">include_figures</span> <span class="ow">and</span> <span class="n">figures</span><span class="p">:</span>
+            <span class="n">images</span> <span class="o">=</span> <span class="n">_rasterize_figures</span><span class="p">(</span><span class="n">figures</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">asset_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="p">(</span>
+                    <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s2">&quot;_figures&quot;</span>
+                <span class="p">)</span>
+                <span class="n">asset_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">figure_index</span> <span class="o">=</span> <span class="mi">0</span>
+
         <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;# </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
         <span class="n">header</span> <span class="o">=</span> <span class="p">[</span>
             <span class="p">(</span><span class="s2">&quot;Endpoint&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="p">),</span>
@@ -660,13 +691,24 @@
                     <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">_format_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">)</span>
                 <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">section</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">figures</span><span class="p">:</span>
-                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">figures</span><span class="p">)</span><span class="si">}</span><span class="s2"> figure(s) omitted from Markdown; &quot;</span>
-                    <span class="s2">&quot;render to HTML to see them._&quot;</span>
-                <span class="p">)</span>
-                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">_dataframe_to_markdown</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">table</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">figure</span> <span class="ow">in</span> <span class="n">section</span><span class="o">.</span><span class="n">figures</span><span class="p">:</span>
+                <span class="n">caption</span> <span class="o">=</span> <span class="n">_figure_title</span><span class="p">(</span><span class="n">figure</span><span class="p">)</span>
+                <span class="n">png</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">figure_index</span><span class="p">)</span>
+                <span class="n">figure_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">png</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;_[figure: </span><span class="si">{</span><span class="n">caption</span><span class="si">}</span><span class="s2">]_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">asset_dir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;figure_</span><span class="si">{</span><span class="n">figure_index</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">.png&quot;</span>
+                    <span class="p">(</span><span class="n">asset_dir</span> <span class="o">/</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">png</span><span class="p">)</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;![</span><span class="si">{</span><span class="n">caption</span><span class="si">}</span><span class="s2">](</span><span class="si">{</span><span class="n">asset_dir</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># No file to sit beside, so inline it. Data URIs render</span>
+                    <span class="c1"># in most Markdown viewers, though not on GitHub.</span>
+                    <span class="n">encoded</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">png</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                        <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;![</span><span class="si">{</span><span class="n">caption</span><span class="si">}</span><span class="s2">](data:image/png;base64,</span><span class="si">{</span><span class="n">encoded</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
         <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
@@ -679,9 +721,8 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Render as a self-describing HTML document with embedded figures.</span>
 
-<span class="sd">        Uses Jinja2 when available for templating, and falls back to</span>
-<span class="sd">        direct string assembly otherwise so the core report never depends</span>
-<span class="sd">        on an optional package.</span>
+<span class="sd">        Assembled directly rather than through a template engine, so the</span>
+<span class="sd">        core report has no optional dependency at all.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -744,21 +785,327 @@
         <span class="k">return</span> <span class="n">html</span></div>
 
 
+<div class="viewcode-block" id="QSARReport.to_text">
+<a class="viewcode-back" href="../../../api/reporting.html#qsarkit.reporting.QSARReport.to_text">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PathLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">78</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render as plain text, optionally writing it to ``path``.</span>
+
+<span class="sd">        The format for a terminal, a log, or an email: no markup, ASCII</span>
+<span class="sd">        tables, and figures listed by title rather than dropped silently.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str or Path, optional</span>
+<span class="sd">            Write the text here as well as returning it.</span>
+<span class="sd">        width : int, default 78</span>
+<span class="sd">            Column width for rules and wrapping.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The plain-text report.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from qsarkit.reporting import QSARReport</span>
+<span class="sd">        &gt;&gt;&gt; report = QSARReport(title=&quot;Demo&quot;, endpoint=&quot;pIC50&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; _ = report.add_dataset_section(n_compounds=24, n_train=18, n_test=6)</span>
+<span class="sd">        &gt;&gt;&gt; print(report.to_text(width=40))</span>
+<span class="sd">        ========================================</span>
+<span class="sd">        Demo</span>
+<span class="sd">        ========================================</span>
+<span class="sd">        Endpoint: pIC50</span>
+<span class="sd">        Created: ...</span>
+<span class="sd">        &lt;BLANKLINE&gt;</span>
+<span class="sd">        Dataset</span>
+<span class="sd">        ----------------------------------------</span>
+<span class="sd">          n_compounds  24</span>
+<span class="sd">          n_train      18</span>
+<span class="sd">          n_test       6</span>
+<span class="sd">        &lt;BLANKLINE&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
+
+        <span class="n">lines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="n">width</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;Endpoint&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;Author&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;Created&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">created</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">section</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="n">width</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+                <span class="n">pairs</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">_format_value</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">section</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">]</span>
+                <span class="n">key_width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">),</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+                    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">key</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">key_width</span><span class="p">)</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">section</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">figure</span> <span class="ow">in</span> <span class="n">section</span><span class="o">.</span><span class="n">figures</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [figure: </span><span class="si">{</span><span class="n">_figure_title</span><span class="p">(</span><span class="n">figure</span><span class="p">)</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">figures</span><span class="p">:</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">text</span></div>
+
+
+<div class="viewcode-block" id="QSARReport.to_pdf">
+<a class="viewcode-back" href="../../../api/reporting.html#qsarkit.reporting.QSARReport.to_pdf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_pdf</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">,</span>
+        <span class="n">include_figures</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">page_size</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;A4&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render as a PDF with tables and embedded plots.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str or Path</span>
+<span class="sd">            Output file. Unlike the other renderers this one is</span>
+<span class="sd">            file-only: a PDF is binary and there is nothing useful to</span>
+<span class="sd">            return as a string.</span>
+<span class="sd">        include_figures : bool, default True</span>
+<span class="sd">            Rasterize and embed the report&#39;s Plotly figures. Requires</span>
+<span class="sd">            ``kaleido`` (``pip install qsarkit[reporting]``). Pass</span>
+<span class="sd">            ``False`` to produce a tables-and-text PDF without it.</span>
+<span class="sd">        page_size : {&quot;A4&quot;, &quot;letter&quot;}, default &quot;A4&quot;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The path written.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        OptionalDependencyError</span>
+<span class="sd">            If ``reportlab`` is missing, or if ``include_figures`` is set,</span>
+<span class="sd">            the report has figures, and ``kaleido`` is missing. The second</span>
+<span class="sd">            case raises rather than quietly dropping the plots: a report</span>
+<span class="sd">            silently missing its evidence is worse than no report.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``page_size`` is not recognized.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import tempfile, os</span>
+<span class="sd">        &gt;&gt;&gt; from qsarkit.reporting import QSARReport</span>
+<span class="sd">        &gt;&gt;&gt; report = QSARReport(title=&quot;Demo&quot;, endpoint=&quot;pIC50&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; _ = report.add_dataset_section(n_compounds=24)</span>
+<span class="sd">        &gt;&gt;&gt; out = os.path.join(tempfile.mkdtemp(), &quot;report.pdf&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; _ = report.to_pdf(out)</span>
+<span class="sd">        &gt;&gt;&gt; os.path.getsize(out) &gt; 0</span>
+<span class="sd">        True</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+<span class="sd">        - ReportLab documentation:</span>
+<span class="sd">          https://docs.reportlab.com/</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">require</span>
+
+        <span class="n">require</span><span class="p">(</span><span class="s2">&quot;reportlab&quot;</span><span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib</span><span class="w"> </span><span class="kn">import</span> <span class="n">colors</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib.pagesizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">A4</span><span class="p">,</span> <span class="n">letter</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib.styles</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParagraphStyle</span><span class="p">,</span> <span class="n">getSampleStyleSheet</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">mm</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.platypus</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+            <span class="n">Image</span><span class="p">,</span>
+            <span class="n">PageBreak</span><span class="p">,</span>
+            <span class="n">Paragraph</span><span class="p">,</span>
+            <span class="n">SimpleDocTemplate</span><span class="p">,</span>
+            <span class="n">Spacer</span><span class="p">,</span>
+            <span class="n">Table</span><span class="p">,</span>
+            <span class="n">TableStyle</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">sizes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A4&quot;</span><span class="p">:</span> <span class="n">A4</span><span class="p">,</span> <span class="s2">&quot;letter&quot;</span><span class="p">:</span> <span class="n">letter</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">page_size</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sizes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;page_size must be one of </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">sizes</span><span class="p">)</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">page_size</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">figures</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sections</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">figures</span><span class="p">]</span>
+        <span class="n">images</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">include_figures</span> <span class="ow">and</span> <span class="n">figures</span><span class="p">:</span>
+            <span class="n">images</span> <span class="o">=</span> <span class="n">_rasterize_figures</span><span class="p">(</span><span class="n">figures</span><span class="p">)</span>
+
+        <span class="n">styles</span> <span class="o">=</span> <span class="n">getSampleStyleSheet</span><span class="p">()</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="n">ParagraphStyle</span><span class="p">(</span>
+            <span class="s2">&quot;qsarkit-body&quot;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">styles</span><span class="p">[</span><span class="s2">&quot;BodyText&quot;</span><span class="p">],</span> <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">leading</span><span class="o">=</span><span class="mi">13</span>
+        <span class="p">)</span>
+        <span class="n">story</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Paragraph</span><span class="p">(</span><span class="n">_escape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">),</span> <span class="n">styles</span><span class="p">[</span><span class="s2">&quot;Title&quot;</span><span class="p">]),</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;Endpoint&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;Author&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;Created&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">created</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+                <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">Paragraph</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;b&gt;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">:&lt;/b&gt; </span><span class="si">{</span><span class="n">_escape</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+                <span class="p">)</span>
+        <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span> <span class="o">*</span> <span class="n">mm</span><span class="p">))</span>
+
+        <span class="n">table_style</span> <span class="o">=</span> <span class="n">TableStyle</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;BACKGROUND&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s2">&quot;#E8EEF7&quot;</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s2">&quot;TEXTCOLOR&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s2">&quot;#1F2933&quot;</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s2">&quot;FONTNAME&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="s2">&quot;Helvetica-Bold&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;FONTSIZE&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">8</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;GRID&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s2">&quot;#B0B7C3&quot;</span><span class="p">)),</span>
+            <span class="p">(</span><span class="s2">&quot;VALIGN&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;TOP&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;LEFTPADDING&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;RIGHTPADDING&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="p">])</span>
+
+        <span class="n">figure_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="n">_escape</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">title</span><span class="p">),</span> <span class="n">styles</span><span class="p">[</span><span class="s2">&quot;Heading2&quot;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="n">_escape</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">text</span><span class="p">),</span> <span class="n">body</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+                <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;Property&quot;</span><span class="p">,</span> <span class="s2">&quot;Value&quot;</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span>
+                    <span class="p">[</span>
+                        <span class="n">Paragraph</span><span class="p">(</span><span class="n">_escape</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)),</span> <span class="n">body</span><span class="p">),</span>
+                        <span class="n">Paragraph</span><span class="p">(</span><span class="n">_escape</span><span class="p">(</span><span class="n">_format_value</span><span class="p">(</span><span class="n">value</span><span class="p">)),</span> <span class="n">body</span><span class="p">),</span>
+                    <span class="p">]</span>
+                    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">section</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">]</span>
+                <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mi">55</span> <span class="o">*</span> <span class="n">mm</span><span class="p">,</span> <span class="mi">105</span> <span class="o">*</span> <span class="n">mm</span><span class="p">],</span> <span class="n">repeatRows</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">table_style</span><span class="p">)</span>
+                <span class="n">story</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">table</span><span class="p">,</span> <span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">mm</span><span class="p">)])</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">table</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">table</span>
+                <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">]]</span> <span class="o">+</span> <span class="p">[</span>
+                    <span class="p">[</span><span class="n">_format_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="p">]</span>
+                <span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">repeatRows</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">table_style</span><span class="p">)</span>
+                <span class="n">story</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">table</span><span class="p">,</span> <span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">mm</span><span class="p">)])</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">section</span><span class="o">.</span><span class="n">figures</span><span class="p">:</span>
+                <span class="n">png</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">figure_index</span><span class="p">)</span>
+                <span class="n">figure_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">png</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+
+                <span class="n">story</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+                    <span class="n">Image</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">png</span><span class="p">),</span> <span class="n">width</span><span class="o">=</span><span class="mi">150</span> <span class="o">*</span> <span class="n">mm</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">90</span> <span class="o">*</span> <span class="n">mm</span><span class="p">,</span>
+                          <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;proportional&quot;</span><span class="p">),</span>
+                    <span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">mm</span><span class="p">),</span>
+                <span class="p">])</span>
+
+        <span class="n">document</span> <span class="o">=</span> <span class="n">SimpleDocTemplate</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
+            <span class="n">pagesize</span><span class="o">=</span><span class="n">sizes</span><span class="p">[</span><span class="n">page_size</span><span class="p">],</span>
+            <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">author</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">leftMargin</span><span class="o">=</span><span class="mi">20</span> <span class="o">*</span> <span class="n">mm</span><span class="p">,</span>
+            <span class="n">rightMargin</span><span class="o">=</span><span class="mi">20</span> <span class="o">*</span> <span class="n">mm</span><span class="p">,</span>
+            <span class="n">topMargin</span><span class="o">=</span><span class="mi">18</span> <span class="o">*</span> <span class="n">mm</span><span class="p">,</span>
+            <span class="n">bottomMargin</span><span class="o">=</span><span class="mi">18</span> <span class="o">*</span> <span class="n">mm</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">document</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">story</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># pragma: no cover - display only</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;QSARReport </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sections</span><span class="p">)</span><span class="si">}</span><span class="s2"> sections&gt;&quot;</span></div>
 
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_figure_title</span><span class="p">(</span><span class="n">figure</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Best available name for a Plotly figure, for text listings.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">text</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="k">if</span> <span class="n">title</span> <span class="k">else</span> <span class="s2">&quot;untitled&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_rasterize_figures</span><span class="p">(</span><span class="n">figures</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render Plotly figures to PNG bytes, keyed by position.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    OptionalDependencyError</span>
+<span class="sd">        If kaleido is unavailable. Raising is deliberate: a report that</span>
+<span class="sd">        silently lost its plots looks complete and is not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.base.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">OptionalDependencyError</span>
+
+    <span class="n">images</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">figure</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">figures</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">images</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">to_image</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;png&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># kaleido missing, or no engine available</span>
+            <span class="k">raise</span> <span class="n">OptionalDependencyError</span><span class="p">(</span><span class="s2">&quot;kaleido&quot;</span><span class="p">,</span> <span class="s2">&quot;reporting&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+    <span class="k">return</span> <span class="n">images</span>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dataframe_to_markdown</span><span class="p">(</span><span class="n">frame</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render a DataFrame as a Markdown table.</span>
+
+<span class="sd">    Written out rather than delegating to ``DataFrame.to_markdown``,</span>
+<span class="sd">    which requires the optional ``tabulate`` package -- an undeclared</span>
+<span class="sd">    hard dependency for anyone whose report contains a table.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="n">_format_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">record</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;| &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; |&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;|&quot;</span> <span class="o">+</span> <span class="s2">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;---&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;|&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="s2">&quot;| &quot;</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; |&quot;</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_format_value</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render a value for a report table.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render a value for a report table.</span>
+
+<span class="sd">    Nested dicts are flattened into ``key=value`` pairs rather than</span>
+<span class="sd">    printed as a Python repr: a validation report routinely nests one</span>
+<span class="sd">    (the Golbraikh-Tropsha criteria, for instance), and a raw repr in a</span>
+<span class="sd">    table cell is unreadable in every output format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="c1"># Checked before float, since bool is a subclass of int.</span>
+        <span class="k">return</span> <span class="s2">&quot;yes&quot;</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="s2">&quot;no&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
             <span class="k">return</span> <span class="s2">&quot;n/a&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">.4g</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">_format_value</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
         <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="n">shown</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_format_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">items</span><span class="p">[:</span><span class="mi">5</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">shown</span> <span class="o">+</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;, ... (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span><span class="si">}</span><span class="s2"> items)&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;n/a&quot;</span>
     <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
 
@@ -814,6 +1161,26 @@
 <span class="sd">    &gt;&gt;&gt; report = builder.build()</span>
 <span class="sd">    &gt;&gt;&gt; &quot;OECD&quot; in report.to_markdown()</span>
 <span class="sd">    True</span>
+
+<span class="sd">    Principles you have not addressed are tracked, and appear in the</span>
+<span class="sd">    report as explicit gaps:</span>
+
+<span class="sd">    &gt;&gt;&gt; builder.unaddressed</span>
+<span class="sd">    [1, 2, 3, 4, 5]</span>
+<span class="sd">    &gt;&gt;&gt; _ = builder.add_evidence(1, True, {&quot;endpoint&quot;: &quot;pIC50, CHEMBL204&quot;})</span>
+<span class="sd">    &gt;&gt;&gt; builder.unaddressed</span>
+<span class="sd">    [2, 3, 4, 5]</span>
+
+<span class="sd">    :meth:`build` returns a :class:`QSARReport`, which renders to plain</span>
+<span class="sd">    text, Markdown, HTML, JSON and PDF -- tables and plots included:</span>
+
+<span class="sd">    &gt;&gt;&gt; report = builder.build()</span>
+<span class="sd">    &gt;&gt;&gt; print(report.to_text(width=48).splitlines()[1])</span>
+<span class="sd">    EGFR model</span>
+<span class="sd">    &gt;&gt;&gt; report.to_html().startswith(&quot;&lt;!DOCTYPE html&gt;&quot;)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; sorted(report.to_dict())</span>
+<span class="sd">    [&#39;author&#39;, &#39;created&#39;, &#39;endpoint&#39;, &#39;sections&#39;, &#39;title&#39;]</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -979,7 +1346,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-10</div>
           </div>
           <div class="right-details">
             

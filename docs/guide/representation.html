@@ -318,18 +318,17 @@ for OECD principle 5. They also need scaling; see
 </pre></div>
 </div>
 <p>Requires the <code class="docutils literal notranslate"><span class="pre">embeddings</span></code> and <code class="docutils literal notranslate"><span class="pre">nlp</span></code> extras respectively.</p>
-</section>
-<section id="graph-neural-networks">
-<h2>Graph neural networks<a class="headerlink" href="#graph-neural-networks" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation.graph_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMPNNTransformer</span>
-
-<span class="n">model</span> <span class="o">=</span> <span class="n">DMPNNTransformer</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_mols</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>          <span class="c1"># supervised</span>
-<span class="n">embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test_mols</span><span class="p">)</span>
-</pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Graph neural network representations (MPNN, D-MPNN, GCN, GAT, SchNet)
+are <strong>not</strong> included. They are a different engineering problem —
+training loops, GPU management, batching — and shipping a half-hearted
+version would be worse than pointing at the projects that do it
+properly. Use <a class="reference external" href="https://github.com/chemprop/chemprop">Chemprop</a> or
+<a class="reference external" href="https://deepchem.io">DeepChem</a>, and bring the learned embeddings
+back here as a plain feature matrix: everything downstream in qsarkit
+takes an array.</p>
 </div>
-<p>Implemented in pure PyTorch (no <code class="docutils literal notranslate"><span class="pre">torch_geometric</span></code> needed): MPNN, D-MPNN
-(Chemprop), GCN, GAT and SchNet. Requires the <code class="docutils literal notranslate"><span class="pre">graph</span></code> extra.</p>
 </section>
 <section id="composing">
 <h2>Composing<a class="headerlink" href="#composing" title="Link to this heading">¶</a></h2>
@@ -399,7 +398,7 @@ Property Prediction.” <em>J. Chem. Inf. Model.</em>, 59(8), 3370-3388.
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-10</div>
           </div>
           <div class="right-details">
             
@@ -424,7 +423,6 @@ Property Prediction.” <em>J. Chem. Inf. Model.</em>, 59(8), 3370-3388.
 <li><a class="reference internal" href="#fingerprints">Fingerprints</a></li>
 <li><a class="reference internal" href="#descriptors">Descriptors</a></li>
 <li><a class="reference internal" href="#learned-embeddings">Learned embeddings</a></li>
-<li><a class="reference internal" href="#graph-neural-networks">Graph neural networks</a></li>
 <li><a class="reference internal" href="#composing">Composing</a></li>
 <li><a class="reference internal" href="#references">References</a></li>
 </ul>

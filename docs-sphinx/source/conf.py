@@ -45,6 +45,7 @@ extensions = [
     "sphinx_copybutton",
     "sphinx_design",
     "myst_parser",               # lets us include README.md and write MD pages
+    "sphinx.ext.githubpages",
 ]
 
 templates_path = ["_templates"]

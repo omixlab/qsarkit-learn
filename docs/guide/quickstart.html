@@ -275,67 +275,138 @@
         <article role="main" id="furo-main-content">
           <section id="quick-start">
 <h1>Quick start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h1>
-<p>A complete QSAR workflow in one page.</p>
+<p>A complete QSAR workflow in one page, on the shared demo dataset: 24
+compounds in four substituent families with synthetic pIC50 values,
+available in every example here as <code class="docutils literal notranslate"><span class="pre">DEMO_SMILES</span></code>, <code class="docutils literal notranslate"><span class="pre">DEMO_Y</span></code> and
+<code class="docutils literal notranslate"><span class="pre">demo_mols</span></code>.</p>
 <section id="curate-the-structures">
 <h2>Curate the structures<a class="headerlink" href="#curate-the-structures" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularStandardizer</span>
-
-<span class="n">smiles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)[O-].[Na+]&quot;</span><span class="p">,</span> <span class="s2">&quot;CCO&quot;</span><span class="p">,</span> <span class="s2">&quot;c1ccccc1&quot;</span><span class="p">]</span>
-<span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">smiles</span><span class="p">]</span>
-
-<span class="n">standardizer</span> <span class="o">=</span> <span class="n">MolecularStandardizer</span><span class="p">()</span>
-<span class="n">clean</span> <span class="o">=</span> <span class="n">standardizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
-<span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">clean</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1"># &#39;CC(=O)Oc1ccccc1C(=O)O&#39;   salt stripped, charge neutralized</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularStandardizer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">standardizer</span> <span class="o">=</span> <span class="n">MolecularStandardizer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">salt</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)[O-].[Na+]&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">standardizer</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">salt</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(=O)Oc1ccccc1C(=O)O&#39;</span>
 </pre></div>
 </div>
-<p>The pipeline sanitizes, removes salts and solvates, neutralizes charges,
-canonicalizes tautomers, handles stereochemistry and normalizes hydrogens.
-Molecules that fail become <code class="docutils literal notranslate"><span class="pre">None</span></code> in the output so positions stay aligned
-with your activity data.</p>
+<p>The standardizer sanitizes, removes salts and solvates, neutralizes
+charges, canonicalizes tautomers, handles stereochemistry and normalizes
+hydrogens. Molecules that fail become <code class="docutils literal notranslate"><span class="pre">None</span></code> in the output, so positions
+stay aligned with your activity data:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">standardizer</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">salt</span><span class="p">,</span> <span class="kc">None</span><span class="p">])]</span>
+<span class="go">[False, True]</span>
+</pre></div>
+</div>
 </section>
 <section id="featurize">
 <h2>Featurize<a class="headerlink" href="#featurize" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation.fingerprints</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorganFingerprint</span>
-
-<span class="n">X</span> <span class="o">=</span> <span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">clean</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorganFingerprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 2048)</span>
 </pre></div>
 </div>
 </section>
 <section id="model-with-a-scaffold-split">
 <h2>Model, with a scaffold split<a class="headerlink" href="#model-with-a-scaffold-split" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARRegressor</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScaffoldSplitter</span>
-
-<span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">ScaffoldSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">split_mols</span><span class="p">(</span><span class="n">clean</span><span class="p">))</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARRegressor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScaffoldSplitter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">DEMO_Y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">ScaffoldSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span><span class="o">.</span><span class="n">split_mols</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_pred</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(6,)</span>
 </pre></div>
 </div>
 <p>A random split flatters a QSAR model, because near-duplicate analogues end
 up on both sides. A scaffold split keeps whole chemical series together and
 measures what you actually care about: generalization to new chemistry.</p>
+<p>The difference is not subtle:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">q2_f1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomSplitter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r_train</span><span class="p">,</span> <span class="n">r_test</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">RandomSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">random_model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">r_train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">r_train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">q2_f1</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">r_test</span><span class="p">],</span> <span class="n">random_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">r_test</span><span class="p">]),</span> <span class="n">y</span><span class="p">[</span><span class="n">r_train</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">0.82</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">q2_f1</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">-0.87</span>
+</pre></div>
+</div>
+<p>Both numbers are honestly computed. Only the second answers “will this work
+on chemistry I have not seen”.</p>
 </section>
 <section id="check-the-applicability-domain">
 <h2>Check the applicability domain<a class="headerlink" href="#check-the-applicability-domain" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.applicability</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNNApplicabilityDomain</span><span class="p">,</span> <span class="n">ADAnalyzer</span>
-
-<span class="n">domain</span> <span class="o">=</span> <span class="n">KNNApplicabilityDomain</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
-<span class="n">report</span> <span class="o">=</span> <span class="n">ADAnalyzer</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">])</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">)</span>
-<span class="n">report</span><span class="p">[</span><span class="s2">&quot;rmse_ratio&quot;</span><span class="p">]</span>   <span class="c1"># &gt; 1 means the domain is doing its job</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.applicability</span><span class="w"> </span><span class="kn">import</span> <span class="n">ADAnalyzer</span><span class="p">,</span> <span class="n">KNNApplicabilityDomain</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">domain</span> <span class="o">=</span> <span class="n">KNNApplicabilityDomain</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">domain</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="go">[False, False, False, False, False, False]</span>
 </pre></div>
 </div>
+<p>Every held-out compound is outside the domain — which is correct, because
+the scaffold split held out an entire chemotype. An applicability domain
+that marks everything in-domain is usually telling you about your split
+rather than your model.</p>
 </section>
 <section id="interpret-the-sar">
 <h2>Interpret the SAR<a class="headerlink" href="#interpret-the-sar" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">activity_cliff_report</span>
-
-<span class="n">report</span> <span class="o">=</span> <span class="n">activity_cliff_report</span><span class="p">(</span><span class="n">clean</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">report</span><span class="p">[</span><span class="s2">&quot;cliff_ratio&quot;</span><span class="p">]</span>
-<span class="n">report</span><span class="p">[</span><span class="s2">&quot;top_transformations&quot;</span><span class="p">]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">activity_cliff_report</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cliffs</span> <span class="o">=</span> <span class="n">activity_cliff_report</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cliffs</span><span class="p">[</span><span class="s2">&quot;n_cliffs&quot;</span><span class="p">],</span> <span class="nb">round</span><span class="p">(</span><span class="n">cliffs</span><span class="p">[</span><span class="s2">&quot;cliff_ratio&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">(4, 0.0145)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">cliffs</span><span class="p">[</span><span class="s2">&quot;top_transformations&quot;</span><span class="p">])</span>
+<span class="go">[&#39;[1*]C&gt;&gt;[1*]Cl&#39;, &#39;[1*]Cl&gt;&gt;[1*]Br&#39;, &#39;[1*]Cl&gt;&gt;[1*]N&#39;]</span>
 </pre></div>
 </div>
+<p>Activity cliffs are pairs of near-identical structures with very different
+activity — the places a similarity-based model must be wrong. Running this
+<em>before</em> modelling tells you whether a regression model can work at all.</p>
+</section>
+<section id="report-it">
+<h2>Report it<a class="headerlink" href="#report-it" title="Link to this heading">¶</a></h2>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">qsar_regression_report</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.reporting</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARReport</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">QSARReport</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Quick-start model&quot;</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="s2">&quot;pIC50&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="o">.</span><span class="n">add_dataset_section</span><span class="p">(</span><span class="n">n_compounds</span><span class="o">=</span><span class="mi">24</span><span class="p">,</span> <span class="n">n_train</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">),</span> <span class="n">n_test</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">))</span>
+<span class="gp">... </span>    <span class="o">.</span><span class="n">add_model_section</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">descriptors</span><span class="o">=</span><span class="s2">&quot;Morgan ECFP4, 2048 bits&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="o">.</span><span class="n">add_validation_section</span><span class="p">(</span><span class="n">qsar_regression_report</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">))</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="o">.</span><span class="n">to_markdown</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">&#39;# Quick-start model&#39;</span>
+</pre></div>
+</div>
+<p>The same report renders as plain text, Markdown, HTML, JSON and PDF. See
+<a class="reference internal" href="oecd.html"><span class="doc">OECD validation</span></a> for the regulator-facing version.</p>
+</section>
+<section id="the-same-thing-as-a-pipe">
+<h2>The same thing, as a pipe<a class="headerlink" href="#the-same-thing-as-a-pipe" title="Link to this heading">¶</a></h2>
+<p>Every step above has a functional equivalent, and they compose:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">drop_invalid</span><span class="p">,</span> <span class="n">fingerprint</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">molecules</span><span class="p">,</span> <span class="n">split</span><span class="p">,</span> <span class="n">standardize</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_set</span><span class="p">,</span> <span class="n">test_set</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">standardize</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">drop_invalid</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">fingerprint</span><span class="p">(</span><span class="s2">&quot;morgan&quot;</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">split</span><span class="p">(</span><span class="s2">&quot;scaffold&quot;</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">train_set</span> <span class="o">&gt;&gt;</span> <span class="n">fit</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_set</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(6,)</span>
+</pre></div>
+</div>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="curation.html"><span class="doc">Curation</span></a> — why the first stage decides the rest</p></li>
+<li><p><a class="reference internal" href="modeling.html"><span class="doc">Modeling</span></a> — splitters, backends and honest evaluation</p></li>
+<li><p><a class="reference internal" href="applicability.html"><span class="doc">Applicability domain</span></a> — where a model may be trusted</p></li>
+<li><p><a class="reference internal" href="oecd.html"><span class="doc">OECD validation</span></a> — validating and reporting for regulatory use</p></li>
+</ul>
 </section>
 </section>
 
@@ -374,7 +445,7 @@ measures what you actually care about: generalization to new chemistry.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-10</div>
           </div>
           <div class="right-details">
             
@@ -401,6 +472,9 @@ measures what you actually care about: generalization to new chemistry.</p>
 <li><a class="reference internal" href="#model-with-a-scaffold-split">Model, with a scaffold split</a></li>
 <li><a class="reference internal" href="#check-the-applicability-domain">Check the applicability domain</a></li>
 <li><a class="reference internal" href="#interpret-the-sar">Interpret the SAR</a></li>
+<li><a class="reference internal" href="#report-it">Report it</a></li>
+<li><a class="reference internal" href="#the-same-thing-as-a-pipe">The same thing, as a pipe</a></li>
+<li><a class="reference internal" href="#next-steps">Next steps</a></li>
 </ul>
 </li>
 </ul>

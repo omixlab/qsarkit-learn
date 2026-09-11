@@ -1,20 +1,59 @@
 The functional pipe API
 =======================
 
-A second way to write a curation workflow, reading in the order the work
-happens — in the spirit of R's ``%>%``:
+A second way to write the workflow, reading in the order the work
+happens — in the spirit of R's ``%>%``. It reaches the whole package, not
+just curation: :func:`~qsarkit.functional.featurize` takes any
+transformer and :func:`~qsarkit.functional.fit` any estimator, so the
+pipe is a way of *writing* the workflow rather than a reimplementation of
+part of it.
 
-.. code-block:: python
+:func:`~qsarkit.functional.molecules` accepts RDKit molecules, SMILES and
+InChI in any mixture:
 
-   from qsarkit.functional import *
+.. doctest::
 
-   X, y = (
-       molecules(smiles, activities)
-       >> desalt()
-       >> deglycate(keep_originals=True)
-       >> remove_duplicates(agg="mean")
-       >> balance()
-   )
+   >>> from qsarkit.functional import (
+   ...     drop_invalid, fingerprint, fit, molecules, remove_duplicates,
+   ...     split, standardize)
+   >>> mols, y = (
+   ...     molecules(DEMO_SMILES, DEMO_Y)
+   ...     >> standardize()
+   ...     >> drop_invalid()
+   ...     >> remove_duplicates(agg="mean")
+   ... )
+   >>> len(mols), len(y)
+   (24, 24)
+
+A pipeline crosses from molecules into a feature matrix at
+:func:`~qsarkit.functional.featurize`, and can run all the way to a
+fitted model:
+
+.. doctest::
+
+   >>> train, test = (
+   ...     molecules(DEMO_SMILES, DEMO_Y)
+   ...     >> standardize()
+   ...     >> drop_invalid()
+   ...     >> fingerprint("morgan", n_bits=512)
+   ...     >> split("scaffold", test_size=0.25)
+   ... )
+   >>> model = train >> fit("rf", random_state=0)
+   >>> model.predict(test.X).shape
+   (6,)
+
+Drawing it is the quickest way to confirm the stages are in the order you
+meant:
+
+.. doctest::
+
+   >>> pipe = standardize() >> drop_invalid() >> fingerprint() >> fit("rf")
+   >>> type(pipe.plot()).__name__
+   'Figure'
+   >>> print(pipe.to_dot().splitlines()[0])
+   digraph qsarkit_pipeline {
+
+``pipe.render("workflow.pdf")`` writes PNG, PDF or SVG.
 
 :func:`~qsarkit.functional.molecules` returns a
 :class:`~qsarkit.functional.MoleculeSet` carrying the molecules, the

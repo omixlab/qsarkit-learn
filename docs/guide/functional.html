@@ -275,19 +275,52 @@
         <article role="main" id="furo-main-content">
           <section id="the-functional-pipe-api">
 <h1>The functional pipe API<a class="headerlink" href="#the-functional-pipe-api" title="Link to this heading">¶</a></h1>
-<p>A second way to write a curation workflow, reading in the order the work
-happens — in the spirit of R’s <code class="docutils literal notranslate"><span class="pre">%&gt;%</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
-
-<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">molecules</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">activities</span><span class="p">)</span>
-    <span class="o">&gt;&gt;</span> <span class="n">desalt</span><span class="p">()</span>
-    <span class="o">&gt;&gt;</span> <span class="n">deglycate</span><span class="p">(</span><span class="n">keep_originals</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="o">&gt;&gt;</span> <span class="n">remove_duplicates</span><span class="p">(</span><span class="n">agg</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
-    <span class="o">&gt;&gt;</span> <span class="n">balance</span><span class="p">()</span>
-<span class="p">)</span>
+<p>A second way to write the workflow, reading in the order the work
+happens — in the spirit of R’s <code class="docutils literal notranslate"><span class="pre">%&gt;%</span></code>. It reaches the whole package, not
+just curation: <a class="reference internal" href="../api/functional.html#qsarkit.functional.featurize" title="qsarkit.functional.featurize"><code class="xref py py-func docutils literal notranslate"><span class="pre">featurize()</span></code></a> takes any
+transformer and <a class="reference internal" href="../api/functional.html#qsarkit.functional.fit" title="qsarkit.functional.fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit()</span></code></a> any estimator, so the
+pipe is a way of <em>writing</em> the workflow rather than a reimplementation of
+part of it.</p>
+<p><a class="reference internal" href="../api/functional.html#qsarkit.functional.molecules" title="qsarkit.functional.molecules"><code class="xref py py-func docutils literal notranslate"><span class="pre">molecules()</span></code></a> accepts RDKit molecules, SMILES and
+InChI in any mixture:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">drop_invalid</span><span class="p">,</span> <span class="n">fingerprint</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">molecules</span><span class="p">,</span> <span class="n">remove_duplicates</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">split</span><span class="p">,</span> <span class="n">standardize</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">standardize</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">drop_invalid</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">remove_duplicates</span><span class="p">(</span><span class="n">agg</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">mols</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">(24, 24)</span>
 </pre></div>
 </div>
+<p>A pipeline crosses from molecules into a feature matrix at
+<a class="reference internal" href="../api/functional.html#qsarkit.functional.featurize" title="qsarkit.functional.featurize"><code class="xref py py-func docutils literal notranslate"><span class="pre">featurize()</span></code></a>, and can run all the way to a
+fitted model:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">standardize</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">drop_invalid</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">fingerprint</span><span class="p">(</span><span class="s2">&quot;morgan&quot;</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">split</span><span class="p">(</span><span class="s2">&quot;scaffold&quot;</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">train</span> <span class="o">&gt;&gt;</span> <span class="n">fit</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(6,)</span>
+</pre></div>
+</div>
+<p>Drawing it is the quickest way to confirm the stages are in the order you
+meant:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pipe</span> <span class="o">=</span> <span class="n">standardize</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">drop_invalid</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">fingerprint</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">fit</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span><span class="o">.</span><span class="vm">__name__</span>
+<span class="go">&#39;Figure&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">pipe</span><span class="o">.</span><span class="n">to_dot</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">digraph qsarkit_pipeline {</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">pipe.render(&quot;workflow.pdf&quot;)</span></code> writes PNG, PDF or SVG.</p>
 <p><a class="reference internal" href="../api/functional.html#qsarkit.functional.molecules" title="qsarkit.functional.molecules"><code class="xref py py-func docutils literal notranslate"><span class="pre">molecules()</span></code></a> returns a
 <a class="reference internal" href="../api/functional.html#qsarkit.functional.MoleculeSet" title="qsarkit.functional.MoleculeSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoleculeSet</span></code></a> carrying the molecules, the
 optional labels, and a provenance log. Each step consumes one and returns
@@ -479,7 +512,7 @@ for R.” <a class="reference external" href="https://CRAN.R-project.org/package
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-10</div>
           </div>
           <div class="right-details">
             

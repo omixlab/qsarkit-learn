@@ -52,19 +52,16 @@ Learned embeddings
 
 Requires the ``embeddings`` and ``nlp`` extras respectively.
 
-Graph neural networks
----------------------
+.. note::
 
-.. code-block:: python
-
-   from qsarkit.representation.graph_models import DMPNNTransformer
-
-   model = DMPNNTransformer(hidden_dim=300, epochs=30)
-   model.fit(train_mols, y_train)          # supervised
-   embeddings = model.transform(test_mols)
-
-Implemented in pure PyTorch (no ``torch_geometric`` needed): MPNN, D-MPNN
-(Chemprop), GCN, GAT and SchNet. Requires the ``graph`` extra.
+   Graph neural network representations (MPNN, D-MPNN, GCN, GAT, SchNet)
+   are **not** included. They are a different engineering problem —
+   training loops, GPU management, batching — and shipping a half-hearted
+   version would be worse than pointing at the projects that do it
+   properly. Use `Chemprop <https://github.com/chemprop/chemprop>`_ or
+   `DeepChem <https://deepchem.io>`_, and bring the learned embeddings
+   back here as a plain feature matrix: everything downstream in qsarkit
+   takes an array.
 
 Composing
 ---------
