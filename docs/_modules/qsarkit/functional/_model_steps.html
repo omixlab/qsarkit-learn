@@ -1,0 +1,1494 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>qsarkit.functional._model_steps - qsarkit 0.2</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">qsarkit 0.2</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../guide/index.html">User guide</a><input aria-label="Toggle navigation of User guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/quickstart.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/functional.html">The functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/curation.html">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/oecd.html">OECD validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/base.html">Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemistry.html">Chemistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/functional.html">Functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/data_quality.html">Data quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/transform.html">Transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/neighbors.html">Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cluster.html">Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/feature_selection.html">Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_selection.html">Model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/validation.html">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/explainability.html">Explainability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemspace.html">Chemical space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for qsarkit.functional._model_steps</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Modelling steps for the functional pipe API.</span>
+
+<span class="sd">Where :mod:`qsarkit.functional._steps` curates molecules, these steps</span>
+<span class="sd">carry a pipeline through the rest of the QSAR workflow: featurization,</span>
+<span class="sd">scaling, feature selection, splitting, model fitting, cross-validation</span>
+<span class="sd">and applicability domain.</span>
+
+<span class="sd">The point is that one notation reaches the whole package. Any qsarkit (or</span>
+<span class="sd">scikit-learn) transformer can be dropped into :func:`featurize`, any</span>
+<span class="sd">selector into :func:`select_features`, any estimator into :func:`fit` --</span>
+<span class="sd">so the pipe is a way of *writing* the workflow, not a reimplementation of</span>
+<span class="sd">it, and nothing in the library is out of its reach.</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+<span class="sd">&gt;&gt;&gt; from qsarkit.functional import *</span>
+<span class="sd">&gt;&gt;&gt; from qsarkit.representation import MorganFingerprint</span>
+<span class="sd">&gt;&gt;&gt; result = (</span>
+<span class="sd">...     molecules(DEMO_SMILES, DEMO_Y)             # doctest: +SKIP</span>
+<span class="sd">...     &gt;&gt; standardize()</span>
+<span class="sd">...     &gt;&gt; drop_invalid()</span>
+<span class="sd">...     &gt;&gt; remove_duplicates(agg=&quot;mean&quot;)</span>
+<span class="sd">...     &gt;&gt; featurize(MorganFingerprint(n_bits=512))</span>
+<span class="sd">...     &gt;&gt; select_features(k=64)</span>
+<span class="sd">...     &gt;&gt; fit(&quot;rf&quot;)</span>
+<span class="sd">... )</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional._core</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FeatureSet</span><span class="p">,</span>
+    <span class="n">MoleculeSet</span><span class="p">,</span>
+    <span class="n">PipeStep</span><span class="p">,</span>
+    <span class="n">feature_step</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;featurize&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;describe&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fingerprint&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;scale&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;impute&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;select_features&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;drop_correlated&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;drop_constant&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;split&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fit&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cross_validate&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;applicability_domain&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;collect&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">_FeaturePayload</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span>
+    <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_feature_names</span><span class="p">(</span><span class="n">transformer</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">n_columns</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Column names from a transformer, or ``None`` if it does not provide them.&quot;&quot;&quot;</span>
+    <span class="n">getter</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="s2">&quot;get_feature_names_out&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">getter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">getter</span><span class="p">()]</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">names</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_columns</span> <span class="k">else</span> <span class="kc">None</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Featurize</span><span class="p">(</span><span class="n">PipeStep</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The transition step: molecules in, feature matrix out.</span>
+
+<span class="sd">    Wraps any transformer with a scikit-learn ``fit``/``transform``</span>
+<span class="sd">    interface -- every class in :mod:`qsarkit.representation`, and</span>
+<span class="sd">    equally a plain scikit-learn transformer or a</span>
+<span class="sd">    :class:`sklearn.pipeline.Pipeline` -- so the pipe inherits the whole</span>
+<span class="sd">    representation catalogue instead of duplicating it.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    transformer : object</span>
+<span class="sd">        Anything implementing ``transform(mols)``. ``fit`` is called</span>
+<span class="sd">        first when the transformer has one, so learned representations</span>
+<span class="sd">        (Mol2Vec, a fitted vocabulary) work unchanged.</span>
+<span class="sd">    keep_mols : bool, default True</span>
+<span class="sd">        Keep the molecules alongside the matrix, so a later step can</span>
+<span class="sd">        still reach the chemistry (an applicability domain on Tanimoto</span>
+<span class="sd">        distance, a scaffold split, an atom-level explanation).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;transformer&quot;</span><span class="p">,</span> <span class="s2">&quot;keep_mols&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformer</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">keep_mols</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;featurize&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;transformer&quot;</span><span class="p">:</span> <span class="n">transformer</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keep_mols</span> <span class="o">=</span> <span class="n">keep_mols</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_describe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_before</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;featurize(</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Featurize a :class:`MoleculeSet` (or a raw molecule list).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">FeatureSet</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;featurize() works on molecules, but it received a &quot;</span>
+                <span class="s2">&quot;FeatureSet -- the pipeline has already been featurized.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">molecule_set</span> <span class="o">=</span> <span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">MoleculeSet</span><span class="p">)</span> <span class="k">else</span> <span class="n">MoleculeSet</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">molecule_set</span><span class="o">.</span><span class="n">mols</span><span class="p">):</span>
+            <span class="n">n_bad</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">molecule_set</span><span class="o">.</span><span class="n">mols</span> <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Cannot featurize: </span><span class="si">{</span><span class="n">n_bad</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">molecule_set</span><span class="p">)</span><span class="si">}</span><span class="s2"> entries are &quot;</span>
+                <span class="s2">&quot;None (they failed parsing or curation). Add a drop_invalid() &quot;</span>
+                <span class="s2">&quot;step before featurize() to remove them, which drops the &quot;</span>
+                <span class="s2">&quot;matching labels too.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">transformer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="s2">&quot;fit&quot;</span><span class="p">):</span>
+            <span class="n">transformer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">molecule_set</span><span class="o">.</span><span class="n">mols</span><span class="p">,</span> <span class="n">molecule_set</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">molecule_set</span><span class="o">.</span><span class="n">mols</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">FeatureSet</span><span class="p">(</span>
+            <span class="n">X</span><span class="p">,</span>
+            <span class="n">molecule_set</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">molecule_set</span><span class="o">.</span><span class="n">mols</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_mols</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">history</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">molecule_set</span><span class="o">.</span><span class="n">history</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_describe</span><span class="p">()],</span>
+            <span class="n">feature_names</span><span class="o">=</span><span class="n">_feature_names</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="featurize">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.featurize">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">featurize</span><span class="p">(</span><span class="n">transformer</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">keep_mols</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeStep</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Turn molecules into a feature matrix, crossing into the modelling half.</span>
+
+<span class="sd">    This is the hinge of the functional API. Everything before it works</span>
+<span class="sd">    on molecules; everything after it works on a matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    transformer : object</span>
+<span class="sd">        Any transformer with ``transform(mols)`` -- typically one from</span>
+<span class="sd">        :mod:`qsarkit.representation`, but a scikit-learn</span>
+<span class="sd">        :class:`~sklearn.pipeline.Pipeline` or</span>
+<span class="sd">        :class:`~sklearn.pipeline.FeatureUnion` of them works too.</span>
+<span class="sd">    keep_mols : bool, default True</span>
+<span class="sd">        Keep the molecules alongside the matrix for later steps.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PipeStep</span>
+<span class="sd">        A step producing a :class:`~qsarkit.functional.FeatureSet`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import featurize, molecules</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.representation import MorganFingerprint</span>
+<span class="sd">    &gt;&gt;&gt; fs = molecules([&quot;CCO&quot;, &quot;c1ccccc1&quot;], [1.0, 2.0]) &gt;&gt; featurize(</span>
+<span class="sd">    ...     MorganFingerprint(n_bits=128))</span>
+<span class="sd">    &gt;&gt;&gt; fs.shape</span>
+<span class="sd">    (2, 128)</span>
+
+<span class="sd">    Because it takes any transformer, combining representations needs no</span>
+<span class="sd">    new syntax:</span>
+
+<span class="sd">    &gt;&gt;&gt; from qsarkit.representation import FingerprintCombiner, MACCSKeysFingerprint</span>
+<span class="sd">    &gt;&gt;&gt; combined = FingerprintCombiner([</span>
+<span class="sd">    ...     (&quot;morgan&quot;, MorganFingerprint(n_bits=128)),</span>
+<span class="sd">    ...     (&quot;maccs&quot;, MACCSKeysFingerprint()),</span>
+<span class="sd">    ... ])</span>
+<span class="sd">    &gt;&gt;&gt; (molecules([&quot;CCO&quot;, &quot;c1ccccc1&quot;]) &gt;&gt; featurize(combined)).shape</span>
+<span class="sd">    (2, 295)</span>
+
+<span class="sd">    Invalid molecules are refused rather than silently producing junk</span>
+<span class="sd">    rows, because a ``None`` here would break the alignment with ``y``</span>
+<span class="sd">    that the rest of the pipe maintains:</span>
+
+<span class="sd">    &gt;&gt;&gt; molecules([&quot;CCO&quot;, &quot;not-a-molecule&quot;]) &gt;&gt; featurize(MorganFingerprint())</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    ValueError: Cannot featurize: 1 of 2 entries are None...</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Pedregosa et al. (2011). &quot;Scikit-learn: Machine Learning in</span>
+<span class="sd">      Python.&quot; JMLR, 12, 2825-2830.</span>
+<span class="sd">      https://jmlr.org/papers/v12/pedregosa11a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_Featurize</span><span class="p">(</span><span class="n">transformer</span><span class="p">,</span> <span class="n">keep_mols</span><span class="o">=</span><span class="n">keep_mols</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="fingerprint">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.fingerprint">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fingerprint</span><span class="p">(</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;morgan&quot;</span><span class="p">,</span> <span class="n">keep_mols</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeStep</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Featurize with a named fingerprint, for the common case.</span>
+
+<span class="sd">    A shorthand for ``featurize(MorganFingerprint(...))`` and friends,</span>
+<span class="sd">    so a quick pipeline does not need a second import.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kind : {&quot;morgan&quot;, &quot;ecfp&quot;, &quot;fcfp&quot;, &quot;rdkit&quot;, &quot;maccs&quot;, &quot;atom_pair&quot;, \</span>
+<span class="sd">&quot;topological_torsion&quot;, &quot;avalon&quot;, &quot;pattern&quot;, &quot;layered&quot;}, default &quot;morgan&quot;</span>
+<span class="sd">        Which fingerprint to compute. ``&quot;ecfp&quot;`` is an alias for</span>
+<span class="sd">        ``&quot;morgan&quot;``; ``&quot;fcfp&quot;`` selects the feature-based variant.</span>
+<span class="sd">    keep_mols : bool, default True</span>
+<span class="sd">        Keep the molecules alongside the matrix, as for :func:`featurize`.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Passed to the underlying transformer (``n_bits``, ``radius``, ...).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PipeStep</span>
+<span class="sd">        A step producing a :class:`~qsarkit.functional.FeatureSet`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import fingerprint, molecules</span>
+<span class="sd">    &gt;&gt;&gt; (molecules([&quot;CCO&quot;, &quot;c1ccccc1&quot;]) &gt;&gt; fingerprint(&quot;morgan&quot;, n_bits=64)).shape</span>
+<span class="sd">    (2, 64)</span>
+<span class="sd">    &gt;&gt;&gt; (molecules([&quot;CCO&quot;]) &gt;&gt; fingerprint(&quot;maccs&quot;)).shape</span>
+<span class="sd">    (1, 167)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Rogers, D. &amp; Hahn, M. (2010). &quot;Extended-Connectivity Fingerprints.&quot;</span>
+<span class="sd">      J. Chem. Inf. Model., 50(5), 742-754.</span>
+<span class="sd">      https://doi.org/10.1021/ci100050t</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">representation</span> <span class="k">as</span> <span class="n">rep</span>
+
+    <span class="n">registry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;morgan&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">MorganFingerprint</span><span class="p">,</span>
+        <span class="s2">&quot;ecfp&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">MorganFingerprint</span><span class="p">,</span>
+        <span class="s2">&quot;fcfp&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">FeatureMorganFingerprint</span><span class="p">,</span>
+        <span class="s2">&quot;rdkit&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">RDKitFingerprint</span><span class="p">,</span>
+        <span class="s2">&quot;maccs&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">MACCSKeysFingerprint</span><span class="p">,</span>
+        <span class="s2">&quot;atom_pair&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">AtomPairFingerprint</span><span class="p">,</span>
+        <span class="s2">&quot;topological_torsion&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">TopologicalTorsionFingerprint</span><span class="p">,</span>
+        <span class="s2">&quot;avalon&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">AvalonFingerprint</span><span class="p">,</span>
+        <span class="s2">&quot;pattern&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">PatternFingerprint</span><span class="p">,</span>
+        <span class="s2">&quot;layered&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">LayeredFingerprint</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">registry</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown fingerprint </span><span class="si">{</span><span class="n">kind</span><span class="si">!r}</span><span class="s2">. Choose from </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">registry</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_Featurize</span><span class="p">(</span><span class="n">registry</span><span class="p">[</span><span class="n">kind</span><span class="p">](</span><span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">keep_mols</span><span class="o">=</span><span class="n">keep_mols</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="describe">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.describe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">describe</span><span class="p">(</span>
+    <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;physicochemical&quot;</span><span class="p">,</span> <span class="n">keep_mols</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeStep</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Featurize with a named descriptor block.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kind : {&quot;physicochemical&quot;, &quot;rdkit&quot;, &quot;constitutional&quot;, &quot;lipinski&quot;, \</span>
+<span class="sd">&quot;fragment&quot;, &quot;3d&quot;}, default &quot;physicochemical&quot;</span>
+<span class="sd">        Which descriptor set to compute.</span>
+<span class="sd">    keep_mols : bool, default True</span>
+<span class="sd">        Keep the molecules alongside the matrix, as for :func:`featurize`.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Passed to the underlying transformer.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PipeStep</span>
+<span class="sd">        A step producing a :class:`~qsarkit.functional.FeatureSet`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import describe, molecules</span>
+<span class="sd">    &gt;&gt;&gt; fs = molecules([&quot;CCO&quot;, &quot;c1ccccc1&quot;]) &gt;&gt; describe(&quot;lipinski&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; fs.feature_names is not None</span>
+<span class="sd">    True</span>
+
+<span class="sd">    Descriptors are continuous and on wildly different scales (molecular</span>
+<span class="sd">    weight in the hundreds, logP in single digits), so they almost always</span>
+<span class="sd">    want a :func:`scale` step before a distance-based model:</span>
+
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import scale</span>
+<span class="sd">    &gt;&gt;&gt; (molecules([&quot;CCO&quot;, &quot;c1ccccc1&quot;, &quot;CCN&quot;]) &gt;&gt; describe() &gt;&gt; scale()).shape</span>
+<span class="sd">    (3, 9)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Todeschini, R. &amp; Consonni, V. (2009). &quot;Molecular Descriptors for</span>
+<span class="sd">      Chemoinformatics.&quot; Wiley. https://doi.org/10.1002/9783527628766</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">representation</span> <span class="k">as</span> <span class="n">rep</span>
+
+    <span class="n">registry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;physicochemical&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">PhysicochemicalDescriptors</span><span class="p">,</span>
+        <span class="s2">&quot;rdkit&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">RDKitDescriptors</span><span class="p">,</span>
+        <span class="s2">&quot;constitutional&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">ConstitutionalDescriptors</span><span class="p">,</span>
+        <span class="s2">&quot;lipinski&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">LipinskiDescriptors</span><span class="p">,</span>
+        <span class="s2">&quot;fragment&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">FragmentDescriptors</span><span class="p">,</span>
+        <span class="s2">&quot;3d&quot;</span><span class="p">:</span> <span class="n">rep</span><span class="o">.</span><span class="n">Descriptors3D</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">registry</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown descriptor set </span><span class="si">{</span><span class="n">kind</span><span class="si">!r}</span><span class="s2">. Choose from </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">registry</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_Featurize</span><span class="p">(</span><span class="n">registry</span><span class="p">[</span><span class="n">kind</span><span class="p">](</span><span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">keep_mols</span><span class="o">=</span><span class="n">keep_mols</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># ---------------------------------------------------------------- matrix ----</span>
+
+
+<div class="viewcode-block" id="scale">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.scale">[docs]</a>
+<span class="nd">@feature_step</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">scale</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;standard&quot;</span><span class="p">,</span> <span class="s2">&quot;minmax&quot;</span><span class="p">,</span> <span class="s2">&quot;robust&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_FeaturePayload</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Scale the feature matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : ndarray</span>
+<span class="sd">        Feature matrix.</span>
+<span class="sd">    y : ndarray, optional</span>
+<span class="sd">        Labels, passed through untouched.</span>
+<span class="sd">    mols : list of Mol, optional</span>
+<span class="sd">        Molecules, passed through untouched.</span>
+<span class="sd">    method : {&quot;standard&quot;, &quot;minmax&quot;, &quot;robust&quot;, &quot;none&quot;}, default &quot;standard&quot;</span>
+<span class="sd">        ``&quot;standard&quot;`` centres and scales to unit variance,</span>
+<span class="sd">        ``&quot;robust&quot;`` uses the median and IQR (resistant to the outliers</span>
+<span class="sd">        that descriptor blocks routinely contain), ``&quot;minmax&quot;`` maps onto</span>
+<span class="sd">        [0, 1], and ``&quot;none&quot;`` is a no-op for parametrized pipelines.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        ``(X, y, mols)``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Scaling inside a pipe like this fits on whatever data is flowing</span>
+<span class="sd">    through it. That is correct for a single curated dataset, but if you</span>
+<span class="sd">    are holding out a test set, scale *after* :func:`split` or inside a</span>
+<span class="sd">    :class:`sklearn.pipeline.Pipeline` given to :func:`cross_validate` --</span>
+<span class="sd">    otherwise the test set&#39;s statistics leak into the transform.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import describe, molecules, scale</span>
+<span class="sd">    &gt;&gt;&gt; fs = molecules([&quot;CCO&quot;, &quot;c1ccccc1&quot;, &quot;CCN&quot;]) &gt;&gt; describe() &gt;&gt; scale(&quot;robust&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; fs.shape</span>
+<span class="sd">    (3, 9)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Pedregosa et al. (2011). &quot;Scikit-learn: Machine Learning in</span>
+<span class="sd">      Python.&quot; JMLR, 12, 2825-2830.</span>
+<span class="sd">      https://jmlr.org/papers/v12/pedregosa11a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mols</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinMaxScaler</span><span class="p">,</span> <span class="n">RobustScaler</span><span class="p">,</span> <span class="n">StandardScaler</span>
+
+    <span class="n">scalers</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;standard&quot;</span><span class="p">:</span> <span class="n">StandardScaler</span><span class="p">,</span>
+        <span class="s2">&quot;minmax&quot;</span><span class="p">:</span> <span class="n">MinMaxScaler</span><span class="p">,</span>
+        <span class="s2">&quot;robust&quot;</span><span class="p">:</span> <span class="n">RobustScaler</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">scalers</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown scaling method </span><span class="si">{</span><span class="n">method</span><span class="si">!r}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Choose from </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">scalers</span><span class="p">)</span><span class="si">}</span><span class="s2"> or &#39;none&#39;.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">scalers</span><span class="p">[</span><span class="n">method</span><span class="p">]()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">y</span><span class="p">,</span> <span class="n">mols</span></div>
+
+
+
+<div class="viewcode-block" id="impute">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.impute">[docs]</a>
+<span class="nd">@feature_step</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">impute</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">strategy</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span> <span class="s2">&quot;most_frequent&quot;</span><span class="p">,</span> <span class="s2">&quot;zero&quot;</span><span class="p">,</span> <span class="s2">&quot;drop&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_FeaturePayload</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fill or remove non-finite values in the feature matrix.</span>
+
+<span class="sd">    Descriptor calculators emit NaN for undefined quantities (a 3D</span>
+<span class="sd">    descriptor on a molecule with no conformer, a ratio with a zero</span>
+<span class="sd">    denominator), and most estimators refuse to fit on them.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : ndarray</span>
+<span class="sd">        Feature matrix.</span>
+<span class="sd">    y : ndarray, optional</span>
+<span class="sd">        Labels; subset alongside ``X`` when ``strategy=&quot;drop&quot;``.</span>
+<span class="sd">    mols : list of Mol, optional</span>
+<span class="sd">        Molecules; subset alongside ``X`` when ``strategy=&quot;drop&quot;``.</span>
+<span class="sd">    strategy : {&quot;mean&quot;, &quot;median&quot;, &quot;most_frequent&quot;, &quot;zero&quot;, &quot;drop&quot;}, default &quot;median&quot;</span>
+<span class="sd">        How to handle them. ``&quot;drop&quot;`` removes offending *rows* (and the</span>
+<span class="sd">        matching labels and molecules); the others fill column-wise.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        ``(X, y, mols)``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import impute</span>
+<span class="sd">    &gt;&gt;&gt; X = np.array([[1.0, np.nan], [3.0, 4.0], [5.0, 6.0]])</span>
+<span class="sd">    &gt;&gt;&gt; filled, _, _ = impute(X, strategy=&quot;median&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; float(filled[0, 1])</span>
+<span class="sd">    5.0</span>
+
+<span class="sd">    Dropping instead keeps labels aligned with the surviving rows:</span>
+
+<span class="sd">    &gt;&gt;&gt; kept, y, _ = impute(X, np.array([1.0, 2.0, 3.0]), strategy=&quot;drop&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; kept.shape, y.tolist()</span>
+<span class="sd">    ((2, 2), [2.0, 3.0])</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Pedregosa et al. (2011). &quot;Scikit-learn: Machine Learning in</span>
+<span class="sd">      Python.&quot; JMLR, 12, 2825-2830.</span>
+<span class="sd">      https://jmlr.org/papers/v12/pedregosa11a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">finite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">finite</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">mols</span>
+
+    <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;drop&quot;</span><span class="p">:</span>
+        <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">finite</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">X</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">y</span><span class="p">[</span><span class="n">keep</span><span class="p">],</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="n">mols</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">mols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">keep</span><span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;zero&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">finite</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">mols</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.impute</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleImputer</span>
+
+    <span class="k">if</span> <span class="n">strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span> <span class="s2">&quot;most_frequent&quot;</span><span class="p">}:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown imputation strategy </span><span class="si">{</span><span class="n">strategy</span><span class="si">!r}</span><span class="s2">. Choose from &quot;</span>
+            <span class="s2">&quot;&#39;mean&#39;, &#39;median&#39;, &#39;most_frequent&#39;, &#39;zero&#39; or &#39;drop&#39;.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">cleaned</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">finite</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+    <span class="n">imputed</span> <span class="o">=</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span>
+    <span class="c1"># SimpleImputer drops all-NaN columns; restore them as zeros so the</span>
+    <span class="c1"># matrix keeps its width and feature names stay meaningful.</span>
+    <span class="k">if</span> <span class="n">imputed</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">kept</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">out</span><span class="p">[:,</span> <span class="n">kept</span><span class="p">]</span> <span class="o">=</span> <span class="n">imputed</span>
+        <span class="n">imputed</span> <span class="o">=</span> <span class="n">out</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">imputed</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">mols</span></div>
+
+
+
+<div class="viewcode-block" id="drop_constant">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.drop_constant">[docs]</a>
+<span class="nd">@feature_step</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">drop_constant</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_FeaturePayload</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove features whose variance is at or below ``threshold``.</span>
+
+<span class="sd">    A bit that is set in every molecule, or in none, cannot separate</span>
+<span class="sd">    them. Fingerprint blocks are mostly this: a 2048-bit Morgan</span>
+<span class="sd">    fingerprint over a few hundred compounds typically has fewer than</span>
+<span class="sd">    300 columns that vary at all.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : ndarray</span>
+<span class="sd">        Feature matrix.</span>
+<span class="sd">    y : ndarray, optional</span>
+<span class="sd">        Labels, passed through untouched.</span>
+<span class="sd">    mols : list of Mol, optional</span>
+<span class="sd">        Molecules, passed through untouched.</span>
+<span class="sd">    threshold : float, default 0.0</span>
+<span class="sd">        Variance at or below which a column is dropped.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        ``(X, y, mols)``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import drop_constant</span>
+<span class="sd">    &gt;&gt;&gt; X = np.array([[1.0, 5.0], [2.0, 5.0], [3.0, 5.0]])</span>
+<span class="sd">    &gt;&gt;&gt; reduced, _, _ = drop_constant(X)</span>
+<span class="sd">    &gt;&gt;&gt; reduced.shape</span>
+<span class="sd">    (3, 1)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Pedregosa et al. (2011). &quot;Scikit-learn: Machine Learning in</span>
+<span class="sd">      Python.&quot; JMLR, 12, 2825-2830.</span>
+<span class="sd">      https://jmlr.org/papers/v12/pedregosa11a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">VarianceFilter</span>
+
+    <span class="n">selector</span> <span class="o">=</span> <span class="n">VarianceFilter</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">selector</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">y</span><span class="p">,</span> <span class="n">mols</span></div>
+
+
+
+<div class="viewcode-block" id="drop_correlated">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.drop_correlated">[docs]</a>
+<span class="nd">@feature_step</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">drop_correlated</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;pearson&quot;</span><span class="p">,</span> <span class="s2">&quot;spearman&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;pearson&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_FeaturePayload</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove one of every pair of features correlated above ``threshold``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : ndarray</span>
+<span class="sd">        Feature matrix.</span>
+<span class="sd">    y : ndarray, optional</span>
+<span class="sd">        Labels, passed through untouched.</span>
+<span class="sd">    mols : list of Mol, optional</span>
+<span class="sd">        Molecules, passed through untouched.</span>
+<span class="sd">    threshold : float, default 0.95</span>
+<span class="sd">        Absolute correlation above which one of the pair is dropped.</span>
+<span class="sd">    method : {&quot;pearson&quot;, &quot;spearman&quot;}, default &quot;pearson&quot;</span>
+<span class="sd">        Correlation coefficient to use.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        ``(X, y, mols)``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import drop_correlated</span>
+<span class="sd">    &gt;&gt;&gt; X = np.array([[1.0, 2.0, 9.0], [2.0, 4.0, 1.0], [3.0, 6.0, 5.0]])</span>
+<span class="sd">    &gt;&gt;&gt; reduced, _, _ = drop_correlated(X, threshold=0.99)</span>
+<span class="sd">    &gt;&gt;&gt; reduced.shape                # columns 0 and 1 are perfectly correlated</span>
+<span class="sd">    (3, 2)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Todeschini, R. &amp; Consonni, V. (2009). &quot;Molecular Descriptors for</span>
+<span class="sd">      Chemoinformatics.&quot; Wiley. https://doi.org/10.1002/9783527628766</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">CorrelationFilter</span>
+
+    <span class="n">selector</span> <span class="o">=</span> <span class="n">CorrelationFilter</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">selector</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)),</span> <span class="n">y</span><span class="p">,</span> <span class="n">mols</span></div>
+
+
+
+<div class="viewcode-block" id="select_features">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.select_features">[docs]</a>
+<span class="nd">@feature_step</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">select_features</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;mutual_info&quot;</span><span class="p">,</span> <span class="s2">&quot;rfe&quot;</span><span class="p">,</span> <span class="s2">&quot;boruta&quot;</span><span class="p">,</span> <span class="s2">&quot;variance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;mutual_info&quot;</span><span class="p">,</span>
+    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">task</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;regression&quot;</span><span class="p">,</span> <span class="s2">&quot;classification&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;regression&quot;</span><span class="p">,</span>
+    <span class="n">estimator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_FeaturePayload</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select the ``k`` most informative features.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : ndarray</span>
+<span class="sd">        Feature matrix.</span>
+<span class="sd">    y : ndarray</span>
+<span class="sd">        Labels. Required for every method except ``&quot;variance&quot;``.</span>
+<span class="sd">    mols : list of Mol, optional</span>
+<span class="sd">        Molecules, passed through untouched.</span>
+<span class="sd">    method : {&quot;mutual_info&quot;, &quot;rfe&quot;, &quot;boruta&quot;, &quot;variance&quot;}, default &quot;mutual_info&quot;</span>
+<span class="sd">        Selection strategy, from :mod:`qsarkit.feature_selection`.</span>
+<span class="sd">    k : int, default 20</span>
+<span class="sd">        Number of features to keep. Ignored by ``&quot;variance&quot;``, and by</span>
+<span class="sd">        ``&quot;boruta&quot;``, which determines the count itself.</span>
+<span class="sd">    task : {&quot;regression&quot;, &quot;classification&quot;}, default &quot;regression&quot;</span>
+<span class="sd">        Whether ``y`` is continuous or categorical. Chooses the</span>
+<span class="sd">        underlying scoring function.</span>
+<span class="sd">    estimator : object, optional</span>
+<span class="sd">        Base estimator for ``&quot;rfe&quot;`` and ``&quot;boruta&quot;``.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Passed to the underlying selector.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        ``(X, y, mols)``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Selecting features on the full dataset and *then* splitting is</span>
+<span class="sd">    selection bias: the choice of columns has already seen the test</span>
+<span class="sd">    labels, and the held-out score is optimistic. Put this step after</span>
+<span class="sd">    :func:`split`, or inside a pipeline handed to :func:`cross_validate`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import select_features</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; X = rng.normal(size=(30, 10))</span>
+<span class="sd">    &gt;&gt;&gt; y = X[:, 0] * 2 + rng.normal(scale=0.1, size=30)</span>
+<span class="sd">    &gt;&gt;&gt; reduced, _, _ = select_features(X, y, k=3)</span>
+<span class="sd">    &gt;&gt;&gt; reduced.shape</span>
+<span class="sd">    (30, 3)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Kursa, M. B. &amp; Rudnicki, W. R. (2010). &quot;Feature Selection with the</span>
+<span class="sd">      Boruta Package.&quot; J. Stat. Softw., 36(11), 1-13.</span>
+<span class="sd">      https://doi.org/10.18637/jss.v036.i11</span>
+<span class="sd">    - Guyon, I. et al. (2002). &quot;Gene Selection for Cancer Classification</span>
+<span class="sd">      using Support Vector Machines.&quot; Mach. Learn., 46, 389-422.</span>
+<span class="sd">      https://doi.org/10.1023/A:1012487302797</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">feature_selection</span> <span class="k">as</span> <span class="n">fs</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="o">!=</span> <span class="s2">&quot;variance&quot;</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;select_features(method=</span><span class="si">{</span><span class="n">method</span><span class="si">!r}</span><span class="s2">) needs labels. Either supply y &quot;</span>
+            <span class="s2">&quot;to molecules(), or use method=&#39;variance&#39;, which is unsupervised.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;variance&quot;</span><span class="p">:</span>
+        <span class="n">selector</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">VarianceFilter</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;mutual_info&quot;</span><span class="p">:</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">MutualInformationSelector</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;rfe&quot;</span><span class="p">:</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">RFESelector</span><span class="p">(</span>
+            <span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span> <span class="n">n_features_to_select</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;boruta&quot;</span><span class="p">:</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">BorutaSelector</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown selection method </span><span class="si">{</span><span class="n">method</span><span class="si">!r}</span><span class="s2">. Choose from &quot;</span>
+            <span class="s2">&quot;&#39;mutual_info&#39;, &#39;rfe&#39;, &#39;boruta&#39; or &#39;variance&#39;.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">selector</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)),</span> <span class="n">y</span><span class="p">,</span> <span class="n">mols</span></div>
+
+
+
+<span class="c1"># ------------------------------------------------------------- terminals ----</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Terminal</span><span class="p">(</span><span class="n">PipeStep</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base for steps that end a pipe, returning a result rather than a set.</span>
+
+<span class="sd">    Splitting, fitting, cross-validating and defining an applicability</span>
+<span class="sd">    domain all consume a :class:`FeatureSet` and produce something that</span>
+<span class="sd">    is not one. They are still steps -- they compose, they appear in the</span>
+<span class="sd">    flowchart -- but a pipe ending in one stops there.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_require_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureSet</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">FeatureSet</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="n">what</span> <span class="o">=</span> <span class="s2">&quot;molecules&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">MoleculeSet</span><span class="p">)</span> <span class="k">else</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Step &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39; works on a feature matrix, but it received &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">what</span><span class="si">}</span><span class="s2">. Insert a featurize(...) step first.&quot;</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Split</span><span class="p">(</span><span class="n">_Terminal</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a :class:`FeatureSet` into train and test halves.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;splitter&quot;</span><span class="p">,</span> <span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="s2">&quot;test_size&quot;</span><span class="p">,</span> <span class="s2">&quot;random_state&quot;</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scaffold&quot;</span><span class="p">,</span>
+        <span class="n">test_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">splitter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;split&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">,</span> <span class="s2">&quot;test_size&quot;</span><span class="p">:</span> <span class="n">test_size</span><span class="p">},</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_size</span> <span class="o">=</span> <span class="n">test_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span> <span class="o">=</span> <span class="n">splitter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">splitter</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_selection</span> <span class="k">as</span> <span class="n">ms</span>
+
+        <span class="n">registry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;scaffold&quot;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">ScaffoldSplitter</span><span class="p">,</span>
+            <span class="s2">&quot;stratified_scaffold&quot;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">StratifiedScaffoldSplitter</span><span class="p">,</span>
+            <span class="s2">&quot;random&quot;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">RandomSplitter</span><span class="p">,</span>
+            <span class="s2">&quot;butina&quot;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">ButinaClusterSplitter</span><span class="p">,</span>
+            <span class="s2">&quot;sphere_exclusion&quot;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">SphereExclusionSplitter</span><span class="p">,</span>
+            <span class="s2">&quot;maxmin&quot;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">MaxMinSplitter</span><span class="p">,</span>
+            <span class="s2">&quot;kennard_stone&quot;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">KennardStoneSplitter</span><span class="p">,</span>
+            <span class="s2">&quot;perimeter&quot;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">PerimeterSplitter</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">TimeSplitter</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">registry</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unknown split method </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="si">!r}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Choose from </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">registry</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">registry</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">](</span>
+            <span class="n">test_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">test_size</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">FeatureSet</span><span class="p">,</span> <span class="n">FeatureSet</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``(train, test)`` as two :class:`FeatureSet` objects.&quot;&quot;&quot;</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_require_features</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">splitter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">()</span>
+
+        <span class="c1"># The chemistry-aware splitters need molecules, not just the matrix.</span>
+        <span class="n">needs_mols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="p">{</span>
+            <span class="s2">&quot;scaffold&quot;</span><span class="p">,</span> <span class="s2">&quot;stratified_scaffold&quot;</span><span class="p">,</span> <span class="s2">&quot;butina&quot;</span><span class="p">,</span> <span class="s2">&quot;sphere_exclusion&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">needs_mols</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">features</span><span class="o">.</span><span class="n">mols</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;split(method=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="si">!r}</span><span class="s2">) needs the molecules, but &quot;</span>
+                    <span class="s2">&quot;they were discarded by featurize(keep_mols=False).&quot;</span>
+                <span class="p">)</span>
+            <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                <span class="n">splitter</span><span class="o">.</span><span class="n">split_mols</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">mols</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                <span class="n">splitter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">features</span><span class="o">.</span><span class="n">mols</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_take</span><span class="p">(</span><span class="n">idx</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FeatureSet</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">FeatureSet</span><span class="p">(</span>
+                <span class="n">features</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                <span class="kc">None</span> <span class="k">if</span> <span class="n">features</span><span class="o">.</span><span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">features</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                <span class="kc">None</span> <span class="k">if</span> <span class="n">features</span><span class="o">.</span><span class="n">mols</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">features</span><span class="o">.</span><span class="n">mols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">],</span>
+                <span class="n">history</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="n">features</span><span class="o">.</span><span class="n">history</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_describe</span><span class="p">()</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+                <span class="n">feature_names</span><span class="o">=</span><span class="n">features</span><span class="o">.</span><span class="n">feature_names</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_take</span><span class="p">(</span><span class="n">train_idx</span><span class="p">,</span> <span class="s2">&quot;train&quot;</span><span class="p">),</span> <span class="n">_take</span><span class="p">(</span><span class="n">test_idx</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="split">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.split">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">split</span><span class="p">(</span>
+    <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;scaffold&quot;</span><span class="p">,</span>
+    <span class="n">test_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">splitter</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeStep</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split into train and test sets, unpacking as ``train, test``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    method : str, default &quot;scaffold&quot;</span>
+<span class="sd">        One of ``&quot;scaffold&quot;``, ``&quot;stratified_scaffold&quot;``, ``&quot;random&quot;``,</span>
+<span class="sd">        ``&quot;butina&quot;``, ``&quot;sphere_exclusion&quot;``, ``&quot;maxmin&quot;``,</span>
+<span class="sd">        ``&quot;kennard_stone&quot;``, ``&quot;perimeter&quot;`` or ``&quot;time&quot;``. Ignored when</span>
+<span class="sd">        ``splitter`` is given.</span>
+<span class="sd">    test_size : float, default 0.2</span>
+<span class="sd">        Fraction held out.</span>
+<span class="sd">    random_state : int, optional</span>
+<span class="sd">        Seed, where the splitter uses one.</span>
+<span class="sd">    splitter : object, optional</span>
+<span class="sd">        A splitter instance to use instead of building one from</span>
+<span class="sd">        ``method`` -- any of :mod:`qsarkit.model_selection`, or a</span>
+<span class="sd">        scikit-learn splitter.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Passed to the splitter&#39;s constructor.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PipeStep</span>
+<span class="sd">        A step returning ``(train, test)``, each a</span>
+<span class="sd">        :class:`~qsarkit.functional.FeatureSet`.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The default is a scaffold split, not a random one, because a random</span>
+<span class="sd">    split of a QSAR dataset measures interpolation: public datasets are</span>
+<span class="sd">    dense with near-duplicate analogues, so random assignment scatters a</span>
+<span class="sd">    congeneric series across both sides and the model is scored on</span>
+<span class="sd">    compounds whose close relatives it has memorized. A scaffold split</span>
+<span class="sd">    keeps whole series together and reports what you actually want to</span>
+<span class="sd">    know.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import fingerprint, molecules, split</span>
+<span class="sd">    &gt;&gt;&gt; smiles = [&quot;c1ccccc1C&quot;, &quot;c1ccccc1CC&quot;, &quot;c1ccncc1C&quot;, &quot;CCO&quot;, &quot;CCN&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; train, test = (</span>
+<span class="sd">    ...     molecules(smiles, [1.0, 2.0, 3.0, 4.0, 5.0])</span>
+<span class="sd">    ...     &gt;&gt; fingerprint(n_bits=64)</span>
+<span class="sd">    ...     &gt;&gt; split(test_size=0.4)</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; len(train) + len(test)</span>
+<span class="sd">    5</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Bemis, G. W. &amp; Murcko, M. A. (1996). &quot;The Properties of Known</span>
+<span class="sd">      Drugs. 1. Molecular Frameworks.&quot; J. Med. Chem., 39(15), 2887-2893.</span>
+<span class="sd">      https://doi.org/10.1021/jm9602928</span>
+<span class="sd">    - Sheridan, R. P. (2013). &quot;Time-Split Cross-Validation as a Method</span>
+<span class="sd">      for Estimating the Goodness of Prospective Prediction.&quot;</span>
+<span class="sd">      J. Chem. Inf. Model., 53(4), 783-790.</span>
+<span class="sd">      https://doi.org/10.1021/ci400084k</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_Split</span><span class="p">(</span>
+        <span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+        <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+        <span class="n">splitter</span><span class="o">=</span><span class="n">splitter</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Fit</span><span class="p">(</span><span class="n">_Terminal</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit an estimator on a :class:`FeatureSet`.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;estimator&quot;</span><span class="p">,</span> <span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">estimator</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;rf&quot;</span><span class="p">,</span>
+        <span class="n">task</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;regression&quot;</span><span class="p">,</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">estimator</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">type</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;estimator&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARClassifier</span><span class="p">,</span> <span class="n">QSARRegressor</span>
+
+        <span class="n">task</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span>
+        <span class="k">if</span> <span class="n">task</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;fit() needs labels to choose between regression and &quot;</span>
+                    <span class="s2">&quot;classification. Supply y to molecules(), or pass an &quot;</span>
+                    <span class="s2">&quot;estimator instance.&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Integer-like labels with few distinct values are categories;</span>
+            <span class="c1"># anything else is treated as a continuous endpoint.</span>
+            <span class="n">distinct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+            <span class="n">looks_categorical</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">distinct</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))))</span>
+                <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">distinct</span><span class="p">,</span> <span class="n">distinct</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="s2">&quot;classification&quot;</span> <span class="k">if</span> <span class="n">looks_categorical</span> <span class="k">else</span> <span class="s2">&quot;regression&quot;</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="n">QSARClassifier</span> <span class="k">if</span> <span class="n">task</span> <span class="o">==</span> <span class="s2">&quot;classification&quot;</span> <span class="k">else</span> <span class="n">QSARRegressor</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit and return the estimator.&quot;&quot;&quot;</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_require_features</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">features</span><span class="o">.</span><span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;fit() needs labels; none were supplied to molecules().&quot;</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">model</span>
+
+
+<div class="viewcode-block" id="fit">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.fit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;rf&quot;</span><span class="p">,</span>
+    <span class="n">task</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;regression&quot;</span><span class="p">,</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeStep</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit a model on the features, ending the pipe with a fitted estimator.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    estimator : str or object, default &quot;rf&quot;</span>
+<span class="sd">        A backend name for :class:`~qsarkit.models.QSARRegressor` /</span>
+<span class="sd">        :class:`~qsarkit.models.QSARClassifier` (``&quot;rf&quot;``, ``&quot;svm&quot;``,</span>
+<span class="sd">        ``&quot;gbm&quot;``, ``&quot;xgboost&quot;``, ``&quot;lightgbm&quot;``, ``&quot;knn&quot;``, ``&quot;pls&quot;``,</span>
+<span class="sd">        ``&quot;gp&quot;``, ``&quot;mlp&quot;``, ...), or any estimator instance -- including</span>
+<span class="sd">        a plain scikit-learn one.</span>
+<span class="sd">    task : {&quot;auto&quot;, &quot;regression&quot;, &quot;classification&quot;}, default &quot;auto&quot;</span>
+<span class="sd">        Which facade to build when ``estimator`` is a name. ``&quot;auto&quot;``</span>
+<span class="sd">        infers it from ``y``: few distinct integer labels means</span>
+<span class="sd">        classification, anything else regression.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Passed to the facade&#39;s constructor (``random_state``,</span>
+<span class="sd">        ``model_params``).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PipeStep</span>
+<span class="sd">        A step returning the fitted estimator.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import fingerprint, fit, molecules</span>
+<span class="sd">    &gt;&gt;&gt; smiles = [&quot;CCO&quot;, &quot;CCN&quot;, &quot;CCC&quot;, &quot;CCCl&quot;, &quot;c1ccccc1&quot;, &quot;c1ccncc1&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; model = (</span>
+<span class="sd">    ...     molecules(smiles, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0])</span>
+<span class="sd">    ...     &gt;&gt; fingerprint(n_bits=64)</span>
+<span class="sd">    ...     &gt;&gt; fit(&quot;rf&quot;, random_state=0)</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; model.predict(fingerprint(n_bits=64)(molecules([&quot;CCO&quot;])).X).shape</span>
+<span class="sd">    (1,)</span>
+
+<span class="sd">    Any estimator instance works, so the pipe is not limited to the</span>
+<span class="sd">    facades:</span>
+
+<span class="sd">    &gt;&gt;&gt; from sklearn.linear_model import Ridge</span>
+<span class="sd">    &gt;&gt;&gt; model = (</span>
+<span class="sd">    ...     molecules(smiles, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0])</span>
+<span class="sd">    ...     &gt;&gt; fingerprint(n_bits=64)</span>
+<span class="sd">    ...     &gt;&gt; fit(Ridge())</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; type(model).__name__</span>
+<span class="sd">    &#39;Ridge&#39;</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Pedregosa et al. (2011). &quot;Scikit-learn: Machine Learning in</span>
+<span class="sd">      Python.&quot; JMLR, 12, 2825-2830.</span>
+<span class="sd">      https://jmlr.org/papers/v12/pedregosa11a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_Fit</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_CrossValidate</span><span class="p">(</span><span class="n">_Terminal</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cross-validate an estimator on a :class:`FeatureSet`.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;estimator&quot;</span><span class="p">,</span> <span class="s2">&quot;task&quot;</span><span class="p">,</span> <span class="s2">&quot;validator_kwargs&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">estimator</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;rf&quot;</span><span class="p">,</span>
+        <span class="n">task</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;regression&quot;</span><span class="p">,</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">validator_kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">estimator</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">type</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cross_validate&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;estimator&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">estimator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validator_kwargs</span> <span class="o">=</span> <span class="n">validator_kwargs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run cross-validation and return the report.&quot;&quot;&quot;</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_require_features</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">features</span><span class="o">.</span><span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;cross_validate() needs labels; none were supplied to molecules().&quot;</span>
+            <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CrossValidator</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">_Fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">task</span><span class="p">)</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">validator</span> <span class="o">=</span> <span class="n">CrossValidator</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">validator_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">validator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="cross_validate">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.cross_validate">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">cross_validate</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;rf&quot;</span><span class="p">,</span>
+    <span class="n">task</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;regression&quot;</span><span class="p">,</span> <span class="s2">&quot;classification&quot;</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeStep</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cross-validate on the features, ending the pipe with a score report.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    estimator : str or object, default &quot;rf&quot;</span>
+<span class="sd">        As for :func:`fit`.</span>
+<span class="sd">    task : {&quot;auto&quot;, &quot;regression&quot;, &quot;classification&quot;}, default &quot;auto&quot;</span>
+<span class="sd">        As for :func:`fit`.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Passed to :class:`~qsarkit.validation.CrossValidator`</span>
+<span class="sd">        (``method``, ``n_splits``, ``random_state``).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PipeStep</span>
+<span class="sd">        A step returning the cross-validation report as a dict.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import cross_validate, fingerprint, molecules</span>
+<span class="sd">    &gt;&gt;&gt; smiles = [&quot;CCO&quot;, &quot;CCN&quot;, &quot;CCC&quot;, &quot;CCCl&quot;, &quot;c1ccccc1&quot;, &quot;c1ccncc1&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; report = (</span>
+<span class="sd">    ...     molecules(smiles, [1.0, 2.0, 3.0, 4.0, 5.0, 6.0])</span>
+<span class="sd">    ...     &gt;&gt; fingerprint(n_bits=64)</span>
+<span class="sd">    ...     &gt;&gt; cross_validate(&quot;rf&quot;, n_splits=3, random_state=0)</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; &quot;q2&quot; in report or &quot;r2&quot; in report</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - OECD (2007). &quot;Guidance Document on the Validation of (Quantitative)</span>
+<span class="sd">      Structure-Activity Relationship [(Q)SAR] Models,&quot;</span>
+<span class="sd">      ENV/JM/MONO(2007)2. https://doi.org/10.1787/9789264085442-en</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_CrossValidate</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">estimator</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_ApplicabilityDomain</span><span class="p">(</span><span class="n">_Terminal</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit an applicability domain on a :class:`FeatureSet`.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;method&quot;</span><span class="p">,</span> <span class="s2">&quot;kwargs&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;knn&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;applicability_domain&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="n">method</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit and return the domain.&quot;&quot;&quot;</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_require_features</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">applicability</span> <span class="k">as</span> <span class="n">ad</span>
+
+        <span class="n">registry</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;knn&quot;</span><span class="p">:</span> <span class="n">ad</span><span class="o">.</span><span class="n">KNNApplicabilityDomain</span><span class="p">,</span>
+            <span class="s2">&quot;leverage&quot;</span><span class="p">:</span> <span class="n">ad</span><span class="o">.</span><span class="n">LeverageAD</span><span class="p">,</span>
+            <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="n">ad</span><span class="o">.</span><span class="n">RangeAD</span><span class="p">,</span>
+            <span class="s2">&quot;bounding_box&quot;</span><span class="p">:</span> <span class="n">ad</span><span class="o">.</span><span class="n">BoundingBoxAD</span><span class="p">,</span>
+            <span class="s2">&quot;pca&quot;</span><span class="p">:</span> <span class="n">ad</span><span class="o">.</span><span class="n">PCABoundingBoxAD</span><span class="p">,</span>
+            <span class="s2">&quot;convex_hull&quot;</span><span class="p">:</span> <span class="n">ad</span><span class="o">.</span><span class="n">ConvexHullAD</span><span class="p">,</span>
+            <span class="s2">&quot;tanimoto&quot;</span><span class="p">:</span> <span class="n">ad</span><span class="o">.</span><span class="n">TanimotoSimilarityAD</span><span class="p">,</span>
+            <span class="s2">&quot;kde&quot;</span><span class="p">:</span> <span class="n">ad</span><span class="o">.</span><span class="n">KernelDensityAD</span><span class="p">,</span>
+            <span class="s2">&quot;isolation_forest&quot;</span><span class="p">:</span> <span class="n">ad</span><span class="o">.</span><span class="n">IsolationForestAD</span><span class="p">,</span>
+            <span class="s2">&quot;ensemble&quot;</span><span class="p">:</span> <span class="n">ad</span><span class="o">.</span><span class="n">EnsembleAD</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">registry</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Unknown applicability domain </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="si">!r}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Choose from </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">registry</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">registry</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">](</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">X</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="applicability_domain">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.applicability_domain">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">applicability_domain</span><span class="p">(</span><span class="n">method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;knn&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeStep</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit an applicability domain on the features, ending the pipe.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    method : str, default &quot;knn&quot;</span>
+<span class="sd">        One of ``&quot;knn&quot;``, ``&quot;leverage&quot;``, ``&quot;range&quot;``, ``&quot;bounding_box&quot;``,</span>
+<span class="sd">        ``&quot;pca&quot;``, ``&quot;convex_hull&quot;``, ``&quot;tanimoto&quot;``, ``&quot;kde&quot;``,</span>
+<span class="sd">        ``&quot;isolation_forest&quot;`` or ``&quot;ensemble&quot;``.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Passed to the domain&#39;s constructor.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PipeStep</span>
+<span class="sd">        A step returning the fitted domain.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import applicability_domain, fingerprint, molecules</span>
+<span class="sd">    &gt;&gt;&gt; smiles = [&quot;CCO&quot;, &quot;CCN&quot;, &quot;CCC&quot;, &quot;CCCl&quot;, &quot;c1ccccc1&quot;, &quot;c1ccncc1&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; domain = (</span>
+<span class="sd">    ...     molecules(smiles)</span>
+<span class="sd">    ...     &gt;&gt; fingerprint(n_bits=64)</span>
+<span class="sd">    ...     &gt;&gt; applicability_domain(&quot;tanimoto&quot;, threshold=0.3)</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; domain.predict(fingerprint(n_bits=64)(molecules([&quot;CCO&quot;])).X).tolist()</span>
+<span class="sd">    [True]</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Sahigara, F. et al. (2012). &quot;Comparison of Different Approaches to</span>
+<span class="sd">      Define the Applicability Domain of QSAR Models.&quot; Molecules, 17(5),</span>
+<span class="sd">      4791-4810. https://doi.org/10.3390/molecules17054791</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_ApplicabilityDomain</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Collect</span><span class="p">(</span><span class="n">_Terminal</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the flowing value itself, ending a pipe explicitly.&quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;as_frame&quot;</span><span class="p">,)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_frame</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;collect&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;as_frame&quot;</span><span class="p">:</span> <span class="n">as_frame</span><span class="p">}</span> <span class="k">if</span> <span class="n">as_frame</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">as_frame</span> <span class="o">=</span> <span class="n">as_frame</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the set, or its DataFrame rendering.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">MoleculeSet</span><span class="p">,</span> <span class="n">FeatureSet</span><span class="p">)):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">MoleculeSet</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_frame</span> <span class="k">else</span> <span class="n">data</span>
+
+
+<div class="viewcode-block" id="collect">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.collect">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">collect</span><span class="p">(</span><span class="n">as_frame</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PipeStep</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;End a pipe explicitly, returning the set or a DataFrame of it.</span>
+
+<span class="sd">    Useful when a pipeline is built programmatically and you want the</span>
+<span class="sd">    terminal stage to be a step like any other, and when you want the</span>
+<span class="sd">    result as a table rather than as arrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    as_frame : bool, default False</span>
+<span class="sd">        Return ``to_frame()`` instead of the set itself.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    PipeStep</span>
+<span class="sd">        A step returning the value flowing into it.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import collect, desalt, molecules</span>
+<span class="sd">    &gt;&gt;&gt; frame = molecules([&quot;CCO&quot;, &quot;CC(=O)[O-].[Na+]&quot;]) &gt;&gt; desalt() &gt;&gt; collect(as_frame=True)</span>
+<span class="sd">    &gt;&gt;&gt; list(frame.columns)</span>
+<span class="sd">    [&#39;smiles&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; len(frame)</span>
+<span class="sd">    2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_Collect</span><span class="p">(</span><span class="n">as_frame</span><span class="o">=</span><span class="n">as_frame</span><span class="p">)</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Frederico Schmitt Kremer
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-09-09</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=95e61db4"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

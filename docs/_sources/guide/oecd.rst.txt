@@ -1,0 +1,109 @@
+OECD validation
+===============
+
+The OECD defines five principles a QSAR model must satisfy to be
+acceptable for regulatory use. qsarkit is organized around them.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 6 34 60
+
+   * - #
+     - Principle
+     - Where it lives
+   * - 1
+     - A defined endpoint
+     - Dataset metadata; :class:`~qsarkit.reporting.QSARReport`
+   * - 2
+     - An unambiguous algorithm
+     - Every estimator's documented hyperparameters and citation
+   * - 3
+     - A defined applicability domain
+     - :mod:`qsarkit.applicability`
+   * - 4
+     - Appropriate goodness-of-fit, robustness and predictivity
+     - :mod:`qsarkit.metrics`, :mod:`qsarkit.validation`
+   * - 5
+     - A mechanistic interpretation, if possible
+     - :mod:`qsarkit.explainability`, :mod:`qsarkit.sar`
+
+Checking a model
+----------------
+
+.. code-block:: python
+
+   from qsarkit.validation import OECDValidator
+
+   validator = OECDValidator()
+   report = validator.validate(
+       model=model,
+       X_train=X_train, y_train=y_train,
+       X_test=X_test, y_test=y_test,
+       applicability_domain=domain,
+       endpoint="pIC50 (CHEMBL204, IC50)",
+   )
+   report   # per-principle pass/fail with the evidence for each
+
+Principle 4 in practice
+-----------------------
+
+Goodness of fit alone proves nothing — a sufficiently flexible model fits
+noise perfectly. The OECD asks for three separate things:
+
+**Goodness of fit** — R² on the training set.
+
+**Robustness** — cross-validated Q², plus y-scrambling to show the model has
+not simply memorized:
+
+.. code-block:: python
+
+   from qsarkit.validation import CrossValidator, YScrambling
+
+   CrossValidator(cv=5).validate(model, X_train, y_train)   # Q²
+   scramble = YScrambling(n_iterations=100).run(model, X_train, y_train)
+   scramble["p_value"]   # low = the real model beats chance
+
+**Predictivity** — external validation on compounds the model never saw,
+scored with metrics designed for it:
+
+.. code-block:: python
+
+   from qsarkit.metrics import golbraikh_tropsha_criteria, q2_f3, qsar_regression_report
+
+   qsar_regression_report(y_test, y_pred)
+   golbraikh_tropsha_criteria(y_test, y_pred)
+   # {'r2': ..., 'k': ..., 'r2_r02_ratio': ..., 'passes': True}
+
+Use Q²F3 rather than plain R² on the test set: it is scaled by the
+*training* set variance, so it cannot be inflated by choosing a test set
+that happens to span a wide activity range.
+
+Reporting
+---------
+
+.. code-block:: python
+
+   from qsarkit.reporting import OECDReportBuilder
+
+   builder = OECDReportBuilder()
+   builder.build(model=model, validation=report).to_html("model_qmrf.html")
+
+The output follows the JRC QSAR Model Reporting Format (QMRF) sections.
+
+References
+----------
+
+- OECD (2007). *Guidance Document on the Validation of (Quantitative)
+  Structure-Activity Relationship [(Q)SAR] Models.* OECD Series on Testing
+  and Assessment No. 69, ENV/JM/MONO(2007)2.
+  :doi:`10.1787/9789264085442-en`
+- Golbraikh, A. & Tropsha, A. (2002). "Beware of q²!" *J. Mol. Graph.
+  Model.*, 20(4), 269-276. :doi:`10.1016/S1093-3263(01)00123-1`
+- Consonni, V., Ballabio, D. & Todeschini, R. (2009). "Comments on the
+  Definition of the Q² Parameter for QSAR Validation." *J. Chem. Inf.
+  Model.*, 49(7), 1669-1678. :doi:`10.1021/ci900115y`
+- Rücker, C., Rücker, G. & Meringer, M. (2007). "y-Randomization and Its
+  Variants in QSPR/QSAR." *J. Chem. Inf. Model.*, 47(6), 2345-2357.
+  :doi:`10.1021/ci700157b`
+- Gramatica, P. (2007). *QSAR Comb. Sci.*, 26(5), 694-701.
+  :doi:`10.1002/qsar.200610151`

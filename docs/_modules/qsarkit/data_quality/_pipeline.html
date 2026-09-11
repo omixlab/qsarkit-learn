@@ -1,0 +1,692 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>qsarkit.data_quality._pipeline - qsarkit 0.2</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">qsarkit 0.2</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../guide/index.html">User guide</a><input aria-label="Toggle navigation of User guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/quickstart.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/functional.html">The functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/curation.html">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/oecd.html">OECD validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/base.html">Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemistry.html">Chemistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/functional.html">Functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/data_quality.html">Data quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/transform.html">Transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/neighbors.html">Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cluster.html">Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/feature_selection.html">Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_selection.html">Model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/validation.html">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/explainability.html">Explainability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemspace.html">Chemical space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for qsarkit.data_quality._pipeline</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;End-to-end dataset curation with a provenance report.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.data_quality._duplicates</span><span class="w"> </span><span class="kn">import</span> <span class="n">DuplicateDetector</span><span class="p">,</span> <span class="n">merge_replicates</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.data_quality._validators</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ActivityOutlierDetector</span><span class="p">,</span>
+    <span class="n">StructureValidator</span><span class="p">,</span>
+    <span class="n">check_activity_units</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mol</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CurationReport&quot;</span><span class="p">,</span> <span class="s2">&quot;DataCurationPipeline&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="CurationReport">
+<a class="viewcode-back" href="../../../api/data_quality.html#qsarkit.data_quality.CurationReport">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CurationReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;What curation did, and why.</span>
+
+<span class="sd">    A curated dataset is only trustworthy if the curation is auditable —</span>
+<span class="sd">    OECD principle 1 asks for a defined endpoint and a documented</span>
+<span class="sd">    dataset, and &quot;we cleaned it&quot; is not documentation.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_input : int</span>
+<span class="sd">        Records supplied.</span>
+<span class="sd">    n_output : int</span>
+<span class="sd">        Records surviving.</span>
+<span class="sd">    stages : list of dict</span>
+<span class="sd">        One entry per stage: its name, the counts before and after, and</span>
+<span class="sd">        the indices it removed.</span>
+<span class="sd">    removed : dict</span>
+<span class="sd">        Original index -&gt; reason it was removed.</span>
+<span class="sd">    activity_check : dict</span>
+<span class="sd">        Output of :func:`~qsarkit.data_quality.check_activity_units`.</span>
+<span class="sd">    warnings : list of str</span>
+<span class="sd">        Problems worth a human&#39;s attention.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">n_input</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n_output</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">stages</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">removed</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">activity_check</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">warnings</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">n_removed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Number of records removed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_input</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_output</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">retention</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fraction of records surviving curation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_output</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_input</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_input</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+<div class="viewcode-block" id="CurationReport.to_dataframe">
+<a class="viewcode-back" href="../../../api/data_quality.html#qsarkit.data_quality.CurationReport.to_dataframe">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Per-stage summary table.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            Columns ``stage``, ``n_before``, ``n_after``, ``n_removed``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;stage&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;n_before&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;n_before&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;n_after&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;n_after&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;n_removed&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;n_before&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;n_after&quot;</span><span class="p">],</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stages</span>
+            <span class="p">],</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;stage&quot;</span><span class="p">,</span> <span class="s2">&quot;n_before&quot;</span><span class="p">,</span> <span class="s2">&quot;n_after&quot;</span><span class="p">,</span> <span class="s2">&quot;n_removed&quot;</span><span class="p">],</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CurationReport.summary">
+<a class="viewcode-back" href="../../../api/data_quality.html#qsarkit.data_quality.CurationReport.summary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Human-readable report.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;Curation: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_input</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_output</span><span class="si">}</span><span class="s2"> records &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">retention</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2"> retained)&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stages</span><span class="p">:</span>
+            <span class="n">dropped</span> <span class="o">=</span> <span class="n">stage</span><span class="p">[</span><span class="s2">&quot;n_before&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">stage</span><span class="p">[</span><span class="s2">&quot;n_after&quot;</span><span class="p">]</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">stage</span><span class="p">[</span><span class="s1">&#39;stage&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">&lt;22</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">stage</span><span class="p">[</span><span class="s1">&#39;n_before&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;6</span><span class="si">}</span><span class="s2"> -&gt; &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">stage</span><span class="p">[</span><span class="s1">&#39;n_after&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">&lt;6</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">dropped</span><span class="si">}</span><span class="s2"> removed)&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Warnings:&quot;</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>  <span class="c1"># pragma: no cover - display only</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&lt;CurationReport </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_input</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_output</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">retention</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2"> retained), </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">)</span><span class="si">}</span><span class="s2"> warnings&gt;&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DataCurationPipeline">
+<a class="viewcode-back" href="../../../api/data_quality.html#qsarkit.data_quality.DataCurationPipeline">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataCurationPipeline</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Standardize, validate, de-duplicate and screen a QSAR dataset.</span>
+
+<span class="sd">    Runs the curation protocol of Fourches, Muratov and Tropsha in the</span>
+<span class="sd">    order that matters: standardization first (so that duplicate</span>
+<span class="sd">    detection sees comparable structures), then structural validation,</span>
+<span class="sd">    then replicate merging, then activity outliers. Running de-duplication</span>
+<span class="sd">    before standardization is the classic mistake — the same compound</span>
+<span class="sd">    stored as a salt and as a free base will not be recognised as a</span>
+<span class="sd">    duplicate, and both copies survive into the model.</span>
+
+<span class="sd">    Every stage records what it removed, so the output is auditable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    standardize : bool, default True</span>
+<span class="sd">        Run :class:`~qsarkit.chemistry.MolecularStandardizer` first.</span>
+<span class="sd">    validate_structures : bool, default True</span>
+<span class="sd">        Apply :class:`~qsarkit.data_quality.StructureValidator`.</span>
+<span class="sd">    remove_duplicates : bool, default True</span>
+<span class="sd">        Merge replicate structures.</span>
+<span class="sd">    remove_outliers : bool, default False</span>
+<span class="sd">        Drop activity outliers. Off by default, because on a congeneric</span>
+<span class="sd">        series a genuine activity cliff is indistinguishable from a data</span>
+<span class="sd">        error by statistics alone — see :mod:`qsarkit.sar` before</span>
+<span class="sd">        enabling this.</span>
+<span class="sd">    duplicate_level : str, default &quot;inchikey&quot;</span>
+<span class="sd">        Passed to :class:`DuplicateDetector`.</span>
+<span class="sd">    merge_method : str, default &quot;median&quot;</span>
+<span class="sd">        Passed to :func:`merge_replicates`.</span>
+<span class="sd">    max_spread : float, optional, default 1.0</span>
+<span class="sd">        Replicate groups disagreeing by more than this are discarded.</span>
+<span class="sd">    outlier_method : str, default &quot;modified_zscore&quot;</span>
+<span class="sd">        Passed to :class:`ActivityOutlierDetector`.</span>
+<span class="sd">    outlier_threshold : float, default 3.5</span>
+<span class="sd">        Passed to :class:`ActivityOutlierDetector`.</span>
+<span class="sd">    validator : StructureValidator, optional</span>
+<span class="sd">        Custom validator.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from rdkit import Chem</span>
+<span class="sd">    &gt;&gt;&gt; mols = [Chem.MolFromSmiles(s) for s in</span>
+<span class="sd">    ...         (&quot;CC(=O)Oc1ccccc1C(=O)[O-].[Na+]&quot;, &quot;CCO&quot;, &quot;OCC&quot;, &quot;[Na+].[Cl-]&quot;)]</span>
+<span class="sd">    &gt;&gt;&gt; curated, y, report = DataCurationPipeline().run(mols, [5.0, 6.0, 6.2, 1.0])</span>
+<span class="sd">    &gt;&gt;&gt; report.n_input</span>
+<span class="sd">    4</span>
+<span class="sd">    &gt;&gt;&gt; report.n_output &lt; report.n_input</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Fourches, D., Muratov, E. &amp; Tropsha, A. (2010). &quot;Trust, But Verify:</span>
+<span class="sd">      On the Importance of Chemical Structure Curation in</span>
+<span class="sd">      Cheminformatics and QSAR Modeling Research.&quot; J. Chem. Inf. Model.,</span>
+<span class="sd">      50(7), 1189-1204. https://doi.org/10.1021/ci100176x</span>
+<span class="sd">    - Fourches, D., Muratov, E. &amp; Tropsha, A. (2016). &quot;Trust, but Verify</span>
+<span class="sd">      II: A Practical Guide to Chemogenomics Data Curation.&quot; J. Chem.</span>
+<span class="sd">      Inf. Model., 56(7), 1243-1252.</span>
+<span class="sd">      https://doi.org/10.1021/acs.jcim.6b00129</span>
+<span class="sd">    - Tropsha, A. (2010). &quot;Best Practices for QSAR Model Development,</span>
+<span class="sd">      Validation, and Exploitation.&quot; Mol. Inform., 29(6-7), 476-488.</span>
+<span class="sd">      https://doi.org/10.1002/minf.201000061</span>
+<span class="sd">    - OECD (2007). Guidance Document No. 69, ENV/JM/MONO(2007)2.</span>
+<span class="sd">      https://doi.org/10.1787/9789264085442-en</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">standardize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">validate_structures</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">remove_duplicates</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">remove_outliers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">duplicate_level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;inchikey&quot;</span><span class="p">,</span>
+        <span class="n">merge_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;median&quot;</span><span class="p">,</span>
+        <span class="n">max_spread</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">outlier_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;modified_zscore&quot;</span><span class="p">,</span>
+        <span class="n">outlier_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">3.5</span><span class="p">,</span>
+        <span class="n">validator</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">StructureValidator</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">standardize</span> <span class="o">=</span> <span class="n">standardize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_structures</span> <span class="o">=</span> <span class="n">validate_structures</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_duplicates</span> <span class="o">=</span> <span class="n">remove_duplicates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_outliers</span> <span class="o">=</span> <span class="n">remove_outliers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duplicate_level</span> <span class="o">=</span> <span class="n">duplicate_level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">merge_method</span> <span class="o">=</span> <span class="n">merge_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_spread</span> <span class="o">=</span> <span class="n">max_spread</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlier_method</span> <span class="o">=</span> <span class="n">outlier_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlier_threshold</span> <span class="o">=</span> <span class="n">outlier_threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="o">=</span> <span class="n">validator</span>
+
+<div class="viewcode-block" id="DataCurationPipeline.run">
+<a class="viewcode-back" href="../../../api/data_quality.html#qsarkit.data_quality.DataCurationPipeline.run">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mols</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">activities</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">unit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]],</span> <span class="n">CurationReport</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Curate a dataset.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mols : sequence of Mol</span>
+<span class="sd">            Molecules to curate.</span>
+<span class="sd">        activities : array-like, optional</span>
+<span class="sd">            Parallel activity values, kept aligned throughout.</span>
+<span class="sd">        unit : str, optional</span>
+<span class="sd">            Activity unit, for the sanity check.</span>
+<span class="sd">        endpoint : str, optional</span>
+<span class="sd">            Endpoint name, recorded in the report.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        mols : list of Mol</span>
+<span class="sd">            The curated molecules.</span>
+<span class="sd">        activities : ndarray or None</span>
+<span class="sd">            The curated activities.</span>
+<span class="sd">        report : CurationReport</span>
+<span class="sd">            What happened at each stage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">activities</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">activities</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;activities has length </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="si">}</span><span class="s2"> but there are </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="si">}</span><span class="s2"> molecules.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Track original positions so the report can name what was dropped.</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">)))</span>
+        <span class="n">report</span> <span class="o">=</span> <span class="n">CurationReport</span><span class="p">(</span><span class="n">n_input</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">report</span><span class="o">.</span><span class="n">activity_check</span> <span class="o">=</span> <span class="n">check_activity_units</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
+            <span class="n">report</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">activity_check</span><span class="p">[</span><span class="s2">&quot;warnings&quot;</span><span class="p">])</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">record</span><span class="p">(</span><span class="n">stage</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">before</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">kept</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Note a stage&#39;s effect and update the origin/removal bookkeeping.&quot;&quot;&quot;</span>
+            <span class="n">keep_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">kept</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">orig</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">origin</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">pos</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keep_set</span><span class="p">:</span>
+                    <span class="n">report</span><span class="o">.</span><span class="n">removed</span><span class="p">[</span><span class="n">orig</span><span class="p">]</span> <span class="o">=</span> <span class="n">reason</span>
+            <span class="n">report</span><span class="o">.</span><span class="n">stages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="n">stage</span><span class="p">,</span> <span class="s2">&quot;n_before&quot;</span><span class="p">:</span> <span class="n">before</span><span class="p">,</span> <span class="s2">&quot;n_after&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">kept</span><span class="p">)}</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">standardize</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularStandardizer</span>
+
+            <span class="n">before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">MolecularStandardizer</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">current</span><span class="p">))</span>
+            <span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">current</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
+            <span class="n">record</span><span class="p">(</span><span class="s2">&quot;standardize&quot;</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">kept</span><span class="p">,</span> <span class="s2">&quot;standardization failed&quot;</span><span class="p">)</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="p">[</span><span class="n">current</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">]</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="n">origin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">kept</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)]</span> <span class="k">if</span> <span class="n">kept</span> <span class="k">else</span> <span class="n">y</span><span class="p">[:</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_structures</span><span class="p">:</span>
+            <span class="n">validator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validator</span> <span class="ow">or</span> <span class="n">StructureValidator</span><span class="p">()</span>
+            <span class="n">before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="n">issues</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="n">reasons</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">i</span><span class="o">.</span><span class="n">index</span><span class="p">:</span> <span class="n">i</span><span class="o">.</span><span class="n">code</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">issues</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">fatal</span>
+            <span class="p">}</span>
+            <span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">reasons</span><span class="p">]</span>
+            <span class="n">keep_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">kept</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">orig</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">origin</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">pos</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keep_set</span><span class="p">:</span>
+                    <span class="n">report</span><span class="o">.</span><span class="n">removed</span><span class="p">[</span><span class="n">orig</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;invalid structure: </span><span class="si">{</span><span class="n">reasons</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">report</span><span class="o">.</span><span class="n">stages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;validate&quot;</span><span class="p">,</span> <span class="s2">&quot;n_before&quot;</span><span class="p">:</span> <span class="n">before</span><span class="p">,</span> <span class="s2">&quot;n_after&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">kept</span><span class="p">)}</span>
+            <span class="p">)</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="p">[</span><span class="n">current</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">]</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="n">origin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">kept</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)]</span> <span class="k">if</span> <span class="n">kept</span> <span class="k">else</span> <span class="n">y</span><span class="p">[:</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_duplicates</span> <span class="ow">and</span> <span class="n">current</span><span class="p">:</span>
+            <span class="n">before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">detector</span> <span class="o">=</span> <span class="n">DuplicateDetector</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">duplicate_level</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+                <span class="n">seen</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">detector</span><span class="o">.</span><span class="n">find_duplicates</span><span class="p">(</span><span class="n">current</span><span class="p">):</span>
+                    <span class="n">seen</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                <span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">]</span>
+                <span class="n">record</span><span class="p">(</span><span class="s2">&quot;deduplicate&quot;</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">kept</span><span class="p">,</span> <span class="s2">&quot;duplicate structure&quot;</span><span class="p">)</span>
+                <span class="n">current</span> <span class="o">=</span> <span class="p">[</span><span class="n">current</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">]</span>
+                <span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="n">origin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">merged</span><span class="p">,</span> <span class="n">y_merged</span><span class="p">,</span> <span class="n">merge_report</span> <span class="o">=</span> <span class="n">merge_replicates</span><span class="p">(</span>
+                    <span class="n">current</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+                    <span class="n">level</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">duplicate_level</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+                    <span class="n">method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">merge_method</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+                    <span class="n">max_spread</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_spread</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="c1"># merge_replicates keeps the first member of each group, so</span>
+                <span class="c1"># recover which original positions survived by re-running the</span>
+                <span class="c1"># same grouping over the pre-merge list.</span>
+                <span class="n">kept</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_surviving_positions</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">merged</span><span class="p">)</span>
+                <span class="n">keep_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">kept</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">orig</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">origin</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">pos</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keep_set</span><span class="p">:</span>
+                        <span class="n">report</span><span class="o">.</span><span class="n">removed</span><span class="p">[</span><span class="n">orig</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;duplicate structure (merged)&quot;</span>
+                <span class="n">report</span><span class="o">.</span><span class="n">stages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;deduplicate&quot;</span><span class="p">,</span> <span class="s2">&quot;n_before&quot;</span><span class="p">:</span> <span class="n">before</span><span class="p">,</span> <span class="s2">&quot;n_after&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">merged</span><span class="p">)}</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">merge_report</span><span class="p">[</span><span class="s2">&quot;n_discarded&quot;</span><span class="p">]:</span>
+                    <span class="n">report</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">merge_report</span><span class="p">[</span><span class="s1">&#39;n_discarded&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> replicate groups discarded &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;for disagreeing by more than </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_spread</span><span class="si">}</span><span class="s2"> units.&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">current</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">merged</span><span class="p">,</span> <span class="n">y_merged</span>
+                <span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="n">origin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_outliers</span> <span class="ow">and</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">current</span><span class="p">:</span>
+            <span class="n">before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="n">outlier_detector</span> <span class="o">=</span> <span class="n">ActivityOutlierDetector</span><span class="p">(</span>
+                <span class="n">method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">outlier_method</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
+                <span class="n">threshold</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">outlier_threshold</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">flags</span> <span class="o">=</span> <span class="n">outlier_detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">current</span><span class="p">)</span>
+            <span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">))</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">flags</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+            <span class="n">record</span><span class="p">(</span><span class="s2">&quot;remove_outliers&quot;</span><span class="p">,</span> <span class="n">before</span><span class="p">,</span> <span class="n">kept</span><span class="p">,</span> <span class="s2">&quot;activity outlier&quot;</span><span class="p">)</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="p">[</span><span class="n">current</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">]</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="n">origin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">kept</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)]</span> <span class="k">if</span> <span class="n">kept</span> <span class="k">else</span> <span class="n">y</span><span class="p">[:</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">report</span><span class="o">.</span><span class="n">n_output</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">retention</span> <span class="o">&lt;</span> <span class="mf">0.5</span> <span class="ow">and</span> <span class="n">report</span><span class="o">.</span><span class="n">n_input</span><span class="p">:</span>
+            <span class="n">report</span><span class="o">.</span><span class="n">warnings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Curation removed </span><span class="si">{</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">report</span><span class="o">.</span><span class="n">retention</span><span class="si">:</span><span class="s2">.0%</span><span class="si">}</span><span class="s2"> of the dataset; &quot;</span>
+                <span class="s2">&quot;check the per-stage counts before proceeding.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">current</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">report</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_surviving_positions</span><span class="p">(</span>
+        <span class="n">before</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">after</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Positions in ``before`` corresponding to the members of ``after``.</span>
+
+<span class="sd">        ``merge_replicates`` returns the first record of each group, in</span>
+<span class="sd">        original order, so matching object identity recovers the mapping</span>
+<span class="sd">        exactly without re-deriving the grouping.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">remaining</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">after</span><span class="p">)</span>
+        <span class="n">positions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">mol</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">before</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">remaining</span> <span class="ow">and</span> <span class="n">mol</span> <span class="ow">is</span> <span class="n">remaining</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">positions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">remaining</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">positions</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Frederico Schmitt Kremer
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-09-09</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=95e61db4"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

@@ -1,0 +1,2314 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#"><link rel="search" title="Search" href="search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 --><title>Index - qsarkit 0.2</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">qsarkit 0.2</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="guide/index.html">User guide</a><input aria-label="Toggle navigation of User guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/quickstart.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/functional.html">The functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/curation.html">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/oecd.html">OECD validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/base.html">Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/chemistry.html">Chemistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/functional.html">Functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/data_quality.html">Data quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/transform.html">Transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/neighbors.html">Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cluster.html">Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/feature_selection.html">Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/model_selection.html">Model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/validation.html">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/explainability.html">Explainability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/chemspace.html">Chemical space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#J"><strong>J</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a> | <a href="#X"><strong>X</strong></a> | <a href="#Y"><strong>Y</strong></a></div>
+</section>
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/metrics.html#qsarkit.metrics.accuracy">accuracy() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.ADAnalyzer.accuracy_vs_coverage">accuracy_vs_coverage() (qsarkit.applicability.ADAnalyzer method)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.DuplicateGroup.activities">activities (qsarkit.data_quality.DuplicateGroup attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliff.activity_a">activity_a (qsarkit.sar.ActivityCliff attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliff.activity_b">activity_b (qsarkit.sar.ActivityCliff attribute)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.activity_check">activity_check (qsarkit.data_quality.CurationReport attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.activity_cliff_report">activity_cliff_report() (in module qsarkit.sar)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliff">ActivityCliff (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliffDetector">ActivityCliffDetector (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityLandscapePlotter">ActivityLandscapePlotter (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.ActivityOutlierDetector">ActivityOutlierDetector (class in qsarkit.data_quality)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.ADAnalyzer">ADAnalyzer (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.add_applicability_section">add_applicability_section() (qsarkit.reporting.QSARReport method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.add_dataset_section">add_dataset_section() (qsarkit.reporting.QSARReport method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/reporting.html#qsarkit.reporting.OECDReportBuilder.add_evidence">add_evidence() (qsarkit.reporting.OECDReportBuilder method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.add_model_section">add_model_section() (qsarkit.reporting.QSARReport method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.add_section">add_section() (qsarkit.reporting.QSARReport method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.add_validation_section">add_validation_section() (qsarkit.reporting.QSARReport method)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.adjusted_r2_score">adjusted_r2_score() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.DiversityAnalyzer.analyze">analyze() (qsarkit.chemspace.DiversityAnalyzer method)</a>
+
+        <ul>
+          <li><a href="api/explainability.html#qsarkit.explainability.FragmentContributionAnalyzer.analyze">(qsarkit.explainability.FragmentContributionAnalyzer method)</a>
+</li>
+          <li><a href="api/sar.html#qsarkit.sar.SARIAnalyzer.analyze">(qsarkit.sar.SARIAnalyzer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/functional.html#qsarkit.functional.applicability_domain">applicability_domain() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.apply">apply() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AtomicContribution">AtomicContribution (class in qsarkit.explainability)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AtomicContributionMap">AtomicContributionMap (class in qsarkit.explainability)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.AtomPairFingerprint">AtomPairFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.AvalonFingerprint">AvalonFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.average_r2m">average_r2m() (in module qsarkit.metrics)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/functional.html#qsarkit.functional.balance">balance() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.balanced_accuracy">balanced_accuracy() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.BaseApplicabilityDomain">BaseApplicabilityDomain (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.BaseDescriptorTransformer">BaseDescriptorTransformer (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.BaseFingerprintTransformer">BaseFingerprintTransformer (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.BaselineModel">BaselineModel (class in qsarkit.models)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.BaseSplitter">BaseSplitter (class in qsarkit.model_selection)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.BaseUncertaintyEstimator">BaseUncertaintyEstimator (class in qsarkit.uncertainty)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.bedroc">bedroc() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.CoreExtractor.bemis_murcko">bemis_murcko() (qsarkit.chemistry.CoreExtractor method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.bemis_murcko_smiles">bemis_murcko_smiles() (in module qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.NestedCV.best_params_">best_params_ (qsarkit.model_selection.NestedCV attribute)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.bias">bias() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.BorutaSelector">BorutaSelector (class in qsarkit.feature_selection)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.BoundingBoxAD">BoundingBoxAD (in module qsarkit.applicability)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.brier_score">brier_score() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.OECDReportBuilder.build">build() (qsarkit.reporting.OECDReportBuilder method)</a>
+
+        <ul>
+          <li><a href="api/sar.html#qsarkit.sar.SARTable.build">(qsarkit.sar.SARTable method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/cluster.html#qsarkit.cluster.ButinaClustering">ButinaClustering (class in qsarkit.cluster)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.ButinaClusterSplitter">ButinaClusterSplitter (class in qsarkit.model_selection)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.calibration_scores_">calibration_scores_ (qsarkit.uncertainty.ConformalClassifier attribute)</a>
+
+        <ul>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalRegressor.calibration_scores_">(qsarkit.uncertainty.ConformalRegressor attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/functional.html#qsarkit.functional.canonicalize_tautomers">canonicalize_tautomers() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.ccc">ccc() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.check_activity_units">check_activity_units() (in module qsarkit.data_quality)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.check_mols">check_mols() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.check_X_y_mols">check_X_y_mols() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.ChemBERTaTransformer">ChemBERTaTransformer (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ChemicalSpaceAnalyzer">ChemicalSpaceAnalyzer (class in qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ChemicalSpaceCoverage">ChemicalSpaceCoverage (class in qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.QSARClassifier.classes_">classes_ (qsarkit.models.QSARClassifier attribute)</a>
+
+        <ul>
+          <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsClassifier.classes_">(qsarkit.neighbors.JaccardKNeighborsClassifier attribute)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.classes_">(qsarkit.uncertainty.ConformalClassifier attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/cluster.html#qsarkit.cluster.ButinaClustering.cluster_centers_indices_">cluster_centers_indices_ (qsarkit.cluster.ButinaClustering attribute)</a>
+
+        <ul>
+          <li><a href="api/cluster.html#qsarkit.cluster.SphereExclusionClustering.cluster_centers_indices_">(qsarkit.cluster.SphereExclusionClustering attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ClusterAnalyzer.cluster_members">cluster_members() (qsarkit.chemspace.ClusterAnalyzer method)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ClusterAnalyzer">ClusterAnalyzer (class in qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.ValidationIssue.code">code (qsarkit.data_quality.ValidationIssue attribute)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.cohen_kappa">cohen_kappa() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.collect">collect() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ChemicalSpaceCoverage.compare">compare() (qsarkit.chemspace.ChemicalSpaceCoverage method)</a>
+
+        <ul>
+          <li><a href="api/chemspace.html#qsarkit.chemspace.DiversityAnalyzer.compare">(qsarkit.chemspace.DiversityAnalyzer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/explainability.html#qsarkit.explainability.PartialDependence.compute">compute() (qsarkit.explainability.PartialDependence method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.compute_fingerprints">compute_fingerprints() (in module qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.configure_logging">configure_logging() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier">ConformalClassifier (class in qsarkit.uncertainty)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalPredictor">ConformalPredictor() (in module qsarkit.uncertainty)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalRegressor">ConformalRegressor (class in qsarkit.uncertainty)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.confusion_counts">confusion_counts() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.ConsensusModel">ConsensusModel (class in qsarkit.models)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.DuplicateGroup.consistent">consistent (qsarkit.data_quality.DuplicateGroup attribute)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.ConstitutionalDescriptors">ConstitutionalDescriptors (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.ReportSection.content">content (qsarkit.reporting.ReportSection attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.contributions_">contributions_ (qsarkit.sar.FreeWilsonAnalysis attribute)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.convert_concentration">convert_concentration() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.ConvexHullAD">ConvexHullAD (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.MatchedPair.core">core (qsarkit.sar.MatchedPair attribute)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.CoreExtractor">CoreExtractor (class in qsarkit.chemistry)</a>
+</li>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.CorrelationFilter.correlation_matrix_">correlation_matrix_ (qsarkit.feature_selection.CorrelationFilter attribute)</a>
+</li>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.CorrelationFilter">CorrelationFilter (class in qsarkit.feature_selection)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.CounterfactualExplainer">CounterfactualExplainer (class in qsarkit.explainability)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.ADAnalyzer.coverage">coverage() (qsarkit.applicability.ADAnalyzer method)</a>
+
+        <ul>
+          <li><a href="api/applicability.html#qsarkit.applicability.BaseApplicabilityDomain.coverage">(qsarkit.applicability.BaseApplicabilityDomain method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.UncertaintyCalibration.coverage_curve">coverage_curve() (qsarkit.uncertainty.UncertaintyCalibration method)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.cross_validate">cross_validate() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/validation.html#qsarkit.validation.CrossValidator">CrossValidator (class in qsarkit.validation)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport">CurationReport (class in qsarkit.data_quality)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.DataCurationPipeline">DataCurationPipeline (class in qsarkit.data_quality)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.dataframe_to_mols">dataframe_to_mols() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.BorutaSelector.decision_">decision_ (qsarkit.feature_selection.BorutaSelector attribute)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.BaseApplicabilityDomain.decision_function">decision_function() (qsarkit.applicability.BaseApplicabilityDomain method)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.RGroupAnalyzer.decompose">decompose() (qsarkit.sar.RGroupAnalyzer method)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.AvalonFingerprint.DEFAULT_BIT_FLAGS">DEFAULT_BIT_FLAGS (qsarkit.representation.AvalonFingerprint attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.deglycate">deglycate() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliff.delta">delta (qsarkit.sar.ActivityCliff attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.MatchedPair.delta_activity">delta_activity (qsarkit.sar.MatchedPair attribute)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.delta_r2m">delta_r2m() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.desalt">desalt() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.describe">describe() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.DescriptorCalculator">DescriptorCalculator (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.MolecularGraph.descriptors">descriptors() (qsarkit.chemistry.MolecularGraph method)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.Descriptors3D">Descriptors3D (class in qsarkit.representation)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/transform.html#qsarkit.transform.DescriptorScaler">DescriptorScaler (class in qsarkit.transform)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.PipelineNode.detail">detail (qsarkit.functional.PipelineNode attribute)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.GlycanDetector.detect">detect() (qsarkit.chemistry.GlycanDetector method)</a>
+
+        <ul>
+          <li><a href="api/data_quality.html#qsarkit.data_quality.ActivityOutlierDetector.detect">(qsarkit.data_quality.ActivityOutlierDetector method)</a>
+</li>
+          <li><a href="api/sar.html#qsarkit.sar.ActivityCliffDetector.detect">(qsarkit.sar.ActivityCliffDetector method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/models.html#qsarkit.models.TanimotoKernel.diag">diag() (qsarkit.models.TanimotoKernel method)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.DistanceToModelAD">DistanceToModelAD (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.DiversityAnalyzer">DiversityAnalyzer (class in qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.PipelineNode.domain">domain (qsarkit.functional.PipelineNode attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.drop_constant">drop_constant() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.drop_correlated">drop_correlated() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.drop_if">drop_if() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.drop_invalid">drop_invalid() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.BaselineModel.dummy_">dummy_ (qsarkit.models.BaselineModel attribute)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.DuplicateDetector">DuplicateDetector (class in qsarkit.data_quality)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.DuplicateGroup">DuplicateGroup (class in qsarkit.data_quality)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ChemicalSpaceAnalyzer.embedding_">embedding_ (qsarkit.chemspace.ChemicalSpaceAnalyzer attribute)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.UncertaintyCalibration.ence">ence() (qsarkit.uncertainty.UncertaintyCalibration method)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.enrichment_factor">enrichment_factor() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.EnsembleAD">EnsembleAD (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.EnsembleUncertainty">EnsembleUncertainty (class in qsarkit.uncertainty)</a>
+</li>
+        <li><a href="api/base.html#qsarkit.base.ensure_mol_list">ensure_mol_list() (in module qsarkit.base)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.ConsensusModel.estimator_">estimator_ (qsarkit.models.ConsensusModel attribute)</a>
+
+        <ul>
+          <li><a href="api/models.html#qsarkit.models.QSARClassifier.estimator_">(qsarkit.models.QSARClassifier attribute)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.QSARRegressor.estimator_">(qsarkit.models.QSARRegressor attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.EnsembleUncertainty.estimators_">estimators_ (qsarkit.uncertainty.EnsembleUncertainty attribute)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.evaluate">evaluate() (qsarkit.uncertainty.ConformalClassifier method)</a>
+
+        <ul>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalRegressor.evaluate">(qsarkit.uncertainty.ConformalRegressor method)</a>
+</li>
+          <li><a href="api/validation.html#qsarkit.validation.CrossValidator.evaluate">(qsarkit.validation.CrossValidator method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AtomicContributionMap.explain">explain() (qsarkit.explainability.AtomicContributionMap method)</a>
+
+        <ul>
+          <li><a href="api/explainability.html#qsarkit.explainability.CounterfactualExplainer.explain">(qsarkit.explainability.CounterfactualExplainer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/explainability.html#qsarkit.explainability.LIMEExplainer.explain_one">explain_one() (qsarkit.explainability.LIMEExplainer method)</a>
+
+        <ul>
+          <li><a href="api/explainability.html#qsarkit.explainability.SHAPExplainer.explain_one">(qsarkit.explainability.SHAPExplainer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/explainability.html#qsarkit.explainability.LIMEExplainer.explainer">explainer (qsarkit.explainability.LIMEExplainer property)</a>
+
+        <ul>
+          <li><a href="api/explainability.html#qsarkit.explainability.SHAPExplainer.explainer">(qsarkit.explainability.SHAPExplainer property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/metrics.html#qsarkit.metrics.f1_score">f1_score() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.ValidationIssue.fatal">fatal (qsarkit.data_quality.ValidationIssue attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureSet.feature_names">feature_names (qsarkit.functional.FeatureSet attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.feature_names_">feature_names_ (qsarkit.sar.FreeWilsonAnalysis attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.feature_step">feature_step() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.FeatureMorganFingerprint">FeatureMorganFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureSet">FeatureSet (class in qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureStep">FeatureStep (class in qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.featurize">featurize() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.figure_to_html">figure_to_html() (in module qsarkit.reporting)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.ReportSection.figures">figures (qsarkit.reporting.ReportSection attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.filter_by_property">filter_by_property() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.DuplicateDetector.find_duplicates">find_duplicates() (qsarkit.data_quality.DuplicateDetector method)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.GlycanDetector.find_glycans">find_glycans() (qsarkit.chemistry.GlycanDetector method)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.MatchedMolecularPairs.find_pairs">find_pairs() (qsarkit.sar.MatchedMolecularPairs method)</a>
+
+        <ul>
+          <li><a href="api/sar.html#qsarkit.sar.MMPAnalyzer.find_pairs">(qsarkit.sar.MMPAnalyzer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/functional.html#qsarkit.functional.fingerprint">fingerprint() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.FingerprintCombiner">FingerprintCombiner (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.fingerprints_to_array">fingerprints_to_array() (in module qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.fit">fit() (in module qsarkit.functional)</a>
+
+        <ul>
+          <li><a href="api/applicability.html#qsarkit.applicability.ADAnalyzer.fit">(qsarkit.applicability.ADAnalyzer method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.BaseApplicabilityDomain.fit">(qsarkit.applicability.BaseApplicabilityDomain method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.ConvexHullAD.fit">(qsarkit.applicability.ConvexHullAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.DistanceToModelAD.fit">(qsarkit.applicability.DistanceToModelAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.EnsembleAD.fit">(qsarkit.applicability.EnsembleAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.IsolationForestAD.fit">(qsarkit.applicability.IsolationForestAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.KernelDensityAD.fit">(qsarkit.applicability.KernelDensityAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.KNNApplicabilityDomain.fit">(qsarkit.applicability.KNNApplicabilityDomain method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.LeverageAD.fit">(qsarkit.applicability.LeverageAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.PCABoundingBoxAD.fit">(qsarkit.applicability.PCABoundingBoxAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.RangeAD.fit">(qsarkit.applicability.RangeAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.TanimotoSimilarityAD.fit">(qsarkit.applicability.TanimotoSimilarityAD method)</a>
+</li>
+          <li><a href="api/base.html#qsarkit.base.MoleculeTransformer.fit">(qsarkit.base.MoleculeTransformer method)</a>
+</li>
+          <li><a href="api/chemspace.html#qsarkit.chemspace.ChemicalSpaceAnalyzer.fit">(qsarkit.chemspace.ChemicalSpaceAnalyzer method)</a>
+</li>
+          <li><a href="api/chemspace.html#qsarkit.chemspace.ClusterAnalyzer.fit">(qsarkit.chemspace.ClusterAnalyzer method)</a>
+</li>
+          <li><a href="api/chemspace.html#qsarkit.chemspace.NearestNeighborAnalyzer.fit">(qsarkit.chemspace.NearestNeighborAnalyzer method)</a>
+</li>
+          <li><a href="api/chemspace.html#qsarkit.chemspace.ScaffoldAnalyzer.fit">(qsarkit.chemspace.ScaffoldAnalyzer method)</a>
+</li>
+          <li><a href="api/cluster.html#qsarkit.cluster.ButinaClustering.fit">(qsarkit.cluster.ButinaClustering method)</a>
+</li>
+          <li><a href="api/cluster.html#qsarkit.cluster.HierarchicalClustering.fit">(qsarkit.cluster.HierarchicalClustering method)</a>
+</li>
+          <li><a href="api/cluster.html#qsarkit.cluster.MaxMinPicker.fit">(qsarkit.cluster.MaxMinPicker method)</a>
+</li>
+          <li><a href="api/cluster.html#qsarkit.cluster.SphereExclusionClustering.fit">(qsarkit.cluster.SphereExclusionClustering method)</a>
+</li>
+          <li><a href="api/explainability.html#qsarkit.explainability.PermutationImportance.fit">(qsarkit.explainability.PermutationImportance method)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.BorutaSelector.fit">(qsarkit.feature_selection.BorutaSelector method)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.CorrelationFilter.fit">(qsarkit.feature_selection.CorrelationFilter method)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.MutualInformationSelector.fit">(qsarkit.feature_selection.MutualInformationSelector method)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.RFESelector.fit">(qsarkit.feature_selection.RFESelector method)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.VarianceFilter.fit">(qsarkit.feature_selection.VarianceFilter method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.BaselineModel.fit">(qsarkit.models.BaselineModel method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.ConsensusModel.fit">(qsarkit.models.ConsensusModel method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.GaussianProcessQSAR.fit">(qsarkit.models.GaussianProcessQSAR method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.PLSRegressor.fit">(qsarkit.models.PLSRegressor method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.QSARClassifier.fit">(qsarkit.models.QSARClassifier method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.QSARRegressor.fit">(qsarkit.models.QSARRegressor method)</a>
+</li>
+          <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsClassifier.fit">(qsarkit.neighbors.JaccardKNeighborsClassifier method)</a>
+</li>
+          <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsRegressor.fit">(qsarkit.neighbors.JaccardKNeighborsRegressor method)</a>
+</li>
+          <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardNeighborSearch.fit">(qsarkit.neighbors.JaccardNeighborSearch method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.DescriptorCalculator.fit">(qsarkit.representation.DescriptorCalculator method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.FingerprintCombiner.fit">(qsarkit.representation.FingerprintCombiner method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.Mol2VecTransformer.fit">(qsarkit.representation.Mol2VecTransformer method)</a>
+</li>
+          <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.fit">(qsarkit.sar.FreeWilsonAnalysis method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.DescriptorScaler.fit">(qsarkit.transform.DescriptorScaler method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.MoleculeFeatureUnion.fit">(qsarkit.transform.MoleculeFeatureUnion method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.MolToSmiles.fit">(qsarkit.transform.MolToSmiles method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.NaNHandler.fit">(qsarkit.transform.NaNHandler method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.SmilesToMol.fit">(qsarkit.transform.SmilesToMol method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.VarianceThresholdMol.fit">(qsarkit.transform.VarianceThresholdMol method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.BaseUncertaintyEstimator.fit">(qsarkit.uncertainty.BaseUncertaintyEstimator method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.fit">(qsarkit.uncertainty.ConformalClassifier method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalRegressor.fit">(qsarkit.uncertainty.ConformalRegressor method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.EnsembleUncertainty.fit">(qsarkit.uncertainty.EnsembleUncertainty method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.GaussianProcessUncertainty.fit">(qsarkit.uncertainty.GaussianProcessUncertainty method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.MCDropoutUncertainty.fit">(qsarkit.uncertainty.MCDropoutUncertainty method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.QuantileRegressionUncertainty.fit">(qsarkit.uncertainty.QuantileRegressionUncertainty method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ClusterAnalyzer.fit_predict">fit_predict() (qsarkit.chemspace.ClusterAnalyzer method)</a>
+
+        <ul>
+          <li><a href="api/cluster.html#qsarkit.cluster.ButinaClustering.fit_predict">(qsarkit.cluster.ButinaClustering method)</a>
+</li>
+          <li><a href="api/cluster.html#qsarkit.cluster.HierarchicalClustering.fit_predict">(qsarkit.cluster.HierarchicalClustering method)</a>
+</li>
+          <li><a href="api/cluster.html#qsarkit.cluster.SphereExclusionClustering.fit_predict">(qsarkit.cluster.SphereExclusionClustering method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ChemicalSpaceAnalyzer.fit_transform">fit_transform() (qsarkit.chemspace.ChemicalSpaceAnalyzer method)</a>
+
+        <ul>
+          <li><a href="api/cluster.html#qsarkit.cluster.MaxMinPicker.fit_transform">(qsarkit.cluster.MaxMinPicker method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/base.html#qsarkit.base.FittableMoleculeTransformer">FittableMoleculeTransformer (class in qsarkit.base)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.fold_on_bits">fold_on_bits() (in module qsarkit.representation)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.FragmentContributionAnalyzer">FragmentContributionAnalyzer (class in qsarkit.explainability)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.FragmentDescriptors">FragmentDescriptors (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.FragmentRemover">FragmentRemover (class in qsarkit.chemistry)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis">FreeWilsonAnalysis (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.from_pactivity">from_pactivity() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.Mol2VecTransformer.from_pretrained">from_pretrained() (qsarkit.representation.Mol2VecTransformer class method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.OECDReportBuilder.from_validation">from_validation() (qsarkit.reporting.OECDReportBuilder method)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureStep.func">func (qsarkit.functional.FeatureStep attribute)</a>
+
+        <ul>
+          <li><a href="api/functional.html#qsarkit.functional.Step.func">(qsarkit.functional.Step attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/models.html#qsarkit.models.GaussianProcessQSAR">GaussianProcessQSAR (class in qsarkit.models)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.GaussianProcessUncertainty">GaussianProcessUncertainty (class in qsarkit.uncertainty)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.BaseDescriptorTransformer.get_feature_names_out">get_feature_names_out() (qsarkit.representation.BaseDescriptorTransformer method)</a>
+
+        <ul>
+          <li><a href="api/representation.html#qsarkit.representation.BaseFingerprintTransformer.get_feature_names_out">(qsarkit.representation.BaseFingerprintTransformer method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.DescriptorCalculator.get_feature_names_out">(qsarkit.representation.DescriptorCalculator method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.FingerprintCombiner.get_feature_names_out">(qsarkit.representation.FingerprintCombiner method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MACCSKeysFingerprint.get_feature_names_out">(qsarkit.representation.MACCSKeysFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.Mol2VecTransformer.get_feature_names_out">(qsarkit.representation.Mol2VecTransformer method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.DescriptorScaler.get_feature_names_out">(qsarkit.transform.DescriptorScaler method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.MoleculeFeatureUnion.get_feature_names_out">(qsarkit.transform.MoleculeFeatureUnion method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.NaNHandler.get_feature_names_out">(qsarkit.transform.NaNHandler method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/utils.html#qsarkit.utils.get_logger">get_logger() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.BaseSplitter.get_n_splits">get_n_splits() (qsarkit.model_selection.BaseSplitter method)</a>
+</li>
+        <li><a href="api/transform.html#qsarkit.transform.VarianceThresholdMol.get_support">get_support() (qsarkit.transform.VarianceThresholdMol method)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.SHAPExplainer.global_importance">global_importance() (qsarkit.explainability.SHAPExplainer method)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.GlycanDescriptors">GlycanDescriptors (class in qsarkit.chemistry)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.GlycanDetector">GlycanDetector (class in qsarkit.chemistry)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.GlycanRemover">GlycanRemover (class in qsarkit.chemistry)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.golbraikh_tropsha_criteria">golbraikh_tropsha_criteria() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ScaffoldAnalyzer.groups">groups() (qsarkit.chemspace.ScaffoldAnalyzer method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/cluster.html#qsarkit.cluster.HierarchicalClustering">HierarchicalClustering (class in qsarkit.cluster)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureSet.history">history (qsarkit.functional.FeatureSet attribute)</a>
+
+        <ul>
+          <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.history">(qsarkit.functional.MoleculeSet attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.BorutaSelector.hits_">hits_ (qsarkit.feature_selection.BorutaSelector attribute)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.hyperparameter_search">hyperparameter_search() (in module qsarkit.model_selection)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.TanimotoKernel.hyperparameter_sigma_0">hyperparameter_sigma_0 (qsarkit.models.TanimotoKernel property)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/explainability.html#qsarkit.explainability.PermutationImportance.importances_mean_">importances_mean_ (qsarkit.explainability.PermutationImportance attribute)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.PermutationImportance.importances_std_">importances_std_ (qsarkit.explainability.PermutationImportance attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.impute">impute() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.ValidationIssue.index">index (qsarkit.data_quality.ValidationIssue attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliff.index_a">index_a (qsarkit.sar.ActivityCliff attribute)</a>
+
+        <ul>
+          <li><a href="api/sar.html#qsarkit.sar.MatchedPair.index_a">(qsarkit.sar.MatchedPair attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliff.index_b">index_b (qsarkit.sar.ActivityCliff attribute)</a>
+
+        <ul>
+          <li><a href="api/sar.html#qsarkit.sar.MatchedPair.index_b">(qsarkit.sar.MatchedPair attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.DuplicateGroup.indices">indices (qsarkit.data_quality.DuplicateGroup attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.intercept_">intercept_ (qsarkit.sar.FreeWilsonAnalysis attribute)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalRegressor.interval_width">interval_width() (qsarkit.uncertainty.ConformalRegressor method)</a>
+</li>
+        <li><a href="api/base.html#qsarkit.base.InvalidMoleculeError">InvalidMoleculeError</a>
+</li>
+        <li><a href="api/transform.html#qsarkit.transform.DescriptorScaler.inverse_transform">inverse_transform() (qsarkit.transform.DescriptorScaler method)</a>
+</li>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.is_binary">is_binary() (in module qsarkit.neighbors)</a>
+</li>
+        <li><a href="api/base.html#qsarkit.base.FittableMoleculeTransformer.is_fitted">is_fitted (qsarkit.base.FittableMoleculeTransformer property)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.TanimotoKernel.is_stationary">is_stationary() (qsarkit.models.TanimotoKernel method)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.IsolationForestAD">IsolationForestAD (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.iter_mols">iter_mols() (qsarkit.functional.MoleculeSet method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="J" class="genindex-section">
+  <h2>J</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.jaccard_distance">jaccard_distance() (in module qsarkit.neighbors)</a>
+</li>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.jaccard_distance_matrix">jaccard_distance_matrix() (in module qsarkit.neighbors)</a>
+</li>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.jaccard_similarity">jaccard_similarity() (in module qsarkit.neighbors)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsClassifier">JaccardKNeighborsClassifier (class in qsarkit.neighbors)</a>
+</li>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsRegressor">JaccardKNeighborsRegressor (class in qsarkit.neighbors)</a>
+</li>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardNeighborSearch">JaccardNeighborSearch (class in qsarkit.neighbors)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/metrics.html#qsarkit.metrics.k_prime_slope">k_prime_slope() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.k_slope">k_slope() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.keep_if">keep_if() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.KennardStoneSplitter">KennardStoneSplitter (class in qsarkit.model_selection)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/models.html#qsarkit.models.GaussianProcessQSAR.kernel">kernel (qsarkit.models.GaussianProcessQSAR attribute)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.KernelDensityAD">KernelDensityAD (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.DuplicateGroup.key">key (qsarkit.data_quality.DuplicateGroup attribute)</a>
+</li>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardNeighborSearch.kneighbors">kneighbors() (qsarkit.neighbors.JaccardNeighborSearch method)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.KNNApplicabilityDomain">KNNApplicabilityDomain (class in qsarkit.applicability)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/functional.html#qsarkit.functional.PipelineNode.label">label (qsarkit.functional.PipelineNode attribute)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ClusterAnalyzer.labels_">labels_ (qsarkit.chemspace.ClusterAnalyzer attribute)</a>
+
+        <ul>
+          <li><a href="api/cluster.html#qsarkit.cluster.ButinaClustering.labels_">(qsarkit.cluster.ButinaClustering attribute)</a>
+</li>
+          <li><a href="api/cluster.html#qsarkit.cluster.HierarchicalClustering.labels_">(qsarkit.cluster.HierarchicalClustering attribute)</a>
+</li>
+          <li><a href="api/cluster.html#qsarkit.cluster.SphereExclusionClustering.labels_">(qsarkit.cluster.SphereExclusionClustering attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/representation.html#qsarkit.representation.LayeredFingerprint">LayeredFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.LeverageAD">LeverageAD (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.LIMEExplainer">LIMEExplainer (class in qsarkit.explainability)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.LipinskiDescriptors">LipinskiDescriptors (class in qsarkit.representation)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/representation.html#qsarkit.representation.MACCSKeysFingerprint">MACCSKeysFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.mae">mae() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/transform.html#qsarkit.transform.make_qsar_pipeline">make_qsar_pipeline() (in module qsarkit.transform)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.MAP4Fingerprint">MAP4Fingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.MatchedMolecularPairs">MatchedMolecularPairs (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.MatchedPair">MatchedPair (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.matthews_corrcoef">matthews_corrcoef() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/cluster.html#qsarkit.cluster.MaxMinPicker">MaxMinPicker (class in qsarkit.cluster)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.MaxMinSplitter">MaxMinSplitter (class in qsarkit.model_selection)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.MCDropoutUncertainty">MCDropoutUncertainty (class in qsarkit.uncertainty)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.CoreExtractor.mcs">mcs() (qsarkit.chemistry.CoreExtractor method)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.CoreExtractor.medchem_core">medchem_core() (qsarkit.chemistry.CoreExtractor method)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.median_ae">median_ae() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.EnsembleAD.member_predictions">member_predictions() (qsarkit.applicability.EnsembleAD method)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.merge_replicates">merge_replicates() (in module qsarkit.data_quality)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.ValidationIssue.message">message (qsarkit.data_quality.ValidationIssue attribute)</a>
+</li>
+        <li><a href="api/validation.html#qsarkit.validation.CrossValidator.method">method (qsarkit.validation.CrossValidator attribute)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.MHFPFingerprint">MHFPFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/cluster.html#qsarkit.cluster.MaxMinPicker.min_distances_">min_distances_ (qsarkit.cluster.MaxMinPicker attribute)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.UncertaintyCalibration.miscalibration_area">miscalibration_area() (qsarkit.uncertainty.UncertaintyCalibration method)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.BaseDescriptorTransformer.missing_value">missing_value (qsarkit.representation.BaseDescriptorTransformer attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.MMPAnalyzer">MMPAnalyzer (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/base.html#qsarkit.base.ModelNotFittedError">ModelNotFittedError</a>
+</li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="api/applicability.html#module-qsarkit.applicability">qsarkit.applicability</a>
+</li>
+          <li><a href="api/base.html#module-qsarkit.base">qsarkit.base</a>
+</li>
+          <li><a href="api/chemistry.html#module-qsarkit.chemistry">qsarkit.chemistry</a>
+</li>
+          <li><a href="api/chemspace.html#module-qsarkit.chemspace">qsarkit.chemspace</a>
+</li>
+          <li><a href="api/cluster.html#module-qsarkit.cluster">qsarkit.cluster</a>
+</li>
+          <li><a href="api/data_quality.html#module-qsarkit.data_quality">qsarkit.data_quality</a>
+</li>
+          <li><a href="api/explainability.html#module-qsarkit.explainability">qsarkit.explainability</a>
+</li>
+          <li><a href="api/feature_selection.html#module-qsarkit.feature_selection">qsarkit.feature_selection</a>
+</li>
+          <li><a href="api/metrics.html#module-qsarkit.metrics">qsarkit.metrics</a>
+</li>
+          <li><a href="api/model_selection.html#module-qsarkit.model_selection">qsarkit.model_selection</a>
+</li>
+          <li><a href="api/models.html#module-qsarkit.models">qsarkit.models</a>
+</li>
+          <li><a href="api/neighbors.html#module-qsarkit.neighbors">qsarkit.neighbors</a>
+</li>
+          <li><a href="api/reporting.html#module-qsarkit.reporting">qsarkit.reporting</a>
+</li>
+          <li><a href="api/representation.html#module-qsarkit.representation">qsarkit.representation</a>
+</li>
+          <li><a href="api/sar.html#module-qsarkit.sar">qsarkit.sar</a>
+</li>
+          <li><a href="api/transform.html#module-qsarkit.transform">qsarkit.transform</a>
+</li>
+          <li><a href="api/uncertainty.html#module-qsarkit.uncertainty">qsarkit.uncertainty</a>
+</li>
+          <li><a href="api/utils.html#module-qsarkit.utils">qsarkit.utils</a>
+</li>
+          <li><a href="api/validation.html#module-qsarkit.validation">qsarkit.validation</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/representation.html#qsarkit.representation.Mol2VecTransformer">Mol2VecTransformer (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliff.mol_a">mol_a (qsarkit.sar.ActivityCliff attribute)</a>
+
+        <ul>
+          <li><a href="api/sar.html#qsarkit.sar.MatchedPair.mol_a">(qsarkit.sar.MatchedPair attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliff.mol_b">mol_b (qsarkit.sar.ActivityCliff attribute)</a>
+
+        <ul>
+          <li><a href="api/sar.html#qsarkit.sar.MatchedPair.mol_b">(qsarkit.sar.MatchedPair attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/representation.html#qsarkit.representation.mol_to_sentence">mol_to_sentence() (in module qsarkit.representation)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.MolecularGraph">MolecularGraph (class in qsarkit.chemistry)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.MolecularStandardizer">MolecularStandardizer (class in qsarkit.chemistry)</a>
+</li>
+        <li><a href="api/transform.html#qsarkit.transform.MoleculeFeatureUnion">MoleculeFeatureUnion (class in qsarkit.transform)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.molecules">molecules() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.MoleculeSet">MoleculeSet (class in qsarkit.functional)</a>
+</li>
+        <li><a href="api/base.html#qsarkit.base.MoleculeToMoleculeTransformer">MoleculeToMoleculeTransformer (class in qsarkit.base)</a>
+</li>
+        <li><a href="api/base.html#qsarkit.base.MoleculeTransformer">MoleculeTransformer (class in qsarkit.base)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureSet.mols">mols (qsarkit.functional.FeatureSet attribute)</a>
+
+        <ul>
+          <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.mols">(qsarkit.functional.MoleculeSet attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/utils.html#qsarkit.utils.mols_to_dataframe">mols_to_dataframe() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/transform.html#qsarkit.transform.MolToSmiles">MolToSmiles (class in qsarkit.transform)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.morgan_generator">morgan_generator() (in module qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.MorganFingerprint">MorganFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ScaffoldAnalyzer.most_common">most_common() (qsarkit.chemspace.ScaffoldAnalyzer method)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AtomicContribution.most_negative">most_negative (qsarkit.explainability.AtomicContribution property)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AtomicContribution.most_positive">most_positive (qsarkit.explainability.AtomicContribution property)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.mse">mse() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.MutualInformationSelector">MutualInformationSelector (class in qsarkit.feature_selection)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/cluster.html#qsarkit.cluster.ButinaClustering.n_clusters_">n_clusters_ (qsarkit.cluster.ButinaClustering attribute)</a>
+
+        <ul>
+          <li><a href="api/cluster.html#qsarkit.cluster.HierarchicalClustering.n_clusters_">(qsarkit.cluster.HierarchicalClustering attribute)</a>
+</li>
+          <li><a href="api/cluster.html#qsarkit.cluster.SphereExclusionClustering.n_clusters_">(qsarkit.cluster.SphereExclusionClustering attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/applicability.html#qsarkit.applicability.BaseApplicabilityDomain.n_features_in_">n_features_in_ (qsarkit.applicability.BaseApplicabilityDomain attribute)</a>
+
+        <ul>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.BorutaSelector.n_features_in_">(qsarkit.feature_selection.BorutaSelector attribute)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.CorrelationFilter.n_features_in_">(qsarkit.feature_selection.CorrelationFilter attribute)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.MutualInformationSelector.n_features_in_">(qsarkit.feature_selection.MutualInformationSelector attribute)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.RFESelector.n_features_in_">(qsarkit.feature_selection.RFESelector attribute)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.VarianceFilter.n_features_in_">(qsarkit.feature_selection.VarianceFilter attribute)</a>
+</li>
+          <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardNeighborSearch.n_features_in_">(qsarkit.neighbors.JaccardNeighborSearch attribute)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.DescriptorScaler.n_features_in_">(qsarkit.transform.DescriptorScaler attribute)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.NaNHandler.n_features_in_">(qsarkit.transform.NaNHandler attribute)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.VarianceThresholdMol.n_features_in_">(qsarkit.transform.VarianceThresholdMol attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/representation.html#qsarkit.representation.AtomPairFingerprint.n_features_out">n_features_out (qsarkit.representation.AtomPairFingerprint property)</a>
+
+        <ul>
+          <li><a href="api/representation.html#qsarkit.representation.AvalonFingerprint.n_features_out">(qsarkit.representation.AvalonFingerprint property)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.BaseFingerprintTransformer.n_features_out">(qsarkit.representation.BaseFingerprintTransformer property)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.LayeredFingerprint.n_features_out">(qsarkit.representation.LayeredFingerprint property)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MACCSKeysFingerprint.n_features_out">(qsarkit.representation.MACCSKeysFingerprint property)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MAP4Fingerprint.n_features_out">(qsarkit.representation.MAP4Fingerprint property)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MHFPFingerprint.n_features_out">(qsarkit.representation.MHFPFingerprint property)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MorganFingerprint.n_features_out">(qsarkit.representation.MorganFingerprint property)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.PatternFingerprint.n_features_out">(qsarkit.representation.PatternFingerprint property)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.PharmacophoreFingerprint.n_features_out">(qsarkit.representation.PharmacophoreFingerprint property)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.RDKitFingerprint.n_features_out">(qsarkit.representation.RDKitFingerprint property)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.TopologicalTorsionFingerprint.n_features_out">(qsarkit.representation.TopologicalTorsionFingerprint property)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.n_input">n_input (qsarkit.data_quality.CurationReport attribute)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.n_output">n_output (qsarkit.data_quality.CurationReport attribute)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.n_removed">n_removed (qsarkit.data_quality.CurationReport property)</a>
+</li>
+        <li><a href="api/validation.html#qsarkit.validation.CrossValidator.n_repeats">n_repeats (qsarkit.validation.CrossValidator attribute)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ScaffoldAnalyzer.n_scaffolds">n_scaffolds (qsarkit.chemspace.ScaffoldAnalyzer property)</a>
+</li>
+        <li><a href="api/validation.html#qsarkit.validation.CrossValidator.n_splits">n_splits (qsarkit.validation.CrossValidator attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.PipeStep.name">name (qsarkit.functional.PipeStep attribute)</a>
+</li>
+        <li><a href="api/transform.html#qsarkit.transform.NaNHandler">NaNHandler (class in qsarkit.transform)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.NearestNeighborAnalyzer.nearest_similarity">nearest_similarity() (qsarkit.chemspace.NearestNeighborAnalyzer method)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.NearestNeighborAnalyzer">NearestNeighborAnalyzer (class in qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.NestedCV">NestedCV (class in qsarkit.model_selection)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.NeuralNetworkQSAR">NeuralNetworkQSAR (class in qsarkit.models)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.neutralize">neutralize() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.nm_to_molar">nm_to_molar() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.NearestNeighborAnalyzer.novelty">novelty() (qsarkit.chemspace.NearestNeighborAnalyzer method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/reporting.html#qsarkit.reporting.OECDReportBuilder">OECDReportBuilder (class in qsarkit.reporting)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/base.html#qsarkit.base.OptionalDependencyError">OptionalDependencyError</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.p_values">p_values() (qsarkit.uncertainty.ConformalClassifier method)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.pactivity_to_delta_g">pactivity_to_delta_g() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.PipeStep.params">params (qsarkit.functional.PipeStep attribute)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.PartialDependence">PartialDependence (class in qsarkit.explainability)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.PatternFingerprint">PatternFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.PCABoundingBoxAD">PCABoundingBoxAD (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.PerimeterSplitter">PerimeterSplitter (class in qsarkit.model_selection)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.PermutationImportance">PermutationImportance (class in qsarkit.explainability)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.PharmacophoreFingerprint">PharmacophoreFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.PhysicochemicalDescriptors">PhysicochemicalDescriptors (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/cluster.html#qsarkit.cluster.MaxMinPicker.picks_">picks_ (qsarkit.cluster.MaxMinPicker attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.pipeline">pipeline() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.pipeline_nodes">pipeline_nodes() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.PipelineNode">PipelineNode (class in qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.PipeStep">PipeStep (class in qsarkit.functional)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.SARTable.pivot">pivot() (qsarkit.sar.SARTable method)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ChemicalSpaceAnalyzer.plot">plot() (qsarkit.chemspace.ChemicalSpaceAnalyzer method)</a>
+
+        <ul>
+          <li><a href="api/explainability.html#qsarkit.explainability.AtomicContributionMap.plot">(qsarkit.explainability.AtomicContributionMap method)</a>
+</li>
+          <li><a href="api/explainability.html#qsarkit.explainability.PartialDependence.plot">(qsarkit.explainability.PartialDependence method)</a>
+</li>
+          <li><a href="api/explainability.html#qsarkit.explainability.PermutationImportance.plot">(qsarkit.explainability.PermutationImportance method)</a>
+</li>
+          <li><a href="api/functional.html#qsarkit.functional.FeatureSet.plot">(qsarkit.functional.FeatureSet method)</a>
+</li>
+          <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.plot">(qsarkit.functional.MoleculeSet method)</a>
+</li>
+          <li><a href="api/functional.html#qsarkit.functional.PipeStep.plot">(qsarkit.functional.PipeStep method)</a>
+</li>
+          <li><a href="api/sar.html#qsarkit.sar.ActivityLandscapePlotter.plot">(qsarkit.sar.ActivityLandscapePlotter method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/applicability.html#qsarkit.applicability.ADAnalyzer.plot_accuracy_vs_coverage">plot_accuracy_vs_coverage() (qsarkit.applicability.ADAnalyzer method)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.UncertaintyCalibration.plot_calibration">plot_calibration() (qsarkit.uncertainty.UncertaintyCalibration method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_feature_importance">plot_feature_importance() (in module qsarkit.reporting)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.SHAPExplainer.plot_importance">plot_importance() (qsarkit.explainability.SHAPExplainer method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_learning_curve">plot_learning_curve() (in module qsarkit.reporting)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.plot_pipeline">plot_pipeline() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_predicted_vs_observed">plot_predicted_vs_observed() (in module qsarkit.reporting)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_residuals">plot_residuals() (in module qsarkit.reporting)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_roc_curve">plot_roc_curve() (in module qsarkit.reporting)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_williams">plot_williams() (in module qsarkit.reporting)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.PLSRegressor">PLSRegressor (class in qsarkit.models)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.pr_auc">pr_auc() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.precision">precision() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.BaseApplicabilityDomain.predict">predict() (qsarkit.applicability.BaseApplicabilityDomain method)</a>
+
+        <ul>
+          <li><a href="api/models.html#qsarkit.models.BaselineModel.predict">(qsarkit.models.BaselineModel method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.ConsensusModel.predict">(qsarkit.models.ConsensusModel method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.QSARClassifier.predict">(qsarkit.models.QSARClassifier method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.QSARRegressor.predict">(qsarkit.models.QSARRegressor method)</a>
+</li>
+          <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsClassifier.predict">(qsarkit.neighbors.JaccardKNeighborsClassifier method)</a>
+</li>
+          <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsRegressor.predict">(qsarkit.neighbors.JaccardKNeighborsRegressor method)</a>
+</li>
+          <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.predict">(qsarkit.sar.FreeWilsonAnalysis method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.BaseUncertaintyEstimator.predict">(qsarkit.uncertainty.BaseUncertaintyEstimator method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.predict">(qsarkit.uncertainty.ConformalClassifier method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalRegressor.predict">(qsarkit.uncertainty.ConformalRegressor method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.BaseUncertaintyEstimator.predict_interval">predict_interval() (qsarkit.uncertainty.BaseUncertaintyEstimator method)</a>
+
+        <ul>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalRegressor.predict_interval">(qsarkit.uncertainty.ConformalRegressor method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.QuantileRegressionUncertainty.predict_interval">(qsarkit.uncertainty.QuantileRegressionUncertainty method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/models.html#qsarkit.models.BaselineModel.predict_proba">predict_proba() (qsarkit.models.BaselineModel method)</a>
+
+        <ul>
+          <li><a href="api/models.html#qsarkit.models.ConsensusModel.predict_proba">(qsarkit.models.ConsensusModel method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.QSARClassifier.predict_proba">(qsarkit.models.QSARClassifier method)</a>
+</li>
+          <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsClassifier.predict_proba">(qsarkit.neighbors.JaccardKNeighborsClassifier method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.predict_set">predict_set() (qsarkit.uncertainty.ConformalClassifier method)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.BaseUncertaintyEstimator.predict_uncertainty">predict_uncertainty() (qsarkit.uncertainty.BaseUncertaintyEstimator method)</a>
+
+        <ul>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.EnsembleUncertainty.predict_uncertainty">(qsarkit.uncertainty.EnsembleUncertainty method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.GaussianProcessUncertainty.predict_uncertainty">(qsarkit.uncertainty.GaussianProcessUncertainty method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.MCDropoutUncertainty.predict_uncertainty">(qsarkit.uncertainty.MCDropoutUncertainty method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.QuantileRegressionUncertainty.predict_uncertainty">(qsarkit.uncertainty.QuantileRegressionUncertainty method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AtomicContribution.prediction">prediction (qsarkit.explainability.AtomicContribution attribute)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.press">press() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.OECDReportBuilder.PRINCIPLES">PRINCIPLES (qsarkit.reporting.OECDReportBuilder attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/metrics.html#qsarkit.metrics.q2_f1">q2_f1() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.q2_f2">q2_f2() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.q2_f3">q2_f3() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.qsar_classification_report">qsar_classification_report() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.qsar_regression_report">qsar_regression_report() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.QSARClassifier">QSARClassifier (class in qsarkit.models)</a>
+</li>
+        <li>
+    qsarkit.applicability
+
+        <ul>
+          <li><a href="api/applicability.html#module-qsarkit.applicability">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.base
+
+        <ul>
+          <li><a href="api/base.html#module-qsarkit.base">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.chemistry
+
+        <ul>
+          <li><a href="api/chemistry.html#module-qsarkit.chemistry">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.chemspace
+
+        <ul>
+          <li><a href="api/chemspace.html#module-qsarkit.chemspace">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.cluster
+
+        <ul>
+          <li><a href="api/cluster.html#module-qsarkit.cluster">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.data_quality
+
+        <ul>
+          <li><a href="api/data_quality.html#module-qsarkit.data_quality">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.explainability
+
+        <ul>
+          <li><a href="api/explainability.html#module-qsarkit.explainability">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.feature_selection
+
+        <ul>
+          <li><a href="api/feature_selection.html#module-qsarkit.feature_selection">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.metrics
+
+        <ul>
+          <li><a href="api/metrics.html#module-qsarkit.metrics">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    qsarkit.model_selection
+
+        <ul>
+          <li><a href="api/model_selection.html#module-qsarkit.model_selection">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.models
+
+        <ul>
+          <li><a href="api/models.html#module-qsarkit.models">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.neighbors
+
+        <ul>
+          <li><a href="api/neighbors.html#module-qsarkit.neighbors">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.reporting
+
+        <ul>
+          <li><a href="api/reporting.html#module-qsarkit.reporting">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.representation
+
+        <ul>
+          <li><a href="api/representation.html#module-qsarkit.representation">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.sar
+
+        <ul>
+          <li><a href="api/sar.html#module-qsarkit.sar">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.transform
+
+        <ul>
+          <li><a href="api/transform.html#module-qsarkit.transform">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.uncertainty
+
+        <ul>
+          <li><a href="api/uncertainty.html#module-qsarkit.uncertainty">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.utils
+
+        <ul>
+          <li><a href="api/utils.html#module-qsarkit.utils">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.validation
+
+        <ul>
+          <li><a href="api/validation.html#module-qsarkit.validation">module</a>
+</li>
+        </ul></li>
+        <li><a href="api/base.html#qsarkit.base.QsarkitError">QsarkitError</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.QSARRegressor">QSARRegressor (class in qsarkit.models)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport">QSARReport (class in qsarkit.reporting)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalRegressor.quantile_">quantile_ (qsarkit.uncertainty.ConformalRegressor attribute)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.QuantileRegressionUncertainty">QuantileRegressionUncertainty (class in qsarkit.uncertainty)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/metrics.html#qsarkit.metrics.r0_prime_squared">r0_prime_squared() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.r0_squared">r0_squared() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.r2_">r2_ (qsarkit.sar.FreeWilsonAnalysis attribute)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.r2_score">r2_score() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.r2m">r2m() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.r2m_prime">r2m_prime() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.RGroupAnalyzer.r_group_positions">r_group_positions() (qsarkit.sar.RGroupAnalyzer method)</a>
+</li>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardNeighborSearch.radius_neighbors">radius_neighbors() (qsarkit.neighbors.JaccardNeighborSearch method)</a>
+</li>
+        <li><a href="api/validation.html#qsarkit.validation.CrossValidator.random_state">random_state (qsarkit.validation.CrossValidator attribute)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.RandomForestQSAR">RandomForestQSAR (class in qsarkit.models)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.RandomSplitter">RandomSplitter (class in qsarkit.model_selection)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.RangeAD">RangeAD (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.RFESelector.ranking_">ranking_ (qsarkit.feature_selection.RFESelector attribute)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.RDKitDescriptors">RDKitDescriptors (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.RDKitFingerprint">RDKitFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.read_csv_mols">read_csv_mols() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.read_sdf">read_sdf() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.read_smiles">read_smiles() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.recall">recall() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.NearestNeighborAnalyzer.redundancy">redundancy() (qsarkit.chemspace.NearestNeighborAnalyzer method)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.GlycanRemover.remove">remove() (qsarkit.chemistry.GlycanRemover method)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.remove_duplicates">remove_duplicates() (in module qsarkit.functional)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/functional.html#qsarkit.functional.remove_protecting_groups">remove_protecting_groups() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.removed">removed (qsarkit.data_quality.CurationReport attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureSet.render">render() (qsarkit.functional.FeatureSet method)</a>
+
+        <ul>
+          <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.render">(qsarkit.functional.MoleculeSet method)</a>
+</li>
+          <li><a href="api/functional.html#qsarkit.functional.PipeStep.render">(qsarkit.functional.PipeStep method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/functional.html#qsarkit.functional.render_pipeline">render_pipeline() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureSet.replace">replace() (qsarkit.functional.FeatureSet method)</a>
+
+        <ul>
+          <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.replace">(qsarkit.functional.MoleculeSet method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/applicability.html#qsarkit.applicability.ADAnalyzer.report">report() (qsarkit.applicability.ADAnalyzer method)</a>
+
+        <ul>
+          <li><a href="api/data_quality.html#qsarkit.data_quality.DuplicateDetector.report">(qsarkit.data_quality.DuplicateDetector method)</a>
+</li>
+          <li><a href="api/uncertainty.html#qsarkit.uncertainty.UncertaintyCalibration.report">(qsarkit.uncertainty.UncertaintyCalibration method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/reporting.html#qsarkit.reporting.ReportSection">ReportSection (class in qsarkit.reporting)</a>
+</li>
+        <li><a href="api/base.html#qsarkit.base.require">require() (in module qsarkit.base)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.residuals">residuals() (qsarkit.sar.FreeWilsonAnalysis method)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.retention">retention (qsarkit.data_quality.CurationReport property)</a>
+</li>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.RFESelector">RFESelector (class in qsarkit.feature_selection)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.RGroupAnalyzer">RGroupAnalyzer (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.rmse">rmse() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.rmsep">rmsep() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.robust_initial_enhancement">robust_initial_enhancement() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.roc_auc">roc_auc() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.DataCurationPipeline.run">run() (qsarkit.data_quality.DataCurationPipeline method)</a>
+
+        <ul>
+          <li><a href="api/model_selection.html#qsarkit.model_selection.NestedCV.run">(qsarkit.model_selection.NestedCV method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliff.sali">sali (qsarkit.sar.ActivityCliff attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.SALIAnalyzer.sali_auc">sali_auc() (qsarkit.sar.SALIAnalyzer method)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.SALIAnalyzer.sali_curve">sali_curve() (qsarkit.sar.SALIAnalyzer method)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.SALIAnalyzer.sali_matrix">sali_matrix() (qsarkit.sar.SALIAnalyzer method)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.SALIAnalyzer.sali_network">sali_network() (qsarkit.sar.SALIAnalyzer method)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.SALIAnalyzer">SALIAnalyzer (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.sample">sample() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.SARIAnalyzer">SARIAnalyzer (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.SARTable">SARTable (class in qsarkit.sar)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityLandscapePlotter.sas_data">sas_data() (qsarkit.sar.ActivityLandscapePlotter method)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.Mol2VecTransformer.save">save() (qsarkit.representation.Mol2VecTransformer method)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ScaffoldAnalyzer">ScaffoldAnalyzer (class in qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ScaffoldAnalyzer.scaffolds_">scaffolds_ (qsarkit.chemspace.ScaffoldAnalyzer attribute)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.ScaffoldSplitter">ScaffoldSplitter (class in qsarkit.model_selection)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.scale">scale() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/transform.html#qsarkit.transform.DescriptorScaler.scaler_">scaler_ (qsarkit.transform.DescriptorScaler attribute)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.BaselineModel.score">score() (qsarkit.models.BaselineModel method)</a>
+
+        <ul>
+          <li><a href="api/models.html#qsarkit.models.ConsensusModel.score">(qsarkit.models.ConsensusModel method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/applicability.html#qsarkit.applicability.BaseApplicabilityDomain.score_samples">score_samples() (qsarkit.applicability.BaseApplicabilityDomain method)</a>
+
+        <ul>
+          <li><a href="api/applicability.html#qsarkit.applicability.ConvexHullAD.score_samples">(qsarkit.applicability.ConvexHullAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.DistanceToModelAD.score_samples">(qsarkit.applicability.DistanceToModelAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.EnsembleAD.score_samples">(qsarkit.applicability.EnsembleAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.IsolationForestAD.score_samples">(qsarkit.applicability.IsolationForestAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.KernelDensityAD.score_samples">(qsarkit.applicability.KernelDensityAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.KNNApplicabilityDomain.score_samples">(qsarkit.applicability.KNNApplicabilityDomain method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.LeverageAD.score_samples">(qsarkit.applicability.LeverageAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.PCABoundingBoxAD.score_samples">(qsarkit.applicability.PCABoundingBoxAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.RangeAD.score_samples">(qsarkit.applicability.RangeAD method)</a>
+</li>
+          <li><a href="api/applicability.html#qsarkit.applicability.TanimotoSimilarityAD.score_samples">(qsarkit.applicability.TanimotoSimilarityAD method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.ActivityOutlierDetector.scores">scores() (qsarkit.data_quality.ActivityOutlierDetector method)</a>
+</li>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.MutualInformationSelector.scores_">scores_ (qsarkit.feature_selection.MutualInformationSelector attribute)</a>
+
+        <ul>
+          <li><a href="api/model_selection.html#qsarkit.model_selection.NestedCV.scores_">(qsarkit.model_selection.NestedCV attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/metrics.html#qsarkit.metrics.see">see() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.select_features">select_features() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.sensitivity">sensitivity() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/base.html#qsarkit.base.FittableMoleculeTransformer.set_fit_request">set_fit_request() (qsarkit.base.FittableMoleculeTransformer method)</a>
+
+        <ul>
+          <li><a href="api/base.html#qsarkit.base.MoleculeToMoleculeTransformer.set_fit_request">(qsarkit.base.MoleculeToMoleculeTransformer method)</a>
+</li>
+          <li><a href="api/base.html#qsarkit.base.MoleculeTransformer.set_fit_request">(qsarkit.base.MoleculeTransformer method)</a>
+</li>
+          <li><a href="api/chemistry.html#qsarkit.chemistry.FragmentRemover.set_fit_request">(qsarkit.chemistry.FragmentRemover method)</a>
+</li>
+          <li><a href="api/chemistry.html#qsarkit.chemistry.GlycanDescriptors.set_fit_request">(qsarkit.chemistry.GlycanDescriptors method)</a>
+</li>
+          <li><a href="api/chemistry.html#qsarkit.chemistry.MolecularStandardizer.set_fit_request">(qsarkit.chemistry.MolecularStandardizer method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.NeuralNetworkQSAR.set_fit_request">(qsarkit.models.NeuralNetworkQSAR method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.RandomForestQSAR.set_fit_request">(qsarkit.models.RandomForestQSAR method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.SVMQSAR.set_fit_request">(qsarkit.models.SVMQSAR method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.AtomPairFingerprint.set_fit_request">(qsarkit.representation.AtomPairFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.AvalonFingerprint.set_fit_request">(qsarkit.representation.AvalonFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.BaseDescriptorTransformer.set_fit_request">(qsarkit.representation.BaseDescriptorTransformer method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.BaseFingerprintTransformer.set_fit_request">(qsarkit.representation.BaseFingerprintTransformer method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.ChemBERTaTransformer.set_fit_request">(qsarkit.representation.ChemBERTaTransformer method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.ConstitutionalDescriptors.set_fit_request">(qsarkit.representation.ConstitutionalDescriptors method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.DescriptorCalculator.set_fit_request">(qsarkit.representation.DescriptorCalculator method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.Descriptors3D.set_fit_request">(qsarkit.representation.Descriptors3D method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.FeatureMorganFingerprint.set_fit_request">(qsarkit.representation.FeatureMorganFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.FingerprintCombiner.set_fit_request">(qsarkit.representation.FingerprintCombiner method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.FragmentDescriptors.set_fit_request">(qsarkit.representation.FragmentDescriptors method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.LayeredFingerprint.set_fit_request">(qsarkit.representation.LayeredFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.LipinskiDescriptors.set_fit_request">(qsarkit.representation.LipinskiDescriptors method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MACCSKeysFingerprint.set_fit_request">(qsarkit.representation.MACCSKeysFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MAP4Fingerprint.set_fit_request">(qsarkit.representation.MAP4Fingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MHFPFingerprint.set_fit_request">(qsarkit.representation.MHFPFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.Mol2VecTransformer.set_fit_request">(qsarkit.representation.Mol2VecTransformer method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MorganFingerprint.set_fit_request">(qsarkit.representation.MorganFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.PatternFingerprint.set_fit_request">(qsarkit.representation.PatternFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.PharmacophoreFingerprint.set_fit_request">(qsarkit.representation.PharmacophoreFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.PhysicochemicalDescriptors.set_fit_request">(qsarkit.representation.PhysicochemicalDescriptors method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.RDKitDescriptors.set_fit_request">(qsarkit.representation.RDKitDescriptors method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.RDKitFingerprint.set_fit_request">(qsarkit.representation.RDKitFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.TopologicalTorsionFingerprint.set_fit_request">(qsarkit.representation.TopologicalTorsionFingerprint method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/models.html#qsarkit.models.NeuralNetworkQSAR.set_partial_fit_request">set_partial_fit_request() (qsarkit.models.NeuralNetworkQSAR method)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.GaussianProcessQSAR.set_predict_request">set_predict_request() (qsarkit.models.GaussianProcessQSAR method)</a>
+
+        <ul>
+          <li><a href="api/models.html#qsarkit.models.PLSRegressor.set_predict_request">(qsarkit.models.PLSRegressor method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/models.html#qsarkit.models.BaselineModel.set_score_request">set_score_request() (qsarkit.models.BaselineModel method)</a>
+
+        <ul>
+          <li><a href="api/models.html#qsarkit.models.ConsensusModel.set_score_request">(qsarkit.models.ConsensusModel method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.GaussianProcessQSAR.set_score_request">(qsarkit.models.GaussianProcessQSAR method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.NeuralNetworkQSAR.set_score_request">(qsarkit.models.NeuralNetworkQSAR method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.PLSRegressor.set_score_request">(qsarkit.models.PLSRegressor method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.QSARClassifier.set_score_request">(qsarkit.models.QSARClassifier method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.QSARRegressor.set_score_request">(qsarkit.models.QSARRegressor method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.RandomForestQSAR.set_score_request">(qsarkit.models.RandomForestQSAR method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.SVMQSAR.set_score_request">(qsarkit.models.SVMQSAR method)</a>
+</li>
+          <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsClassifier.set_score_request">(qsarkit.neighbors.JaccardKNeighborsClassifier method)</a>
+</li>
+          <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsRegressor.set_score_request">(qsarkit.neighbors.JaccardKNeighborsRegressor method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/base.html#qsarkit.base.FittableMoleculeTransformer.set_transform_request">set_transform_request() (qsarkit.base.FittableMoleculeTransformer method)</a>
+
+        <ul>
+          <li><a href="api/base.html#qsarkit.base.MoleculeToMoleculeTransformer.set_transform_request">(qsarkit.base.MoleculeToMoleculeTransformer method)</a>
+</li>
+          <li><a href="api/base.html#qsarkit.base.MoleculeTransformer.set_transform_request">(qsarkit.base.MoleculeTransformer method)</a>
+</li>
+          <li><a href="api/chemistry.html#qsarkit.chemistry.FragmentRemover.set_transform_request">(qsarkit.chemistry.FragmentRemover method)</a>
+</li>
+          <li><a href="api/chemistry.html#qsarkit.chemistry.GlycanDescriptors.set_transform_request">(qsarkit.chemistry.GlycanDescriptors method)</a>
+</li>
+          <li><a href="api/chemistry.html#qsarkit.chemistry.MolecularStandardizer.set_transform_request">(qsarkit.chemistry.MolecularStandardizer method)</a>
+</li>
+          <li><a href="api/models.html#qsarkit.models.PLSRegressor.set_transform_request">(qsarkit.models.PLSRegressor method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.AtomPairFingerprint.set_transform_request">(qsarkit.representation.AtomPairFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.AvalonFingerprint.set_transform_request">(qsarkit.representation.AvalonFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.BaseDescriptorTransformer.set_transform_request">(qsarkit.representation.BaseDescriptorTransformer method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.BaseFingerprintTransformer.set_transform_request">(qsarkit.representation.BaseFingerprintTransformer method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.ChemBERTaTransformer.set_transform_request">(qsarkit.representation.ChemBERTaTransformer method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.ConstitutionalDescriptors.set_transform_request">(qsarkit.representation.ConstitutionalDescriptors method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.DescriptorCalculator.set_transform_request">(qsarkit.representation.DescriptorCalculator method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.Descriptors3D.set_transform_request">(qsarkit.representation.Descriptors3D method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.FeatureMorganFingerprint.set_transform_request">(qsarkit.representation.FeatureMorganFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.FingerprintCombiner.set_transform_request">(qsarkit.representation.FingerprintCombiner method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.FragmentDescriptors.set_transform_request">(qsarkit.representation.FragmentDescriptors method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.LayeredFingerprint.set_transform_request">(qsarkit.representation.LayeredFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.LipinskiDescriptors.set_transform_request">(qsarkit.representation.LipinskiDescriptors method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MACCSKeysFingerprint.set_transform_request">(qsarkit.representation.MACCSKeysFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MAP4Fingerprint.set_transform_request">(qsarkit.representation.MAP4Fingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MHFPFingerprint.set_transform_request">(qsarkit.representation.MHFPFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.Mol2VecTransformer.set_transform_request">(qsarkit.representation.Mol2VecTransformer method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.MorganFingerprint.set_transform_request">(qsarkit.representation.MorganFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.PatternFingerprint.set_transform_request">(qsarkit.representation.PatternFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.PharmacophoreFingerprint.set_transform_request">(qsarkit.representation.PharmacophoreFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.PhysicochemicalDescriptors.set_transform_request">(qsarkit.representation.PhysicochemicalDescriptors method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.RDKitDescriptors.set_transform_request">(qsarkit.representation.RDKitDescriptors method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.RDKitFingerprint.set_transform_request">(qsarkit.representation.RDKitFingerprint method)</a>
+</li>
+          <li><a href="api/representation.html#qsarkit.representation.TopologicalTorsionFingerprint.set_transform_request">(qsarkit.representation.TopologicalTorsionFingerprint method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/explainability.html#qsarkit.explainability.SHAPExplainer.shap_values">shap_values() (qsarkit.explainability.SHAPExplainer method)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureSet.shape">shape (qsarkit.functional.FeatureSet property)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.SHAPExplainer">SHAPExplainer (class in qsarkit.explainability)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.MAP4Fingerprint.shingles">shingles() (qsarkit.representation.MAP4Fingerprint method)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.shuffle">shuffle() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliff.similarity">similarity (qsarkit.sar.ActivityCliff attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.ActivityCliffDetector.similarity_matrix">similarity_matrix() (qsarkit.sar.ActivityCliffDetector method)</a>
+</li>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardNeighborSearch.similarity_search">similarity_search() (qsarkit.neighbors.JaccardNeighborSearch method)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.TanimotoSimilarityAD.similarity_to_training">similarity_to_training() (qsarkit.applicability.TanimotoSimilarityAD method)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AtomicContribution.smiles">smiles (qsarkit.explainability.AtomicContribution attribute)</a>
+
+        <ul>
+          <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.smiles">(qsarkit.functional.MoleculeSet property)</a>
+</li>
+        </ul></li>
+        <li><a href="api/transform.html#qsarkit.transform.SmilesToMol">SmilesToMol (class in qsarkit.transform)</a>
+</li>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.UncertaintyCalibration.spearman_error_correlation">spearman_error_correlation() (qsarkit.uncertainty.UncertaintyCalibration method)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.specificity">specificity() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/cluster.html#qsarkit.cluster.SphereExclusionClustering">SphereExclusionClustering (class in qsarkit.cluster)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.SphereExclusionSplitter">SphereExclusionSplitter (class in qsarkit.model_selection)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.split">split() (in module qsarkit.functional)</a>
+
+        <ul>
+          <li><a href="api/model_selection.html#qsarkit.model_selection.BaseSplitter.split">(qsarkit.model_selection.BaseSplitter method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.BaseSplitter.split_mols">split_mols() (qsarkit.model_selection.BaseSplitter method)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.DuplicateGroup.spread">spread (qsarkit.data_quality.DuplicateGroup attribute)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.stages">stages (qsarkit.data_quality.CurationReport attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.standardize">standardize() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/transform.html#qsarkit.transform.NaNHandler.statistics_">statistics_ (qsarkit.transform.NaNHandler attribute)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.Step">Step (class in qsarkit.functional)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.step">step() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.StratifiedScaffoldSplitter">StratifiedScaffoldSplitter (class in qsarkit.model_selection)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.StructureValidator">StructureValidator (class in qsarkit.data_quality)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.SARTable.substituent_effects">substituent_effects() (qsarkit.sar.SARTable method)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ClusterAnalyzer.summary">summary() (qsarkit.chemspace.ClusterAnalyzer method)</a>
+
+        <ul>
+          <li><a href="api/chemspace.html#qsarkit.chemspace.ScaffoldAnalyzer.summary">(qsarkit.chemspace.ScaffoldAnalyzer method)</a>
+</li>
+          <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.summary">(qsarkit.data_quality.CurationReport method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.BorutaSelector.support_">support_ (qsarkit.feature_selection.BorutaSelector attribute)</a>
+
+        <ul>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.CorrelationFilter.support_">(qsarkit.feature_selection.CorrelationFilter attribute)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.MutualInformationSelector.support_">(qsarkit.feature_selection.MutualInformationSelector attribute)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.RFESelector.support_">(qsarkit.feature_selection.RFESelector attribute)</a>
+</li>
+          <li><a href="api/feature_selection.html#qsarkit.feature_selection.VarianceFilter.support_">(qsarkit.feature_selection.VarianceFilter attribute)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.NaNHandler.support_">(qsarkit.transform.NaNHandler attribute)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.VarianceThresholdMol.support_">(qsarkit.transform.VarianceThresholdMol attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/models.html#qsarkit.models.SVMQSAR">SVMQSAR (class in qsarkit.models)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/reporting.html#qsarkit.reporting.ReportSection.table">table (qsarkit.reporting.ReportSection attribute)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.tanimoto_matrix">tanimoto_matrix() (in module qsarkit.chemspace)</a>
+</li>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.tanimoto_similarity_matrix">tanimoto_similarity_matrix() (in module qsarkit.neighbors)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.TanimotoKernel">TanimotoKernel (class in qsarkit.models)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.TanimotoSimilarityAD">TanimotoSimilarityAD (class in qsarkit.applicability)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.ReportSection.text">text (qsarkit.reporting.ReportSection attribute)</a>
+</li>
+        <li><a href="api/applicability.html#qsarkit.applicability.BaseApplicabilityDomain.threshold_">threshold_ (qsarkit.applicability.BaseApplicabilityDomain attribute)</a>
+</li>
+        <li><a href="api/model_selection.html#qsarkit.model_selection.TimeSplitter">TimeSplitter (class in qsarkit.model_selection)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.ReportSection.title">title (qsarkit.reporting.ReportSection attribute)</a>
+</li>
+        <li><a href="api/chemspace.html#qsarkit.chemspace.ScaffoldAnalyzer.to_dataframe">to_dataframe() (qsarkit.chemspace.ScaffoldAnalyzer method)</a>
+
+        <ul>
+          <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.to_dataframe">(qsarkit.data_quality.CurationReport method)</a>
+</li>
+          <li><a href="api/data_quality.html#qsarkit.data_quality.DuplicateDetector.to_dataframe">(qsarkit.data_quality.DuplicateDetector method)</a>
+</li>
+          <li><a href="api/data_quality.html#qsarkit.data_quality.StructureValidator.to_dataframe">(qsarkit.data_quality.StructureValidator method)</a>
+</li>
+          <li><a href="api/explainability.html#qsarkit.explainability.PermutationImportance.to_dataframe">(qsarkit.explainability.PermutationImportance method)</a>
+</li>
+          <li><a href="api/sar.html#qsarkit.sar.ActivityCliffDetector.to_dataframe">(qsarkit.sar.ActivityCliffDetector method)</a>
+</li>
+          <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.to_dataframe">(qsarkit.sar.FreeWilsonAnalysis method)</a>
+</li>
+          <li><a href="api/sar.html#qsarkit.sar.MMPAnalyzer.to_dataframe">(qsarkit.sar.MMPAnalyzer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.to_dict">to_dict() (qsarkit.reporting.QSARReport method)</a>
+
+        <ul>
+          <li><a href="api/reporting.html#qsarkit.reporting.ReportSection.to_dict">(qsarkit.reporting.ReportSection method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/functional.html#qsarkit.functional.to_dot">to_dot() (in module qsarkit.functional)</a>
+
+        <ul>
+          <li><a href="api/functional.html#qsarkit.functional.FeatureSet.to_dot">(qsarkit.functional.FeatureSet method)</a>
+</li>
+          <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.to_dot">(qsarkit.functional.MoleculeSet method)</a>
+</li>
+          <li><a href="api/functional.html#qsarkit.functional.PipeStep.to_dot">(qsarkit.functional.PipeStep method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureSet.to_frame">to_frame() (qsarkit.functional.FeatureSet method)</a>
+
+        <ul>
+          <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.to_frame">(qsarkit.functional.MoleculeSet method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.to_html">to_html() (qsarkit.reporting.QSARReport method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.to_json">to_json() (qsarkit.reporting.QSARReport method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.to_markdown">to_markdown() (qsarkit.reporting.QSARReport method)</a>
+</li>
+        <li><a href="api/chemistry.html#qsarkit.chemistry.MolecularGraph.to_networkx">to_networkx() (qsarkit.chemistry.MolecularGraph method)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.to_pactivity">to_pactivity() (in module qsarkit.functional)</a>
+
+        <ul>
+          <li><a href="api/utils.html#qsarkit.utils.to_pactivity">(in module qsarkit.utils)</a>
+</li>
+        </ul></li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AtomicContributionMap.to_similarity_map_weights">to_similarity_map_weights() (qsarkit.explainability.AtomicContributionMap method)</a>
+</li>
+        <li><a href="api/representation.html#qsarkit.representation.TopologicalTorsionFingerprint">TopologicalTorsionFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/base.html#qsarkit.base.MoleculeTransformer.transform">transform() (qsarkit.base.MoleculeTransformer method)</a>
+
+        <ul>
+          <li><a href="api/chemistry.html#qsarkit.chemistry.CoreExtractor.transform">(qsarkit.chemistry.CoreExtractor method)</a>
+</li>
+          <li><a href="api/chemistry.html#qsarkit.chemistry.GlycanDetector.transform">(qsarkit.chemistry.GlycanDetector method)</a>
+</li>
+          <li><a href="api/chemistry.html#qsarkit.chemistry.GlycanRemover.transform">(qsarkit.chemistry.GlycanRemover method)</a>
+</li>
+          <li><a href="api/chemistry.html#qsarkit.chemistry.MolecularGraph.transform">(qsarkit.chemistry.MolecularGraph method)</a>
+</li>
+          <li><a href="api/cluster.html#qsarkit.cluster.MaxMinPicker.transform">(qsarkit.cluster.MaxMinPicker method)</a>
+</li>
+          <li><a href="api/explainability.html#qsarkit.explainability.AtomicContributionMap.transform">(qsarkit.explainability.AtomicContributionMap method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.DescriptorScaler.transform">(qsarkit.transform.DescriptorScaler method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.MoleculeFeatureUnion.transform">(qsarkit.transform.MoleculeFeatureUnion method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.MolToSmiles.transform">(qsarkit.transform.MolToSmiles method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.NaNHandler.transform">(qsarkit.transform.NaNHandler method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.SmilesToMol.transform">(qsarkit.transform.SmilesToMol method)</a>
+</li>
+          <li><a href="api/transform.html#qsarkit.transform.VarianceThresholdMol.transform">(qsarkit.transform.VarianceThresholdMol method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/sar.html#qsarkit.sar.MatchedPair.transformation">transformation (qsarkit.sar.MatchedPair attribute)</a>
+</li>
+        <li><a href="api/sar.html#qsarkit.sar.MMPAnalyzer.transformation_summary">transformation_summary() (qsarkit.sar.MMPAnalyzer method)</a>
+</li>
+        <li><a href="api/transform.html#qsarkit.transform.MoleculeFeatureUnion.transformers_">transformers_ (qsarkit.transform.MoleculeFeatureUnion attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/reporting.html#qsarkit.reporting.OECDReportBuilder.unaddressed">unaddressed (qsarkit.reporting.OECDReportBuilder property)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.UncertaintyCalibration">UncertaintyCalibration (class in qsarkit.uncertainty)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.StructureValidator.valid_mask">valid_mask() (qsarkit.data_quality.StructureValidator method)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.StructureValidator.validate">validate() (qsarkit.data_quality.StructureValidator method)</a>
+</li>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.ValidationIssue">ValidationIssue (class in qsarkit.data_quality)</a>
+</li>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.VarianceFilter">VarianceFilter (class in qsarkit.feature_selection)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/feature_selection.html#qsarkit.feature_selection.VarianceFilter.variances_">variances_ (qsarkit.feature_selection.VarianceFilter attribute)</a>
+
+        <ul>
+          <li><a href="api/transform.html#qsarkit.transform.VarianceThresholdMol.variances_">(qsarkit.transform.VarianceThresholdMol attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="api/transform.html#qsarkit.transform.VarianceThresholdMol">VarianceThresholdMol (class in qsarkit.transform)</a>
+</li>
+        <li><a href="api/models.html#qsarkit.models.PLSRegressor.vip_scores_">vip_scores_ (qsarkit.models.PLSRegressor attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.warnings">warnings (qsarkit.data_quality.CurationReport attribute)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AtomicContribution.weights">weights (qsarkit.explainability.AtomicContribution attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/applicability.html#qsarkit.applicability.ADAnalyzer.williams_plot">williams_plot() (qsarkit.applicability.ADAnalyzer method)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.write_sdf">write_sdf() (in module qsarkit.utils)</a>
+</li>
+        <li><a href="api/utils.html#qsarkit.utils.write_smiles">write_smiles() (in module qsarkit.utils)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="X" class="genindex-section">
+  <h2>X</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureSet.X">X (qsarkit.functional.FeatureSet attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardNeighborSearch.X_">X_ (qsarkit.neighbors.JaccardNeighborSearch attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Y" class="genindex-section">
+  <h2>Y</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/functional.html#qsarkit.functional.FeatureSet.y">y (qsarkit.functional.FeatureSet attribute)</a>
+
+        <ul>
+          <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.y">(qsarkit.functional.MoleculeSet attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Frederico Schmitt Kremer
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-09-09</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=95e61db4"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

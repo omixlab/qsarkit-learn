@@ -1,0 +1,98 @@
+Representation
+==============
+
+Every representation is a scikit-learn transformer taking
+``Iterable[rdkit.Chem.Mol]`` and returning a NumPy array, with
+``get_feature_names_out()`` for traceability.
+
+Fingerprints
+------------
+
+.. code-block:: python
+
+   from qsarkit.representation.fingerprints import (
+       MorganFingerprint, MACCSKeysFingerprint, FingerprintCombiner,
+   )
+
+   MorganFingerprint(radius=2, n_bits=2048).transform(mols)   # ECFP4
+   MorganFingerprint(radius=2, use_features=True)             # FCFP4
+   MorganFingerprint(radius=2, use_counts=True)               # count vector
+   FingerprintCombiner([MorganFingerprint(), MACCSKeysFingerprint()])
+
+ECFP4 (``radius=2``) is the default worth reaching for first. Use counts
+when substructure *frequency* matters; binary otherwise.
+
+Descriptors
+-----------
+
+.. code-block:: python
+
+   from qsarkit.representation.descriptors import (
+       RDKitDescriptors, PhysicochemicalDescriptors, Descriptors3D,
+   )
+
+   RDKitDescriptors().transform(mols)              # all ~210, NaN-safe
+   PhysicochemicalDescriptors().transform(mols)    # MW, logP, TPSA, QED, ...
+   Descriptors3D().transform(mols)                 # embeds conformers first
+
+Descriptors are interpretable in a way fingerprints are not — which matters
+for OECD principle 5. They also need scaling; see
+:class:`~qsarkit.transform.DescriptorScaler`.
+
+Learned embeddings
+------------------
+
+.. code-block:: python
+
+   from qsarkit.representation.embeddings import ChemBERTaTransformer
+   from qsarkit.representation.mol2vec import Mol2VecTransformer
+
+   Mol2VecTransformer().fit(corpus_mols).transform(mols)
+   ChemBERTaTransformer(pooling="mean").transform(mols)
+
+Requires the ``embeddings`` and ``nlp`` extras respectively.
+
+Graph neural networks
+---------------------
+
+.. code-block:: python
+
+   from qsarkit.representation.graph_models import DMPNNTransformer
+
+   model = DMPNNTransformer(hidden_dim=300, epochs=30)
+   model.fit(train_mols, y_train)          # supervised
+   embeddings = model.transform(test_mols)
+
+Implemented in pure PyTorch (no ``torch_geometric`` needed): MPNN, D-MPNN
+(Chemprop), GCN, GAT and SchNet. Requires the ``graph`` extra.
+
+Composing
+---------
+
+.. code-block:: python
+
+   from sklearn.pipeline import Pipeline
+   from qsarkit.transform import MoleculeFeatureUnion
+
+   Pipeline([
+       ("features", MoleculeFeatureUnion([
+           MorganFingerprint(),
+           PhysicochemicalDescriptors(),
+       ])),
+       ("model", QSARRegressor("rf")),
+   ])
+
+References
+----------
+
+- Rogers, D. & Hahn, M. (2010). "Extended-Connectivity Fingerprints."
+  *J. Chem. Inf. Model.*, 50(5), 742-754. :doi:`10.1021/ci100050t`
+- Jaeger, S., Fulle, S. & Turk, S. (2018). "Mol2vec." *J. Chem. Inf.
+  Model.*, 58(1), 27-35. :doi:`10.1021/acs.jcim.7b00616`
+- Chithrananda, S., Grand, G. & Ramsundar, B. (2020). "ChemBERTa."
+  :arxiv:`2010.09885`
+- Yang, K. et al. (2019). "Analyzing Learned Molecular Representations for
+  Property Prediction." *J. Chem. Inf. Model.*, 59(8), 3370-3388.
+  :doi:`10.1021/acs.jcim.9b00237`
+- Gilmer, J. et al. (2017). "Neural Message Passing for Quantum Chemistry."
+  :arxiv:`1704.01212`

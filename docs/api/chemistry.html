@@ -1,0 +1,1269 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Functional pipe API" href="functional.html"><link rel="prev" title="Base" href="base.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Chemistry - qsarkit 0.2</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">qsarkit 0.2</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../guide/index.html">User guide</a><input aria-label="Toggle navigation of User guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/quickstart.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/functional.html">The functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/curation.html">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guide/oecd.html">OECD validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">API reference</a><input aria-label="Toggle navigation of API reference" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base.html">Base</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Chemistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional.html">Functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_quality.html">Data quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transform.html">Transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neighbors.html">Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="feature_selection.html">Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_selection.html">Model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validation.html">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="explainability.html">Explainability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemspace.html">Chemical space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/blob/main/docs/source/api/chemistry.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/edit/main/docs/source/api/chemistry.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="chemistry">
+<h1>Chemistry<a class="headerlink" href="#chemistry" title="Link to this heading">¶</a></h1>
+<p>Chemical graph manipulation performed <em>before</em> modelling: standardization,
+glycan handling, protecting-group removal, core extraction and graph
+conversion. Every component accepts <code class="docutils literal notranslate"><span class="pre">Iterable[rdkit.Chem.Mol]</span></code> and
+follows the scikit-learn transformer protocol.</p>
+<section id="standardization">
+<h2>Standardization<a class="headerlink" href="#standardization" title="Link to this heading">¶</a></h2>
+<p>The first step of any QSAR workflow. Two records of the same compound
+that differ only in salt form, protonation or tautomer are the same
+compound, and a model that sees them as different is learning the
+registration system rather than the chemistry.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularStandardizer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">standardizer</span> <span class="o">=</span> <span class="n">MolecularStandardizer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)[O-].[Na+]&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">standardizer</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">mol</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(=O)Oc1ccccc1C(=O)O&#39;</span>
+</pre></div>
+</div>
+<p>Failures keep their position, so a parallel array of activities stays
+aligned:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">standardizer</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">mol</span><span class="p">,</span> <span class="kc">None</span><span class="p">])]</span>
+<span class="go">[False, True]</span>
+</pre></div>
+</div>
+</section>
+<section id="glycans">
+<h2>Glycans<a class="headerlink" href="#glycans" title="Link to this heading">¶</a></h2>
+<p>Natural-product datasets are full of glycosides. The sugar usually
+carries no activity of its own but dominates the fingerprint, so two
+glycosides of unrelated aglycones score as more similar to each other
+than either does to its own aglycone.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">GlycanDetector</span><span class="p">,</span> <span class="n">GlycanRemover</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q3g</span> <span class="o">=</span> <span class="n">named_mols</span><span class="p">[</span><span class="s2">&quot;quercetin_3_glucoside&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">GlycanDetector</span><span class="p">()</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">q3g</span><span class="p">)[</span><span class="s2">&quot;num_sugar_residues&quot;</span><span class="p">]</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">GlycanRemover</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">q3g</span><span class="p">)[</span><span class="s2">&quot;aglycone&quot;</span><span class="p">])</span>
+<span class="go">&#39;O=c1cc(-c2ccc(O)c(O)c2)oc2cc(O)cc(O)c12&#39;</span>
+</pre></div>
+</div>
+<p>Detection is not just “a ring with an oxygen in it” — the exocyclic
+hydroxylation pattern is what separates a real sugar from a look-alike:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">detector</span> <span class="o">=</span> <span class="n">GlycanDetector</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;C1CCOCC1&quot;</span><span class="p">))[</span><span class="s2">&quot;num_sugar_residues&quot;</span><span class="p">]</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#qsarkit.chemistry.GlycanDescriptors" title="qsarkit.chemistry.GlycanDescriptors"><code class="xref py py-class docutils literal notranslate"><span class="pre">GlycanDescriptors</span></code></a> turns that into features. It returns a
+DataFrame rather than an array, because one column is a string:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">GlycanDescriptors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frame</span> <span class="o">=</span> <span class="n">GlycanDescriptors</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">q3g</span><span class="p">,</span> <span class="n">named_mols</span><span class="p">[</span><span class="s2">&quot;aspirin&quot;</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">frame</span><span class="p">[</span><span class="s2">&quot;sugar_count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="go">[1, 0]</span>
+</pre></div>
+</div>
+</section>
+<section id="protecting-groups-and-cores">
+<h2>Protecting groups and cores<a class="headerlink" href="#protecting-groups-and-cores" title="Link to this heading">¶</a></h2>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoreExtractor</span><span class="p">,</span> <span class="n">FragmentRemover</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">boc</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(C)(C)OC(=O)NCc1ccccc1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">FragmentRemover</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">boc</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;NCc1ccccc1&#39;</span>
+</pre></div>
+</div>
+<p>A protecting group is a synthesis artefact, not a pharmacophore. Leaving
+it on makes every intermediate look like a distinct chemotype and lets a
+model key on the tag.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">extractor</span> <span class="o">=</span> <span class="n">CoreExtractor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">extractor</span><span class="o">.</span><span class="n">bemis_murcko</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">[</span><span class="mi">8</span><span class="p">]))</span>
+<span class="go">&#39;c1ccccc1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pair</span> <span class="o">=</span> <span class="p">[</span><span class="n">demo_mols</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">demo_mols</span><span class="p">[</span><span class="mi">9</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmarts</span><span class="p">(</span><span class="n">extractor</span><span class="o">.</span><span class="n">mcs</span><span class="p">(</span><span class="n">pair</span><span class="p">))</span>
+<span class="go">&#39;[#6]-[#6](=[#8])-[#7]-[#6]1:[#6]:[#6]:[#6]:[#6]:[#6]:1&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="graphs">
+<h2>Graphs<a class="headerlink" href="#graphs" title="Link to this heading">¶</a></h2>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularGraph</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">MolecularGraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">to_networkx</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CCO&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+<span class="go">(3, 2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">descriptors</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;c1ccccc1&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;num_rings&quot;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;diameter&quot;</span><span class="p">],</span> <span class="nb">round</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;wiener_index&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">(1, 3, 27.0)</span>
+</pre></div>
+</div>
+</section>
+<section id="module-qsarkit.chemistry">
+<span id="api"></span><h2>API<a class="headerlink" href="#module-qsarkit.chemistry" title="Link to this heading">¶</a></h2>
+<p>Chemical structure curation performed before modeling.</p>
+<p>Standardization is the step that makes a QSAR dataset comparable at all:
+without it the same compound appears as several distinct structures and
+duplicate detection, splitting and modeling all quietly go wrong. The
+remaining components support that work – glycan handling for
+natural-product datasets, protecting-group removal, scaffold extraction
+and graph descriptors.</p>
+<p>All components accept <code class="docutils literal notranslate"><span class="pre">Iterable[rdkit.Chem.Mol]</span></code>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularStandardizer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)[O-].[Na+]&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">MolecularStandardizer</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">mol</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(=O)Oc1ccccc1C(=O)O&#39;</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Fourches, D., Muratov, E. &amp; Tropsha, A. (2010). “Trust, But Verify: On
+the Importance of Chemical Structure Curation in Cheminformatics and
+QSAR Modeling Research.” J. Chem. Inf. Model., 50(7), 1189-1204.
+<a class="reference external" href="https://doi.org/10.1021/ci100176x">https://doi.org/10.1021/ci100176x</a></p></li>
+<li><p>Bemis, G. W. &amp; Murcko, M. A. (1996). “The Properties of Known Drugs. 1.
+Molecular Frameworks.” J. Med. Chem., 39(15), 2887-2893.
+<a class="reference external" href="https://doi.org/10.1021/jm9602928">https://doi.org/10.1021/jm9602928</a></p></li>
+<li><p>RDKit: Open-source cheminformatics. <a class="reference external" href="https://www.rdkit.org">https://www.rdkit.org</a></p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="qsarkit.chemistry.MolecularStandardizer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.chemistry.</span></span><span class="sig-name descname"><span class="pre">MolecularStandardizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remove_salts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neutralize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_tautomers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handle_stereochemistry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'retain'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_hydrogens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/standardization/_standardizer.html#MolecularStandardizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.MolecularStandardizer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#qsarkit.base.MoleculeToMoleculeTransformer" title="qsarkit.base.transformer.MoleculeToMoleculeTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoleculeToMoleculeTransformer</span></code></a></p>
+<p>Standardize a batch of molecules into a canonical, model-ready form.</p>
+<p>Applies, in order: sanitization, salt/solvent removal (keep the largest
+organic fragment), charge neutralization, tautomer normalization,
+stereochemistry handling, and explicit-hydrogen normalization. This
+mirrors the “structure normalization” stage expected before any
+downstream QSAR/curation step (OECD QSAR guidance recommends
+normalized, unambiguous structures prior to model building).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>remove_salts</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Keep only the largest organic fragment (strips counter-ions,
+solvates, hydrates).</p></li>
+<li><p><strong>neutralize</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Neutralize charges where a neutral tautomer/protomer exists
+(e.g. carboxylates, ammoniums), leaving permanent charges
+(e.g. quaternary ammonium) untouched.</p></li>
+<li><p><strong>normalize_tautomers</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Canonicalize to the RDKit-preferred tautomer using the
+Sybyl/MolVS-derived tautomer scoring rules.</p></li>
+<li><p><strong>handle_stereochemistry</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – One of <code class="docutils literal notranslate"><span class="pre">&quot;retain&quot;</span></code> (keep stereo as parsed, but reassign
+stereocenters from the 2D/3D structure), or <code class="docutils literal notranslate"><span class="pre">&quot;remove&quot;</span></code> (strip
+all stereochemistry, useful when comparing 2D scaffolds).</p></li>
+<li><p><strong>normalize_hydrogens</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Strip explicit hydrogens except where required for correct
+valence/stereo perception (RDKit’s implicit-H convention).</p></li>
+<li><p><strong>on_error</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – <code class="docutils literal notranslate"><span class="pre">&quot;none&quot;</span></code> -&gt; failed molecules become <code class="docutils literal notranslate"><span class="pre">None</span></code> in the output list
+(positional alignment preserved); <code class="docutils literal notranslate"><span class="pre">&quot;raise&quot;</span></code> -&gt; raise
+<code class="docutils literal notranslate"><span class="pre">InvalidMoleculeError</span></code> on the first failure.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Sodium acetylsalicylate loses its counter-ion and its charge:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularStandardizer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">standardizer</span> <span class="o">=</span> <span class="n">MolecularStandardizer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)[O-].[Na+]&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">standardizer</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">mol</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(=O)Oc1ccccc1C(=O)O&#39;</span>
+</pre></div>
+</div>
+<p>Failures do not shift the batch. An unparseable record becomes
+<code class="docutils literal notranslate"><span class="pre">None</span></code> in place, so a parallel array of activities stays aligned:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">standardizer</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">mol</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">out</span><span class="p">]</span>
+<span class="go">[False, True]</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">handle_stereochemistry=&quot;remove&quot;</span></code> strips stereocentres, which is
+what you want when comparing 2D scaffolds rather than modelling
+enantiomer-specific activity:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">flat</span> <span class="o">=</span> <span class="n">MolecularStandardizer</span><span class="p">(</span><span class="n">handle_stereochemistry</span><span class="o">=</span><span class="s2">&quot;remove&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">flat</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;C[C@H](N)C(=O)O&quot;</span><span class="p">)])[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(N)C(=O)O&#39;</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Sitzmann et al. (2010). “Tautomerism in Large Databases.” J. Comput.
+Aided Mol. Des., 24, 521-551. <a class="reference external" href="https://doi.org/10.1007/s10822-010-9346-4">https://doi.org/10.1007/s10822-010-9346-4</a></p></li>
+<li><p>RDKit MolStandardize documentation:
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.MolStandardize.html">https://www.rdkit.org/docs/source/rdkit.Chem.MolStandardize.html</a></p></li>
+<li><p>OECD (2007). “Guidance Document on the Validation of (Quantitative)
+Structure-Activity Relationship [(Q)SAR] Models,” ENV/JM/MONO(2007)2.
+<a class="reference external" href="https://doi.org/10.1787/9789264085442-en">https://doi.org/10.1787/9789264085442-en</a></p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.MolecularStandardizer.set_fit_request">
+<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">mols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qsarkit.chemistry.MolecularStandardizer.set_fit_request" title="Link to this definition">¶</a></dt>
+<dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
+<p>Note that this method is only relevant when this estimator is used as a
+sub-estimator within a <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-meta-estimator" title="(in scikit-learn v1.9)"><span class="xref std std-term">meta-estimator</span></a> and metadata routing is enabled
+with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
+Please check the <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.9)"><span class="xref std std-ref">User Guide</span></a> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>,                     default=sklearn.utils.metadata_routing.UNCHANGED) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">mols</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.MolecularStandardizer.set_transform_request">
+<span class="sig-name descname"><span class="pre">set_transform_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">mols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qsarkit.chemistry.MolecularStandardizer.set_transform_request" title="Link to this definition">¶</a></dt>
+<dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">transform</span></code> method.</p>
+<p>Note that this method is only relevant when this estimator is used as a
+sub-estimator within a <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-meta-estimator" title="(in scikit-learn v1.9)"><span class="xref std std-term">meta-estimator</span></a> and metadata routing is enabled
+with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
+Please check the <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.9)"><span class="xref std std-ref">User Guide</span></a> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">transform</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">transform</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>,                     default=sklearn.utils.metadata_routing.UNCHANGED) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">mols</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">transform</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qsarkit.chemistry.GlycanDetector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.chemistry.</span></span><span class="sig-name descname"><span class="pre">GlycanDetector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min_exocyclic_oxygens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/glycans/_detector.html#GlycanDetector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.GlycanDetector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Detect carbohydrate (sugar) ring systems in a molecule.</p>
+<p>Uses the circular-sugar detection strategy of the Sugar Removal
+Utility (SRU): a candidate ring is a 5- or 6-membered ring with
+exactly one ring oxygen and only sp3 carbons otherwise, and is
+accepted as a sugar only if it is decorated with enough exocyclic
+oxygens (hydroxyls / glycosidic ethers / an exocyclic CH2OH) to match
+the hydroxylation pattern of a real aldose/ketose ring - which
+excludes plain carbocycles (cyclohexane) and simple ethers
+(tetrahydropyran, tetrahydrofuran).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>min_exocyclic_oxygens</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Exocyclic oxygens a candidate ring must carry to be called a
+sugar. Lowering it admits deoxy sugars along with false
+positives; raising it rejects rhamnose and other deoxy sugars.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Quercetin 3-O-glucoside carries one pyranose ring, contributing 39%
+of the molecular weight:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">GlycanDetector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q3g</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;OC[C@H]1O[C@@H](Oc2c(-c3ccc(O)c(O)c3)oc3cc(O)cc(O)c3c2=O)&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;[C@H](O)[C@@H](O)[C@@H]1O&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">GlycanDetector</span><span class="p">()</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">q3g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;num_sugar_residues&quot;</span><span class="p">]</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;glycan_mw_fraction&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.386</span>
+</pre></div>
+</div>
+<p>The exocyclic-oxygen requirement is what separates a sugar from a
+look-alike ring. Tetrahydropyran has the right ring but no
+hydroxylation, and is correctly rejected:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">GlycanDetector</span><span class="p">()</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;C1CCOCC1&quot;</span><span class="p">))[</span><span class="s2">&quot;num_sugar_residues&quot;</span><span class="p">]</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">GlycanDetector</span><span class="p">()</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CCO&quot;</span><span class="p">))[</span><span class="s2">&quot;num_sugar_residues&quot;</span><span class="p">]</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Fischer et al. (2020). “The Sugar Removal Utility (SRU): An
+Open-Source Peptide- and Sugar-Stripping Tool for Chemical
+Structure Databases.” Molecules, 25(8), 1988.
+<a class="reference external" href="https://doi.org/10.3390/molecules25081988">https://doi.org/10.3390/molecules25081988</a></p></li>
+<li><p>RDKit ring perception documentation:
+<a class="reference external" href="https://www.rdkit.org/docs/RDKit_Book.html#ring-perception">https://www.rdkit.org/docs/RDKit_Book.html#ring-perception</a></p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.GlycanDetector.find_glycans">
+<span class="sig-name descname"><span class="pre">find_glycans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/glycans/_detector.html#GlycanDetector.find_glycans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.GlycanDetector.find_glycans" title="Link to this definition">¶</a></dt>
+<dd><p>Return one <code class="xref py py-class docutils literal notranslate"><span class="pre">GlycanMatch</span></code> per detected sugar ring.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">GlycanMatch</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.GlycanDetector.detect">
+<span class="sig-name descname"><span class="pre">detect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/glycans/_detector.html#GlycanDetector.detect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.GlycanDetector.detect" title="Link to this definition">¶</a></dt>
+<dd><p>Summarize glycan content of a molecule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">num_sugar_residues</span></code>: number of detected sugar rings.
+<code class="docutils literal notranslate"><span class="pre">glycan_atoms</span></code>: sorted list of atom indices belonging to
+glycan rings/substituents.
+<code class="docutils literal notranslate"><span class="pre">glycan_mw_fraction</span></code>: fraction of the molecule’s molecular
+weight contributed by glycan atoms (including attached H’s).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.GlycanDetector.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/glycans/_detector.html#GlycanDetector.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.GlycanDetector.transform" title="Link to this definition">¶</a></dt>
+<dd><p>Run <a class="reference internal" href="#qsarkit.chemistry.GlycanDetector.detect" title="qsarkit.chemistry.GlycanDetector.detect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">detect()</span></code></a> over an <code class="docutils literal notranslate"><span class="pre">Iterable[Mol]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qsarkit.chemistry.GlycanRemover">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.chemistry.</span></span><span class="sig-name descname"><span class="pre">GlycanRemover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/glycans/_remover.html#GlycanRemover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.GlycanRemover" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Remove carbohydrate (sugar) moieties, keeping the aglycone core.</p>
+<p>Detects sugar rings with <a class="reference internal" href="#qsarkit.chemistry.GlycanDetector" title="qsarkit.chemistry.GlycanDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">GlycanDetector</span></code></a>, cleaves the
+glycosidic (single) bonds linking sugar atoms to the rest of the
+molecule, and returns the largest non-sugar fragment as the
+“aglycone” - e.g. quercetin-3-glucoside -&gt; quercetin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>detector</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#qsarkit.chemistry.GlycanDetector" title="qsarkit.chemistry.glycans._detector.GlycanDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">GlycanDetector</span></code></a>]</span>) – Detector used to locate sugar rings. A default instance is
+created if not supplied.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">GlycanRemover</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q3g</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;OC[C@H]1O[C@@H](Oc2c(-c3ccc(O)c(O)c3)oc3cc(O)cc(O)c3c2=O)&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;[C@H](O)[C@@H](O)[C@@H]1O&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">GlycanRemover</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">q3g</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;aglycone&quot;</span><span class="p">])</span>
+<span class="go">&#39;O=c1cc(-c2ccc(O)c(O)c2)oc2cc(O)cc(O)c12&#39;</span>
+</pre></div>
+</div>
+<p>The result keeps the input alongside what was cut away, so a curation
+step can record why a structure changed:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="go">[&#39;aglycone&#39;, &#39;original&#39;, &#39;removed_fragments&#39;]</span>
+</pre></div>
+</div>
+<p>Deglycosylation matters for QSAR because the sugar usually carries no
+activity of its own but dominates the fingerprint, so two glycosides
+of unrelated aglycones look more similar to each other than either
+does to its own aglycone. A molecule with no sugar passes through
+unchanged:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">aspirin</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)O&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">GlycanRemover</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">aspirin</span><span class="p">)[</span><span class="s2">&quot;aglycone&quot;</span><span class="p">])</span>
+<span class="go">&#39;CC(=O)Oc1ccccc1C(=O)O&#39;</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Fischer et al. (2020). “The Sugar Removal Utility (SRU).” Molecules,
+25(8), 1988. <a class="reference external" href="https://doi.org/10.3390/molecules25081988">https://doi.org/10.3390/molecules25081988</a></p></li>
+<li><p>RDKit fragmentation documentation (<code class="docutils literal notranslate"><span class="pre">Chem.GetMolFrags</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Chem.RWMol</span></code>): <a class="reference external" href="https://www.rdkit.org/docs/GettingStartedInPython.html">https://www.rdkit.org/docs/GettingStartedInPython.html</a></p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.GlycanRemover.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/glycans/_remover.html#GlycanRemover.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.GlycanRemover.remove" title="Link to this definition">¶</a></dt>
+<dd><p>Remove glycan moieties from a single molecule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">original</span></code>: the input Mol.
+<code class="docutils literal notranslate"><span class="pre">aglycone</span></code>: the largest non-sugar fragment, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if
+the whole molecule was consumed by sugar rings.
+<code class="docutils literal notranslate"><span class="pre">removed_fragments</span></code>: list of removed sugar (and any other
+minor) fragments as Mol objects.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.GlycanRemover.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/glycans/_remover.html#GlycanRemover.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.GlycanRemover.transform" title="Link to this definition">¶</a></dt>
+<dd><p>Run <a class="reference internal" href="#qsarkit.chemistry.GlycanRemover.remove" title="qsarkit.chemistry.GlycanRemover.remove"><code class="xref py py-meth docutils literal notranslate"><span class="pre">remove()</span></code></a> over an <code class="docutils literal notranslate"><span class="pre">Iterable[Mol]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>]]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qsarkit.chemistry.GlycanDescriptors">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.chemistry.</span></span><span class="sig-name descname"><span class="pre">GlycanDescriptors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/glycans/_descriptors.html#GlycanDescriptors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.GlycanDescriptors" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#qsarkit.base.MoleculeTransformer" title="qsarkit.base.transformer.MoleculeTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoleculeTransformer</span></code></a></p>
+<p>Compute glycan-content descriptors for a batch of molecules.</p>
+<p>The three columns produced are:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">sugar_count</span></code></dt><dd><p>Number of detected sugar rings (see <a class="reference internal" href="#qsarkit.chemistry.GlycanDetector" title="qsarkit.chemistry.GlycanDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">GlycanDetector</span></code></a>).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">glycan_fraction</span></code></dt><dd><p>Fraction of molecular weight contributed by glycan atoms.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">glycosylation_pattern</span></code></dt><dd><p>Comma-separated summary such as <code class="docutils literal notranslate"><span class="pre">&quot;6-ring:O-glycoside</span> <span class="pre">x2&quot;</span></code>
+describing ring size and linkage type of each detected sugar.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>detector</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference internal" href="#qsarkit.chemistry.GlycanDetector" title="qsarkit.chemistry.glycans._detector.GlycanDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">GlycanDetector</span></code></a>]</span>)</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Unlike the transformers in <a class="reference internal" href="representation.html#module-qsarkit.representation" title="qsarkit.representation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qsarkit.representation</span></code></a>, this one
+returns a <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v3.0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a> rather than a NumPy array,
+because <code class="docutils literal notranslate"><span class="pre">glycosylation_pattern</span></code> is a string. Forcing it into an
+array would give the whole block <code class="docutils literal notranslate"><span class="pre">object</span></code> dtype and lose the
+numeric columns’ types.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">GlycanDescriptors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">q3g</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s2">&quot;OC[C@H]1O[C@@H](Oc2c(-c3ccc(O)c(O)c3)oc3cc(O)cc(O)c3c2=O)&quot;</span>
+<span class="gp">... </span>    <span class="s2">&quot;[C@H](O)[C@@H](O)[C@@H]1O&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">GlycanDescriptors</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">q3g</span><span class="p">,</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CCO&quot;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="go">[&#39;sugar_count&#39;, &#39;glycan_fraction&#39;, &#39;glycosylation_pattern&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;sugar_count&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="go">[1, 0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;glycosylation_pattern&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">&#39;6-ring:terminal&#39;</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Fischer et al. (2020). “The Sugar Removal Utility (SRU).” Molecules,
+25(8), 1988. <a class="reference external" href="https://doi.org/10.3390/molecules25081988">https://doi.org/10.3390/molecules25081988</a></p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.GlycanDescriptors.set_fit_request">
+<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">mols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qsarkit.chemistry.GlycanDescriptors.set_fit_request" title="Link to this definition">¶</a></dt>
+<dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
+<p>Note that this method is only relevant when this estimator is used as a
+sub-estimator within a <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-meta-estimator" title="(in scikit-learn v1.9)"><span class="xref std std-term">meta-estimator</span></a> and metadata routing is enabled
+with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
+Please check the <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.9)"><span class="xref std std-ref">User Guide</span></a> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>,                     default=sklearn.utils.metadata_routing.UNCHANGED) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">mols</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.GlycanDescriptors.set_transform_request">
+<span class="sig-name descname"><span class="pre">set_transform_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">mols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qsarkit.chemistry.GlycanDescriptors.set_transform_request" title="Link to this definition">¶</a></dt>
+<dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">transform</span></code> method.</p>
+<p>Note that this method is only relevant when this estimator is used as a
+sub-estimator within a <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-meta-estimator" title="(in scikit-learn v1.9)"><span class="xref std std-term">meta-estimator</span></a> and metadata routing is enabled
+with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
+Please check the <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.9)"><span class="xref std std-ref">User Guide</span></a> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">transform</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">transform</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>,                     default=sklearn.utils.metadata_routing.UNCHANGED) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">mols</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">transform</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qsarkit.chemistry.FragmentRemover">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.chemistry.</span></span><span class="sig-name descname"><span class="pre">FragmentRemover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/fragments/_remover.html#FragmentRemover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.FragmentRemover" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#qsarkit.base.MoleculeToMoleculeTransformer" title="qsarkit.base.transformer.MoleculeToMoleculeTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoleculeToMoleculeTransformer</span></code></a></p>
+<p>Strip protecting groups, synthesis linkers, tags and click-handles.</p>
+<p>Matches each pattern in <code class="docutils literal notranslate"><span class="pre">groups</span></code> as a substituent attached to the
+core structure via a single bond, deletes the matched atoms, and caps
+the resulting open valence with an implicit hydrogen - conceptually
+the reverse of a protection reaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>groups</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – Mapping of group name -&gt; SMARTS pattern. Defaults to
+<code class="xref py py-data docutils literal notranslate"><span class="pre">DEFAULT_GROUPS</span></code> (Boc, Cbz, Fmoc, acetyl, TBS, trityl,
+benzyl ether, PEG linkers, biotin tag, azide/alkyne click handles).</p></li>
+<li><p><strong>max_iterations</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Repeat removal up to this many times per molecule, since removing
+one group can expose another (e.g. a doubly-Boc-protected amine).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Boc-protected benzylamine loses its carbamate:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">FragmentRemover</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">boc</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(C)(C)OC(=O)NCc1ccccc1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">FragmentRemover</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">boc</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;NCc1ccccc1&#39;</span>
+</pre></div>
+</div>
+<p>This belongs in curation because a protecting group is a synthesis
+artefact, not a pharmacophore: leaving it on makes every intermediate
+in a series look like a distinct chemotype and lets a model key on
+the tag instead of the chemistry.</p>
+<p>Restricting <code class="docutils literal notranslate"><span class="pre">groups</span></code> narrows what is stripped – here Boc is not in
+the set, so the molecule is returned unchanged:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">only_acetyl</span> <span class="o">=</span> <span class="n">FragmentRemover</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;acetyl&quot;</span><span class="p">:</span> <span class="s2">&quot;[CX3](=O)[CH3]&quot;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">only_acetyl</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">boc</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(C)(C)OC(=O)NCc1ccccc1&#39;</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Wuts, P. G. M. &amp; Greene, T. W. (2014). “Greene’s Protective Groups in
+Organic Synthesis,” 5th ed. Wiley. <a class="reference external" href="https://doi.org/10.1002/9781118978075">https://doi.org/10.1002/9781118978075</a></p></li>
+<li><p>RDKit reaction/substructure editing documentation:
+<a class="reference external" href="https://www.rdkit.org/docs/GettingStartedInPython.html#chemical-reactions">https://www.rdkit.org/docs/GettingStartedInPython.html#chemical-reactions</a></p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.FragmentRemover.set_fit_request">
+<span class="sig-name descname"><span class="pre">set_fit_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">mols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qsarkit.chemistry.FragmentRemover.set_fit_request" title="Link to this definition">¶</a></dt>
+<dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">fit</span></code> method.</p>
+<p>Note that this method is only relevant when this estimator is used as a
+sub-estimator within a <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-meta-estimator" title="(in scikit-learn v1.9)"><span class="xref std std-term">meta-estimator</span></a> and metadata routing is enabled
+with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
+Please check the <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.9)"><span class="xref std std-ref">User Guide</span></a> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">fit</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>,                     default=sklearn.utils.metadata_routing.UNCHANGED) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">mols</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">fit</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.FragmentRemover.set_transform_request">
+<span class="sig-name descname"><span class="pre">set_transform_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">mols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$UNCHANGED$'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#qsarkit.chemistry.FragmentRemover.set_transform_request" title="Link to this definition">¶</a></dt>
+<dd><p>Configure whether metadata should be requested to be passed to the <code class="docutils literal notranslate"><span class="pre">transform</span></code> method.</p>
+<p>Note that this method is only relevant when this estimator is used as a
+sub-estimator within a <a class="reference external" href="https://scikit-learn.org/stable/glossary.html#term-meta-estimator" title="(in scikit-learn v1.9)"><span class="xref std std-term">meta-estimator</span></a> and metadata routing is enabled
+with <code class="docutils literal notranslate"><span class="pre">enable_metadata_routing=True</span></code> (see <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.set_config.html#sklearn.set_config" title="(in scikit-learn v1.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">sklearn.set_config()</span></code></a>).
+Please check the <a class="reference external" href="https://scikit-learn.org/stable/metadata_routing.html#metadata-routing" title="(in scikit-learn v1.9)"><span class="xref std std-ref">User Guide</span></a> on how the routing
+mechanism works.</p>
+<p>The options for each parameter are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">True</span></code>: metadata is requested, and passed to <code class="docutils literal notranslate"><span class="pre">transform</span></code> if provided. The request is ignored if metadata is not provided.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">False</span></code>: metadata is not requested and the meta-estimator will not pass it to <code class="docutils literal notranslate"><span class="pre">transform</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code>: metadata is not requested, and the meta-estimator will raise an error if the user provides it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str</span></code>: metadata should be passed to the meta-estimator with this given alias instead of the original name.</p></li>
+</ul>
+<p>The default (<code class="docutils literal notranslate"><span class="pre">sklearn.utils.metadata_routing.UNCHANGED</span></code>) retains the
+existing request. This allows you to change the request for some
+parameters and not others.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.3.</span></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">True</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/constants.html#False" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">False</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>,                     default=sklearn.utils.metadata_routing.UNCHANGED) – Metadata routing for <code class="docutils literal notranslate"><span class="pre">mols</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">transform</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>self</strong> – The updated object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qsarkit.chemistry.CoreExtractor">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.chemistry.</span></span><span class="sig-name descname"><span class="pre">CoreExtractor</span></span><a class="reference internal" href="../_modules/qsarkit/chemistry/fragments/_core_extractor.html#CoreExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.CoreExtractor" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Extract a representative structural core from one or more molecules.</p>
+<p>Three definitions of “core”, answering different questions:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#qsarkit.chemistry.CoreExtractor.bemis_murcko" title="qsarkit.chemistry.CoreExtractor.bemis_murcko"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bemis_murcko()</span></code></a> gives ring systems plus linkers (the classic
+scaffold definition), or the fully generic skeleton with element
+and bond-order information stripped.</p></li>
+<li><p><a class="reference internal" href="#qsarkit.chemistry.CoreExtractor.mcs" title="qsarkit.chemistry.CoreExtractor.mcs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mcs()</span></code></a> gives the maximum common substructure across a set of
+molecules, which is the right notion for a congeneric series.</p></li>
+<li><p><a class="reference internal" href="#qsarkit.chemistry.CoreExtractor.medchem_core" title="qsarkit.chemistry.CoreExtractor.medchem_core"><code class="xref py py-meth docutils literal notranslate"><span class="pre">medchem_core()</span></code></a> gives a medicinal-chemistry-oriented core: the
+Bemis-Murcko scaffold with terminal exocyclic double bonds trimmed
+back to rings, which tends to match how chemists describe a
+series’ “core” more closely than the strict Murcko definition.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoreExtractor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">extractor</span> <span class="o">=</span> <span class="n">CoreExtractor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">paracetamol_like</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Nc1ccc(Cl)cc1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">extractor</span><span class="o">.</span><span class="n">bemis_murcko</span><span class="p">(</span><span class="n">paracetamol_like</span><span class="p">))</span>
+<span class="go">&#39;c1ccccc1&#39;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">generic=True</span></code> discards element identity and bond order, so
+pyridine and benzene analogues collapse onto one skeleton – the
+right granularity for asking “how many ring systems are in this
+library”, the wrong one for asking “which chemotype is this”:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">extractor</span><span class="o">.</span><span class="n">bemis_murcko</span><span class="p">(</span><span class="n">paracetamol_like</span><span class="p">,</span> <span class="n">generic</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="go">&#39;C1CCCCC1&#39;</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#qsarkit.chemistry.CoreExtractor.mcs" title="qsarkit.chemistry.CoreExtractor.mcs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">mcs()</span></code></a> works across a series rather than on one molecule, and
+returns the shared substructure as a query mol:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pair</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span>
+<span class="gp">... </span>        <span class="p">(</span><span class="s2">&quot;CC(=O)Nc1ccc(Cl)cc1&quot;</span><span class="p">,</span> <span class="s2">&quot;CC(=O)Nc1ccc(Br)cc1&quot;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmarts</span><span class="p">(</span><span class="n">extractor</span><span class="o">.</span><span class="n">mcs</span><span class="p">(</span><span class="n">pair</span><span class="p">))</span>
+<span class="go">&#39;[#6]-[#6](=[#8])-[#7]-[#6]1:[#6]:[#6]:[#6]:[#6]:[#6]:1&#39;</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Bemis, G. W. &amp; Murcko, M. A. (1996). “The Properties of Known
+Drugs. 1. Molecular Frameworks.” J. Med. Chem., 39(15), 2887-2893.
+<a class="reference external" href="https://doi.org/10.1021/jm9602928">https://doi.org/10.1021/jm9602928</a></p></li>
+<li><p>Rogers, D. &amp; Hahn, M. (2010) discuss MCS-based series analysis;
+canonical algorithm: Cao, Y. et al. (2008). “A Maximum Common
+Substructure-Based Algorithm for Searching and Predicting Drug-like
+Compounds.” Bioinformatics, 24(13), i366-i374.
+<a class="reference external" href="https://doi.org/10.1093/bioinformatics/btn186">https://doi.org/10.1093/bioinformatics/btn186</a></p></li>
+<li><p>RDKit <code class="docutils literal notranslate"><span class="pre">rdFMCS</span></code> and <code class="docutils literal notranslate"><span class="pre">Chem.Scaffolds.MurckoScaffold</span></code> documentation:
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.Scaffolds.MurckoScaffold.html">https://www.rdkit.org/docs/source/rdkit.Chem.Scaffolds.MurckoScaffold.html</a>
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.rdFMCS.html">https://www.rdkit.org/docs/source/rdkit.Chem.rdFMCS.html</a></p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.CoreExtractor.bemis_murcko">
+<span class="sig-name descname"><span class="pre">bemis_murcko</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/fragments/_core_extractor.html#CoreExtractor.bemis_murcko"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.CoreExtractor.bemis_murcko" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.CoreExtractor.mcs">
+<span class="sig-name descname"><span class="pre">mcs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mols</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/fragments/_core_extractor.html#CoreExtractor.mcs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.CoreExtractor.mcs" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.CoreExtractor.medchem_core">
+<span class="sig-name descname"><span class="pre">medchem_core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/fragments/_core_extractor.html#CoreExtractor.medchem_core"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.CoreExtractor.medchem_core" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.CoreExtractor.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'bemis_murcko'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/fragments/_core_extractor.html#CoreExtractor.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.CoreExtractor.transform" title="Link to this definition">¶</a></dt>
+<dd><p>Apply a per-molecule extraction method over an <code class="docutils literal notranslate"><span class="pre">Iterable[Mol]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qsarkit.chemistry.MolecularGraph">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.chemistry.</span></span><span class="sig-name descname"><span class="pre">MolecularGraph</span></span><a class="reference internal" href="../_modules/qsarkit/chemistry/graph/_graph.html#MolecularGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.MolecularGraph" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Convert RDKit molecules to NetworkX graphs and compute graph descriptors.</p>
+<p>Atoms become nodes carrying <code class="docutils literal notranslate"><span class="pre">symbol</span></code>, <code class="docutils literal notranslate"><span class="pre">atomic_num</span></code>,
+<code class="docutils literal notranslate"><span class="pre">formal_charge</span></code>, <code class="docutils literal notranslate"><span class="pre">is_aromatic</span></code>, <code class="docutils literal notranslate"><span class="pre">in_ring</span></code>, <code class="docutils literal notranslate"><span class="pre">degree</span></code> and
+<code class="docutils literal notranslate"><span class="pre">hybridization</span></code>; bonds become edges carrying <code class="docutils literal notranslate"><span class="pre">bond_type</span></code>,
+<code class="docutils literal notranslate"><span class="pre">is_aromatic</span></code>, <code class="docutils literal notranslate"><span class="pre">in_ring</span></code> and <code class="docutils literal notranslate"><span class="pre">order</span></code>. This is the substrate for
+the topological indices below, and for any analysis that is easier to
+express with NetworkX than with RDKit’s own graph API.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularGraph</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span> <span class="o">=</span> <span class="n">MolecularGraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">to_networkx</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CCO&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+<span class="go">(3, 2)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s2">&quot;symbol&quot;</span><span class="p">],</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s2">&quot;hybridization&quot;</span><span class="p">]</span>
+<span class="go">(&#39;O&#39;, &#39;SP3&#39;)</span>
+</pre></div>
+</div>
+<p>Hydrogens are implicit, so a node’s heavy-atom <code class="docutils literal notranslate"><span class="pre">degree</span></code> and its
+<code class="docutils literal notranslate"><span class="pre">num_hs</span></code> are reported separately:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;degree&quot;</span><span class="p">],</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;num_hs&quot;</span><span class="p">]</span>
+<span class="go">(1, 3)</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#qsarkit.chemistry.MolecularGraph.descriptors" title="qsarkit.chemistry.MolecularGraph.descriptors"><code class="xref py py-meth docutils literal notranslate"><span class="pre">descriptors()</span></code></a> returns the classic topological indices for a
+single molecule:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">descriptors</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;c1ccccc1&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;num_rings&quot;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;cyclomatic_number&quot;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;diameter&quot;</span><span class="p">]</span>
+<span class="go">(1, 1, 3)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;wiener_index&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">27.0</span>
+</pre></div>
+</div>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Hagberg, A., Schult, D. &amp; Swart, P. (2008). “Exploring Network
+Structure, Dynamics, and Function using NetworkX.” Proc. SciPy 2008.
+<a class="reference external" href="https://www.osti.gov/biblio/960616">https://www.osti.gov/biblio/960616</a></p></li>
+<li><p>Wiener, H. (1947). “Structural Determination of Paraffin Boiling
+Points.” J. Am. Chem. Soc., 69(1), 17-20.
+<a class="reference external" href="https://doi.org/10.1021/ja01193a005">https://doi.org/10.1021/ja01193a005</a></p></li>
+<li><p>Balaban, A. T. (1982). “Highly Discriminating Distance-Based
+Topological Index.” Chem. Phys. Lett., 89(5), 399-404.
+<a class="reference external" href="https://doi.org/10.1016/0009-2614(82)80009-2">https://doi.org/10.1016/0009-2614(82)80009-2</a></p></li>
+<li><p>RDKit graph descriptors documentation:
+<a class="reference external" href="https://www.rdkit.org/docs/source/rdkit.Chem.GraphDescriptors.html">https://www.rdkit.org/docs/source/rdkit.Chem.GraphDescriptors.html</a></p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.MolecularGraph.to_networkx">
+<span class="sig-name descname"><span class="pre">to_networkx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/graph/_graph.html#MolecularGraph.to_networkx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.MolecularGraph.to_networkx" title="Link to this definition">¶</a></dt>
+<dd><p>Build a <code class="docutils literal notranslate"><span class="pre">networkx.Graph</span></code> from an RDKit Mol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://networkx.org/documentation/stable/reference/classes/graph.html#networkx.Graph" title="(in NetworkX v3.6.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.MolecularGraph.descriptors">
+<span class="sig-name descname"><span class="pre">descriptors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/graph/_graph.html#MolecularGraph.descriptors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.MolecularGraph.descriptors" title="Link to this definition">¶</a></dt>
+<dd><p>Compute topological / graph-theoretic descriptors for one molecule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemistry.MolecularGraph.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemistry/graph/_graph.html#MolecularGraph.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemistry.MolecularGraph.transform" title="Link to this definition">¶</a></dt>
+<dd><p>Compute <a class="reference internal" href="#qsarkit.chemistry.MolecularGraph.descriptors" title="qsarkit.chemistry.MolecularGraph.descriptors"><code class="xref py py-meth docutils literal notranslate"><span class="pre">descriptors()</span></code></a> for every molecule in an <code class="docutils literal notranslate"><span class="pre">Iterable[Mol]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Fourches, D., Muratov, E. &amp; Tropsha, A. (2010). “Trust, But Verify.”
+J. Chem. Inf. Model., 50(7), 1189-1204. <a class="extlink-doi reference external" href="https://doi.org/10.1021/ci100176x">doi:10.1021/ci100176x</a></p></li>
+<li><p>Fischer, J. et al. (2020). “The Sugar Removal Utility.” Molecules,
+25(8), 1988. <a class="extlink-doi reference external" href="https://doi.org/10.3390/molecules25081988">doi:10.3390/molecules25081988</a></p></li>
+<li><p>Bemis, G. W. &amp; Murcko, M. A. (1996). “The Properties of Known Drugs. 1.
+Molecular Frameworks.” J. Med. Chem., 39(15), 2887-2893.
+<a class="extlink-doi reference external" href="https://doi.org/10.1021/jm9602928">doi:10.1021/jm9602928</a></p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="functional.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Functional pipe API</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="base.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Base</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Frederico Schmitt Kremer
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-09-09</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Chemistry</a><ul>
+<li><a class="reference internal" href="#standardization">Standardization</a></li>
+<li><a class="reference internal" href="#glycans">Glycans</a></li>
+<li><a class="reference internal" href="#protecting-groups-and-cores">Protecting groups and cores</a></li>
+<li><a class="reference internal" href="#graphs">Graphs</a></li>
+<li><a class="reference internal" href="#module-qsarkit.chemistry">API</a><ul>
+<li><a class="reference internal" href="#qsarkit.chemistry.MolecularStandardizer"><code class="docutils literal notranslate"><span class="pre">MolecularStandardizer</span></code></a><ul>
+<li><a class="reference internal" href="#qsarkit.chemistry.MolecularStandardizer.set_fit_request"><code class="docutils literal notranslate"><span class="pre">MolecularStandardizer.set_fit_request()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.MolecularStandardizer.set_transform_request"><code class="docutils literal notranslate"><span class="pre">MolecularStandardizer.set_transform_request()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qsarkit.chemistry.GlycanDetector"><code class="docutils literal notranslate"><span class="pre">GlycanDetector</span></code></a><ul>
+<li><a class="reference internal" href="#qsarkit.chemistry.GlycanDetector.find_glycans"><code class="docutils literal notranslate"><span class="pre">GlycanDetector.find_glycans()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.GlycanDetector.detect"><code class="docutils literal notranslate"><span class="pre">GlycanDetector.detect()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.GlycanDetector.transform"><code class="docutils literal notranslate"><span class="pre">GlycanDetector.transform()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qsarkit.chemistry.GlycanRemover"><code class="docutils literal notranslate"><span class="pre">GlycanRemover</span></code></a><ul>
+<li><a class="reference internal" href="#qsarkit.chemistry.GlycanRemover.remove"><code class="docutils literal notranslate"><span class="pre">GlycanRemover.remove()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.GlycanRemover.transform"><code class="docutils literal notranslate"><span class="pre">GlycanRemover.transform()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qsarkit.chemistry.GlycanDescriptors"><code class="docutils literal notranslate"><span class="pre">GlycanDescriptors</span></code></a><ul>
+<li><a class="reference internal" href="#qsarkit.chemistry.GlycanDescriptors.set_fit_request"><code class="docutils literal notranslate"><span class="pre">GlycanDescriptors.set_fit_request()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.GlycanDescriptors.set_transform_request"><code class="docutils literal notranslate"><span class="pre">GlycanDescriptors.set_transform_request()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qsarkit.chemistry.FragmentRemover"><code class="docutils literal notranslate"><span class="pre">FragmentRemover</span></code></a><ul>
+<li><a class="reference internal" href="#qsarkit.chemistry.FragmentRemover.set_fit_request"><code class="docutils literal notranslate"><span class="pre">FragmentRemover.set_fit_request()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.FragmentRemover.set_transform_request"><code class="docutils literal notranslate"><span class="pre">FragmentRemover.set_transform_request()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qsarkit.chemistry.CoreExtractor"><code class="docutils literal notranslate"><span class="pre">CoreExtractor</span></code></a><ul>
+<li><a class="reference internal" href="#qsarkit.chemistry.CoreExtractor.bemis_murcko"><code class="docutils literal notranslate"><span class="pre">CoreExtractor.bemis_murcko()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.CoreExtractor.mcs"><code class="docutils literal notranslate"><span class="pre">CoreExtractor.mcs()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.CoreExtractor.medchem_core"><code class="docutils literal notranslate"><span class="pre">CoreExtractor.medchem_core()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.CoreExtractor.transform"><code class="docutils literal notranslate"><span class="pre">CoreExtractor.transform()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qsarkit.chemistry.MolecularGraph"><code class="docutils literal notranslate"><span class="pre">MolecularGraph</span></code></a><ul>
+<li><a class="reference internal" href="#qsarkit.chemistry.MolecularGraph.to_networkx"><code class="docutils literal notranslate"><span class="pre">MolecularGraph.to_networkx()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.MolecularGraph.descriptors"><code class="docutils literal notranslate"><span class="pre">MolecularGraph.descriptors()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemistry.MolecularGraph.transform"><code class="docutils literal notranslate"><span class="pre">MolecularGraph.transform()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=95e61db4"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

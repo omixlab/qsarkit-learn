@@ -1,0 +1,1103 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>qsarkit.metrics._classification - qsarkit 0.2</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">qsarkit 0.2</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../guide/index.html">User guide</a><input aria-label="Toggle navigation of User guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/quickstart.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/functional.html">The functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/curation.html">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/oecd.html">OECD validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/base.html">Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemistry.html">Chemistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/functional.html">Functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/data_quality.html">Data quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/transform.html">Transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/neighbors.html">Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cluster.html">Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/feature_selection.html">Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_selection.html">Model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/validation.html">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/explainability.html">Explainability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemspace.html">Chemical space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for qsarkit.metrics._classification</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Classification metrics used to judge QSAR classifiers and virtual screens.</span>
+
+<span class="sd">Besides the standard confusion-matrix statistics this module implements the</span>
+<span class="sd">early-recognition metrics used in virtual screening (enrichment factor,</span>
+<span class="sd">RIE and BEDROC), which reward a ranking that places actives at the very</span>
+<span class="sd">top of the list rather than merely separating the classes on average.</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+<span class="sd">- Matthews, B. W. (1975). &quot;Comparison of the Predicted and Observed</span>
+<span class="sd">  Secondary Structure of T4 Phage Lysozyme.&quot; Biochim. Biophys. Acta,</span>
+<span class="sd">  405(2), 442-451. https://doi.org/10.1016/0005-2795(75)90109-9</span>
+<span class="sd">- Cohen, J. (1960). &quot;A Coefficient of Agreement for Nominal Scales.&quot;</span>
+<span class="sd">  Educ. Psychol. Meas., 20(1), 37-46.</span>
+<span class="sd">  https://doi.org/10.1177/001316446002000104</span>
+<span class="sd">- Truchon, J.-F. &amp; Bayly, C. I. (2007). &quot;Evaluating Virtual Screening</span>
+<span class="sd">  Methods: Good and Bad Metrics for the &#39;Early Recognition&#39; Problem.&quot;</span>
+<span class="sd">  J. Chem. Inf. Model., 47(2), 488-508.</span>
+<span class="sd">  https://doi.org/10.1021/ci600426e</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">NDArray</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;confusion_counts&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;accuracy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sensitivity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;specificity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;precision&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;recall&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;f1_score&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;matthews_corrcoef&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cohen_kappa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;roc_auc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pr_auc&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;brier_score&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;enrichment_factor&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;robust_initial_enhancement&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;bedroc&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_binary_labels</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">],</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coerce a pair of binary label vectors to ``{0, 1}`` integer arrays.&quot;&quot;&quot;</span>
+    <span class="n">yt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">yp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">yt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">yp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;y_true and y_pred must have the same length, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">yt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">yp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">yt</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y_true is empty.&quot;</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">arr</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">((</span><span class="n">yt</span><span class="p">,</span> <span class="s2">&quot;y_true&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">yp</span><span class="p">,</span> <span class="s2">&quot;y_pred&quot;</span><span class="p">)):</span>
+        <span class="n">ints</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">ints</span><span class="p">,</span> <span class="n">arr</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must contain integer class labels.&quot;</span><span class="p">)</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ints</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> must be binary with labels in </span><span class="se">{{</span><span class="s2">0, 1</span><span class="se">}}</span><span class="s2">; got extra &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;labels </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">extra</span><span class="p">)</span><span class="si">}</span><span class="s2">. Encode the active/positive class as 1.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ints</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_scores</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_score</span><span class="p">:</span> <span class="n">ArrayLike</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">],</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coerce a binary label vector plus a continuous score vector.&quot;&quot;&quot;</span>
+    <span class="n">yt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">yt</span><span class="p">))</span> <span class="o">-</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;y_true must be binary with labels in </span><span class="se">{{</span><span class="s2">0, 1</span><span class="se">}}</span><span class="s2">; got </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">extra</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">ys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_score</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">yt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;y_true and y_score must have the same length, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">yt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">ys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">yt</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y_true is empty.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">ys</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y_score contains NaN or infinite values.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">yt</span><span class="p">,</span> <span class="n">ys</span>
+
+
+<div class="viewcode-block" id="confusion_counts">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.confusion_counts">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">confusion_counts</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the binary confusion-matrix counts as a dictionary.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_pred : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth and predicted labels in ``{0, 1}``; ``1``</span>
+<span class="sd">        denotes the active/positive class.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        Keys ``&quot;tp&quot;``, ``&quot;tn&quot;``, ``&quot;fp&quot;``, ``&quot;fn&quot;``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import confusion_counts</span>
+<span class="sd">    &gt;&gt;&gt; confusion_counts([1, 1, 0, 0], [1, 0, 0, 0]) == {</span>
+<span class="sd">    ...     &quot;tp&quot;: 1, &quot;tn&quot;: 2, &quot;fp&quot;: 0, &quot;fn&quot;: 1}</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Pedregosa et al. (2011). &quot;Scikit-learn: Machine Learning in Python.&quot;</span>
+<span class="sd">      JMLR, 12, 2825-2830. https://jmlr.org/papers/v12/pedregosa11a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yt</span><span class="p">,</span> <span class="n">yp</span> <span class="o">=</span> <span class="n">_check_binary_labels</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;tp&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">yt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">yp</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))),</span>
+        <span class="s2">&quot;tn&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">yt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">yp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))),</span>
+        <span class="s2">&quot;fp&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">yt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">yp</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))),</span>
+        <span class="s2">&quot;fn&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">yt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">yp</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="accuracy">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.accuracy">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">accuracy</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fraction of correctly classified samples.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_pred : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth and predicted labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        ``(TP + TN) / n``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import accuracy</span>
+<span class="sd">    &gt;&gt;&gt; accuracy([1, 1, 0, 0], [1, 0, 0, 0])</span>
+<span class="sd">    0.75</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Pedregosa et al. (2011). JMLR, 12, 2825-2830.</span>
+<span class="sd">      https://jmlr.org/papers/v12/pedregosa11a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yt</span><span class="p">,</span> <span class="n">yp</span> <span class="o">=</span> <span class="n">_check_binary_labels</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">yt</span> <span class="o">==</span> <span class="n">yp</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="sensitivity">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.sensitivity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sensitivity</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;True-positive rate ``TP / (TP + FN)`` (recall of the active class).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_pred : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth and predicted labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The sensitivity; ``0.0`` when there are no positives.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import sensitivity</span>
+<span class="sd">    &gt;&gt;&gt; sensitivity([1, 1, 0, 0], [1, 0, 0, 0])</span>
+<span class="sd">    0.5</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Altman, D. G. &amp; Bland, J. M. (1994). &quot;Diagnostic Tests. 1:</span>
+<span class="sd">      Sensitivity and Specificity.&quot; BMJ, 308(6943), 1552.</span>
+<span class="sd">      https://doi.org/10.1136/bmj.308.6943.1552</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">confusion_counts</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;tp&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;fn&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">denom</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;tp&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">denom</span></div>
+
+
+
+<div class="viewcode-block" id="specificity">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.specificity">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">specificity</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;True-negative rate ``TN / (TN + FP)``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_pred : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth and predicted labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The specificity; ``0.0`` when there are no negatives.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import specificity</span>
+<span class="sd">    &gt;&gt;&gt; specificity([1, 1, 0, 0], [1, 0, 0, 0])</span>
+<span class="sd">    1.0</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Altman, D. G. &amp; Bland, J. M. (1994). BMJ, 308(6943), 1552.</span>
+<span class="sd">      https://doi.org/10.1136/bmj.308.6943.1552</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">confusion_counts</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;tn&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;fp&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">denom</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;tn&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">denom</span></div>
+
+
+
+<div class="viewcode-block" id="recall">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.recall">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Alias of :func:`sensitivity`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_pred : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth and predicted labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        ``TP / (TP + FN)``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import recall</span>
+<span class="sd">    &gt;&gt;&gt; recall([1, 1, 0, 0], [1, 0, 0, 0])</span>
+<span class="sd">    0.5</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Pedregosa et al. (2011). JMLR, 12, 2825-2830.</span>
+<span class="sd">      https://jmlr.org/papers/v12/pedregosa11a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">sensitivity</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="precision">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.precision">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">precision</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Positive predictive value ``TP / (TP + FP)``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_pred : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth and predicted labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The precision; ``0.0`` when nothing is predicted positive.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import precision</span>
+<span class="sd">    &gt;&gt;&gt; precision([1, 1, 0, 0], [1, 0, 0, 0])</span>
+<span class="sd">    1.0</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Pedregosa et al. (2011). JMLR, 12, 2825-2830.</span>
+<span class="sd">      https://jmlr.org/papers/v12/pedregosa11a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">confusion_counts</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;tp&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;fp&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">denom</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;tp&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">denom</span></div>
+
+
+
+<div class="viewcode-block" id="f1_score">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.f1_score">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">f1_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Harmonic mean of precision and recall.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_pred : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth and predicted labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        ``2 * P * R / (P + R)``; ``0.0`` when both are zero.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import f1_score</span>
+<span class="sd">    &gt;&gt;&gt; round(f1_score([1, 1, 0, 0], [1, 0, 0, 0]), 4)</span>
+<span class="sd">    0.6667</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - van Rijsbergen, C. J. (1979). *Information Retrieval*, 2nd ed.</span>
+<span class="sd">      Butterworths. https://www.dcs.gla.ac.uk/Keith/Preface.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">precision</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">recall</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">p</span> <span class="o">*</span> <span class="n">r</span> <span class="o">/</span> <span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">r</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="balanced_accuracy">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.balanced_accuracy">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">balanced_accuracy</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mean of sensitivity and specificity.</span>
+
+<span class="sd">    Preferred over plain accuracy for the strongly imbalanced datasets that</span>
+<span class="sd">    are the norm in QSAR classification (e.g. toxicity endpoints with 5%</span>
+<span class="sd">    actives), where a trivial majority classifier already scores high</span>
+<span class="sd">    accuracy but only 0.5 balanced accuracy.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_pred : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth and predicted labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        ``(sensitivity + specificity) / 2``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import balanced_accuracy</span>
+<span class="sd">    &gt;&gt;&gt; balanced_accuracy([1, 1, 0, 0], [1, 0, 0, 0])</span>
+<span class="sd">    0.75</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Brodersen, K. H., Ong, C. S., Stephan, K. E. &amp; Buhmann, J. M. (2010).</span>
+<span class="sd">      &quot;The Balanced Accuracy and Its Posterior Distribution.&quot; ICPR 2010,</span>
+<span class="sd">      3121-3124. https://doi.org/10.1109/ICPR.2010.764</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">((</span><span class="n">sensitivity</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span> <span class="o">+</span> <span class="n">specificity</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="matthews_corrcoef">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.matthews_corrcoef">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">matthews_corrcoef</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Matthews correlation coefficient (MCC).</span>
+
+<span class="sd">    ``MCC = (TP*TN - FP*FN) / sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))``</span>
+
+<span class="sd">    MCC is a correlation coefficient between observed and predicted binary</span>
+<span class="sd">    classifications; it is high only when all four confusion-matrix</span>
+<span class="sd">    quadrants are good, which is why it is the recommended single-number</span>
+<span class="sd">    summary for imbalanced QSAR classification.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_pred : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth and predicted labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The MCC in ``[-1, 1]``; ``0.0`` if any marginal is degenerate.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import matthews_corrcoef</span>
+<span class="sd">    &gt;&gt;&gt; matthews_corrcoef([1, 1, 0, 0], [1, 1, 0, 0])</span>
+<span class="sd">    1.0</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Matthews, B. W. (1975). Biochim. Biophys. Acta, 405(2), 442-451.</span>
+<span class="sd">      https://doi.org/10.1016/0005-2795(75)90109-9</span>
+<span class="sd">    - Chicco, D. &amp; Jurman, G. (2020). &quot;The Advantages of the Matthews</span>
+<span class="sd">      Correlation Coefficient (MCC) over F1 Score and Accuracy in Binary</span>
+<span class="sd">      Classification Evaluation.&quot; BMC Genomics, 21, 6.</span>
+<span class="sd">      https://doi.org/10.1186/s12864-019-6413-7</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">confusion_counts</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">tp</span><span class="p">,</span> <span class="n">tn</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">fn</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;tp&quot;</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;tn&quot;</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;fp&quot;</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="s2">&quot;fn&quot;</span><span class="p">]</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tp</span> <span class="o">*</span> <span class="n">tn</span> <span class="o">-</span> <span class="n">fp</span> <span class="o">*</span> <span class="n">fn</span><span class="p">)</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mf">0.0</span> <span class="k">if</span> <span class="n">denom</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">num</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">denom</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="cohen_kappa">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.cohen_kappa">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">cohen_kappa</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Cohen&#39;s kappa: agreement corrected for chance.</span>
+
+<span class="sd">    ``kappa = (p_o - p_e) / (1 - p_e)`` where ``p_o`` is the observed</span>
+<span class="sd">    agreement and ``p_e`` the agreement expected from the marginal label</span>
+<span class="sd">    frequencies.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_pred : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth and predicted labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        Cohen&#39;s kappa; ``1.0`` when observed agreement is perfect *and*</span>
+<span class="sd">        chance agreement is degenerate (``p_e == 1``).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import cohen_kappa</span>
+<span class="sd">    &gt;&gt;&gt; cohen_kappa([1, 1, 0, 0], [1, 1, 0, 0])</span>
+<span class="sd">    1.0</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Cohen, J. (1960). &quot;A Coefficient of Agreement for Nominal Scales.&quot;</span>
+<span class="sd">      Educ. Psychol. Meas., 20(1), 37-46.</span>
+<span class="sd">      https://doi.org/10.1177/001316446002000104</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yt</span><span class="p">,</span> <span class="n">yp</span> <span class="o">=</span> <span class="n">_check_binary_labels</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">yt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">p_o</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">yt</span> <span class="o">==</span> <span class="n">yp</span><span class="p">))</span>
+    <span class="n">p_e</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">p_e</span> <span class="o">+=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">yt</span> <span class="o">==</span> <span class="n">label</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">yp</span> <span class="o">==</span> <span class="n">label</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">p_e</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="c1"># p_e == 1 is only attainable when yt and yp are both degenerate</span>
+        <span class="c1"># (all-0 or all-1) with matching composition, which forces p_o == 1.</span>
+        <span class="k">return</span> <span class="mf">1.0</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">((</span><span class="n">p_o</span> <span class="o">-</span> <span class="n">p_e</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">p_e</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="roc_auc">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.roc_auc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">roc_auc</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_score</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Area under the receiver-operating-characteristic curve.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth labels in ``{0, 1}``.</span>
+<span class="sd">    y_score : array-like of shape (n_samples,)</span>
+<span class="sd">        Continuous scores (higher = more likely active), e.g.</span>
+<span class="sd">        ``predict_proba(X)[:, 1]``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The ROC-AUC.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If only one class is present in ``y_true``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import roc_auc</span>
+<span class="sd">    &gt;&gt;&gt; roc_auc([0, 0, 1, 1], [0.1, 0.2, 0.8, 0.9])</span>
+<span class="sd">    1.0</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Hanley, J. A. &amp; McNeil, B. J. (1982). &quot;The Meaning and Use of the Area</span>
+<span class="sd">      under a Receiver Operating Characteristic (ROC) Curve.&quot; Radiology,</span>
+<span class="sd">      143(1), 29-36. https://doi.org/10.1148/radiology.143.1.7063747</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">roc_auc_score</span>
+
+    <span class="n">yt</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">_check_scores</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">yt</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;ROC-AUC is undefined when y_true has a single class.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">yt</span><span class="p">,</span> <span class="n">ys</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="pr_auc">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.pr_auc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pr_auc</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_score</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Area under the precision-recall curve (average precision).</span>
+
+<span class="sd">    More informative than ROC-AUC when actives are rare, because the</span>
+<span class="sd">    precision axis is sensitive to the large number of true negatives that</span>
+<span class="sd">    ROC-AUC dilutes away.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth labels in ``{0, 1}``.</span>
+<span class="sd">    y_score : array-like of shape (n_samples,)</span>
+<span class="sd">        Continuous scores (higher = more likely active).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The average precision.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If only one class is present in ``y_true``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import pr_auc</span>
+<span class="sd">    &gt;&gt;&gt; pr_auc([0, 0, 1, 1], [0.1, 0.2, 0.8, 0.9])</span>
+<span class="sd">    1.0</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Davis, J. &amp; Goadrich, M. (2006). &quot;The Relationship between</span>
+<span class="sd">      Precision-Recall and ROC Curves.&quot; ICML 2006, 233-240.</span>
+<span class="sd">      https://doi.org/10.1145/1143844.1143874</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">average_precision_score</span>
+
+    <span class="n">yt</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">_check_scores</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">yt</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;PR-AUC is undefined when y_true has a single class.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">average_precision_score</span><span class="p">(</span><span class="n">yt</span><span class="p">,</span> <span class="n">ys</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="brier_score">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.brier_score">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">brier_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Brier score: mean squared error of the predicted probabilities.</span>
+
+<span class="sd">    Measures calibration as well as discrimination; lower is better.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth labels in ``{0, 1}``.</span>
+<span class="sd">    y_prob : array-like of shape (n_samples,)</span>
+<span class="sd">        Predicted probability of the positive class, in ``[0, 1]``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        ``mean((y_prob - y_true) ** 2)``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import brier_score</span>
+<span class="sd">    &gt;&gt;&gt; brier_score([0, 1], [0.0, 1.0])</span>
+<span class="sd">    0.0</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Brier, G. W. (1950). &quot;Verification of Forecasts Expressed in Terms of</span>
+<span class="sd">      Probability.&quot; Mon. Weather Rev., 78(1), 1-3.</span>
+<span class="sd">      https://doi.org/10.1175/1520-0493(1950)078&lt;0001:VOFEIT&gt;2.0.CO;2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yt</span><span class="p">,</span> <span class="n">yp</span> <span class="o">=</span> <span class="n">_check_scores</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">yp</span> <span class="o">-</span> <span class="n">yt</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_active_ranks</span><span class="p">(</span>
+    <span class="n">yt</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">],</span> <span class="n">ys</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;1-based ranks of the actives after sorting scores in descending order.</span>
+
+<span class="sd">    Ties are broken deterministically by original index, which matches the</span>
+<span class="sd">    behaviour of the reference BEDROC implementations (RDKit, ``croc``).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">ys</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;stable&quot;</span><span class="p">)</span>
+    <span class="n">ranks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">ys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">ranks</span><span class="p">[</span><span class="n">order</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ys</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ranks</span><span class="p">[</span><span class="n">yt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="enrichment_factor">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.enrichment_factor">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">enrichment_factor</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_score</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enrichment factor at a given fraction of the ranked list.</span>
+
+<span class="sd">    ``EF(chi) = (n_actives_in_top / n_top) / (n_actives_total / N)``</span>
+
+<span class="sd">    An EF of 10 at 1% means the screen finds ten times as many actives in</span>
+<span class="sd">    the top 1% as random selection would.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth labels in ``{0, 1}``.</span>
+<span class="sd">    y_score : array-like of shape (n_samples,)</span>
+<span class="sd">        Continuous scores; the list is ranked in decreasing score order.</span>
+<span class="sd">    fraction : float, default=0.01</span>
+<span class="sd">        Fraction ``chi`` of the ranked list to inspect, in ``(0, 1]``.</span>
+<span class="sd">        The top-``k`` cut-off is ``max(1, round(fraction * N))``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The enrichment factor. Its maximum attainable value is</span>
+<span class="sd">        ``min(1 / fraction, N / n_actives)``.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``fraction`` is outside ``(0, 1]`` or there are no actives.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import enrichment_factor</span>
+<span class="sd">    &gt;&gt;&gt; enrichment_factor([1, 1, 0, 0, 0, 0, 0, 0, 0, 0],</span>
+<span class="sd">    ...                   [0.9, 0.8, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],</span>
+<span class="sd">    ...                   fraction=0.2)</span>
+<span class="sd">    5.0</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Truchon, J.-F. &amp; Bayly, C. I. (2007). J. Chem. Inf. Model., 47(2),</span>
+<span class="sd">      488-508. https://doi.org/10.1021/ci600426e</span>
+<span class="sd">    - Bender, A. &amp; Glen, R. C. (2005). &quot;A Discussion of Measures of</span>
+<span class="sd">      Enrichment in Virtual Screening.&quot; J. Chem. Inf. Model., 45(5),</span>
+<span class="sd">      1369-1375. https://doi.org/10.1021/ci0500177</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yt</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">_check_scores</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;</span> <span class="n">fraction</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fraction must be in (0, 1], got </span><span class="si">{</span><span class="n">fraction</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">yt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">n_actives</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">yt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">n_actives</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The enrichment factor is undefined without actives.&quot;</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">fraction</span> <span class="o">*</span> <span class="n">n</span><span class="p">)))</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">ys</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;stable&quot;</span><span class="p">)</span>
+    <span class="n">hits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">yt</span><span class="p">[</span><span class="n">order</span><span class="p">[:</span><span class="n">k</span><span class="p">]]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">((</span><span class="n">hits</span> <span class="o">/</span> <span class="n">k</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_actives</span> <span class="o">/</span> <span class="n">n</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="robust_initial_enhancement">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.robust_initial_enhancement">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">robust_initial_enhancement</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_score</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">20.0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Robust initial enhancement (RIE) of Sheridan et al.</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        RIE = sum_i exp(-alpha * r_i / N)</span>
+<span class="sd">              / [ (n/N) * (1 - exp(-alpha)) / (exp(alpha/N) - 1) ]</span>
+
+<span class="sd">    where ``r_i`` are the 1-based ranks of the ``n`` actives among ``N``</span>
+<span class="sd">    compounds. The exponential weight makes RIE a continuous, threshold-free</span>
+<span class="sd">    generalization of the enrichment factor: ``alpha`` sets how sharply</span>
+<span class="sd">    early ranks are rewarded (the top ``1/alpha`` of the list carries most</span>
+<span class="sd">    of the weight). RIE is 1 for a random ranking.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth labels in ``{0, 1}``.</span>
+<span class="sd">    y_score : array-like of shape (n_samples,)</span>
+<span class="sd">        Continuous scores; the list is ranked in decreasing score order.</span>
+<span class="sd">    alpha : float, default=20.0</span>
+<span class="sd">        Exponential weighting parameter; must be positive.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The RIE value.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``alpha &lt;= 0`` or there are no actives.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import robust_initial_enhancement</span>
+<span class="sd">    &gt;&gt;&gt; scores = [1.0, 0.9, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]</span>
+<span class="sd">    &gt;&gt;&gt; labels = [1, 1, 0, 0, 0, 0, 0, 0, 0, 0]</span>
+<span class="sd">    &gt;&gt;&gt; robust_initial_enhancement(labels, scores, alpha=20.0) &gt; 1.0</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Sheridan, R. P., Singh, S. B., Fluder, E. M. &amp; Kearsley, S. K. (2001).</span>
+<span class="sd">      &quot;Protocols for Bridging the Peptide to Nonpeptide Gap in Topological</span>
+<span class="sd">      Similarity Searches.&quot; J. Chem. Inf. Comput. Sci., 41(5), 1395-1406.</span>
+<span class="sd">      https://doi.org/10.1021/ci0100144</span>
+<span class="sd">    - Truchon, J.-F. &amp; Bayly, C. I. (2007). J. Chem. Inf. Model., 47(2),</span>
+<span class="sd">      488-508. https://doi.org/10.1021/ci600426e</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yt</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">_check_scores</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">alpha</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alpha must be positive, got </span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="n">n_total</span> <span class="o">=</span> <span class="n">yt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ranks</span> <span class="o">=</span> <span class="n">_active_ranks</span><span class="p">(</span><span class="n">yt</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span>
+    <span class="n">n_actives</span> <span class="o">=</span> <span class="n">ranks</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">n_actives</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;RIE is undefined without actives.&quot;</span><span class="p">)</span>
+    <span class="n">numerator</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">ranks</span> <span class="o">/</span> <span class="n">n_total</span><span class="p">)))</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">n_actives</span> <span class="o">/</span> <span class="n">n_total</span>
+    <span class="n">denominator</span> <span class="o">=</span> <span class="n">ratio</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">alpha</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">alpha</span> <span class="o">/</span> <span class="n">n_total</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="bedroc">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.bedroc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">bedroc</span><span class="p">(</span><span class="n">y_true</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_score</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">alpha</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Boltzmann-enhanced discrimination of ROC (BEDROC).</span>
+
+<span class="sd">    BEDROC rescales :func:`robust_initial_enhancement` onto ``[0, 1]``,</span>
+<span class="sd">    removing RIE&#39;s dependence on the fraction of actives::</span>
+
+<span class="sd">        BEDROC = RIE * Ra * sinh(alpha/2)</span>
+<span class="sd">                 / (cosh(alpha/2) - cosh(alpha/2 - alpha*Ra))</span>
+<span class="sd">                 + 1 / (1 - exp(alpha * (1 - Ra)))</span>
+
+<span class="sd">    with ``Ra = n_actives / N``. A perfect early-recognition ranking gives</span>
+<span class="sd">    ~1, a random ranking gives ~``Ra`` and the worst ranking ~0. The</span>
+<span class="sd">    default ``alpha=20`` concentrates 80% of the weight in the top 8% of</span>
+<span class="sd">    the list, the usual choice in virtual-screening benchmarks.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary ground-truth labels in ``{0, 1}``.</span>
+<span class="sd">    y_score : array-like of shape (n_samples,)</span>
+<span class="sd">        Continuous scores; the list is ranked in decreasing score order.</span>
+<span class="sd">    alpha : float, default=20.0</span>
+<span class="sd">        Early-recognition weighting parameter; must be positive.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        The BEDROC score.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``alpha &lt;= 0``, there are no actives, or every compound is</span>
+<span class="sd">        active (``Ra == 1``, for which the metric is undefined).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import bedroc</span>
+<span class="sd">    &gt;&gt;&gt; labels = [1] * 5 + [0] * 95</span>
+<span class="sd">    &gt;&gt;&gt; scores = list(range(100, 0, -1))</span>
+<span class="sd">    &gt;&gt;&gt; bedroc(labels, scores, alpha=20.0) &gt; 0.99</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Truchon, J.-F. &amp; Bayly, C. I. (2007). &quot;Evaluating Virtual Screening</span>
+<span class="sd">      Methods: Good and Bad Metrics for the &#39;Early Recognition&#39; Problem.&quot;</span>
+<span class="sd">      J. Chem. Inf. Model., 47(2), 488-508.</span>
+<span class="sd">      https://doi.org/10.1021/ci600426e</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">yt</span><span class="p">,</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">_check_scores</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">alpha</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;alpha must be positive, got </span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="n">n_total</span> <span class="o">=</span> <span class="n">yt</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">n_actives</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">yt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">n_actives</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;BEDROC is undefined without actives.&quot;</span><span class="p">)</span>
+    <span class="n">ra</span> <span class="o">=</span> <span class="n">n_actives</span> <span class="o">/</span> <span class="n">n_total</span>
+    <span class="k">if</span> <span class="n">ra</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;BEDROC is undefined when every compound is active.&quot;</span><span class="p">)</span>
+
+    <span class="n">rie</span> <span class="o">=</span> <span class="n">robust_initial_enhancement</span><span class="p">(</span><span class="n">yt</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="n">half</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span><span class="n">half</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">half</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cosh</span><span class="p">(</span><span class="n">half</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">ra</span><span class="p">))</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">ra</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">rie</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Frederico Schmitt Kremer
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-09-09</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=95e61db4"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

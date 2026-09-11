@@ -1,0 +1,72 @@
+Quick start
+===========
+
+A complete QSAR workflow in one page.
+
+Curate the structures
+---------------------
+
+.. code-block:: python
+
+   from rdkit import Chem
+   from qsarkit.chemistry import MolecularStandardizer
+
+   smiles = ["CC(=O)Oc1ccccc1C(=O)[O-].[Na+]", "CCO", "c1ccccc1"]
+   mols = [Chem.MolFromSmiles(s) for s in smiles]
+
+   standardizer = MolecularStandardizer()
+   clean = standardizer.transform(mols)
+   Chem.MolToSmiles(clean[0])
+   # 'CC(=O)Oc1ccccc1C(=O)O'   salt stripped, charge neutralized
+
+The pipeline sanitizes, removes salts and solvates, neutralizes charges,
+canonicalizes tautomers, handles stereochemistry and normalizes hydrogens.
+Molecules that fail become ``None`` in the output so positions stay aligned
+with your activity data.
+
+Featurize
+---------
+
+.. code-block:: python
+
+   from qsarkit.representation.fingerprints import MorganFingerprint
+
+   X = MorganFingerprint(radius=2, n_bits=2048).transform(clean)
+
+Model, with a scaffold split
+----------------------------
+
+.. code-block:: python
+
+   from qsarkit.models import QSARRegressor
+   from qsarkit.model_selection import ScaffoldSplitter
+
+   train, test = next(ScaffoldSplitter(test_size=0.2).split_mols(clean))
+   model = QSARRegressor("rf").fit(X[train], y[train])
+   y_pred = model.predict(X[test])
+
+A random split flatters a QSAR model, because near-duplicate analogues end
+up on both sides. A scaffold split keeps whole chemical series together and
+measures what you actually care about: generalization to new chemistry.
+
+Check the applicability domain
+------------------------------
+
+.. code-block:: python
+
+   from qsarkit.applicability import KNNApplicabilityDomain, ADAnalyzer
+
+   domain = KNNApplicabilityDomain(n_neighbors=5).fit(X[train])
+   report = ADAnalyzer(domain).fit(X[train]).report(X[test], y[test], y_pred)
+   report["rmse_ratio"]   # > 1 means the domain is doing its job
+
+Interpret the SAR
+-----------------
+
+.. code-block:: python
+
+   from qsarkit.sar import activity_cliff_report
+
+   report = activity_cliff_report(clean, y)
+   report["cliff_ratio"]
+   report["top_transformations"]

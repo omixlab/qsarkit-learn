@@ -1,0 +1,128 @@
+Reporting
+=========
+
+.. currentmodule:: qsarkit.reporting
+
+QSAR reports in Markdown, HTML and JSON, QMRF-style OECD reporting, and
+the Plotly figures that go in them.
+
+.. note::
+
+   All plotting returns :class:`plotly.graph_objects.Figure`. Nothing here
+   calls ``.show()`` or writes a file, so the same figure composes into a
+   notebook, a dashboard and an HTML report. Static export
+   (``fig.write_image``) needs ``kaleido`` — ``pip install qsarkit[reporting]``.
+
+Figures
+-------
+
+.. doctest::
+
+   >>> from qsarkit.models import QSARRegressor
+   >>> from qsarkit.reporting import plot_predicted_vs_observed, plot_residuals
+   >>> X, y = demo_fingerprints(256), DEMO_Y
+   >>> y_pred = QSARRegressor("rf", random_state=0).fit(X, y).predict(X)
+   >>> figure = plot_predicted_vs_observed(y, y_pred)
+   >>> type(figure).__name__
+   'Figure'
+   >>> type(plot_residuals(y, y_pred)).__name__
+   'Figure'
+
+The Williams plot is the standard OECD-facing diagnostic, putting
+leverage against standardized residual so influential points and outliers
+are visible in one picture:
+
+.. doctest::
+
+   >>> import numpy as np
+   >>> from qsarkit.applicability import LeverageAD
+   >>> from qsarkit.reporting import plot_williams
+   >>> leverage = LeverageAD().fit(X).score_samples(X)
+   >>> type(plot_williams(leverage, y, y_pred)).__name__
+   'Figure'
+
+Embedding figures in a page needs Plotly's JavaScript exactly once, which
+:func:`figure_to_html` handles:
+
+.. doctest::
+
+   >>> from qsarkit.reporting import figure_to_html
+   >>> first = figure_to_html(figure)                       # includes plotly.js
+   >>> rest = figure_to_html(figure, include_plotlyjs=False)  # subsequent figures
+   >>> len(first) > len(rest)
+   True
+
+Model reports
+-------------
+
+.. doctest::
+
+   >>> from qsarkit.metrics import qsar_regression_report
+   >>> from qsarkit.reporting import QSARReport
+   >>> report = (
+   ...     QSARReport(title="Demo model", endpoint="pIC50")
+   ...     .add_dataset_section(n_compounds=24, n_train=18, n_test=6)
+   ...     .add_model_section(QSARRegressor("rf"), descriptors="Morgan r=2, 256 bits")
+   ...     .add_validation_section(qsar_regression_report(y, y_pred))
+   ... )
+   >>> markdown = report.to_markdown()
+   >>> markdown.splitlines()[0]
+   '# Demo model'
+   >>> "pIC50" in markdown
+   True
+
+The same report renders three ways — Markdown for a repository, HTML for
+sharing, JSON for a downstream system:
+
+.. doctest::
+
+   >>> set(report.to_dict()) >= {"title", "sections"}
+   True
+   >>> report.to_html().startswith("<!DOCTYPE html>")
+   True
+
+OECD reporting
+--------------
+
+:class:`OECDReportBuilder` structures a report around the five validation
+principles:
+
+.. doctest::
+
+   >>> from qsarkit.reporting import OECDReportBuilder
+   >>> builder = OECDReportBuilder(title="QMRF for demo model", endpoint="pIC50")
+   >>> [p[0] for p in builder.PRINCIPLES]
+   [1, 2, 3, 4, 5]
+
+Its most useful behaviour is refusing to be quiet about what you skipped:
+
+.. doctest::
+
+   >>> builder.add_evidence(1, True, {"endpoint": "pIC50, cell-based assay"})
+   ... # doctest: +ELLIPSIS
+   <qsarkit.reporting...OECDReportBuilder object at ...>
+   >>> builder.unaddressed
+   [2, 3, 4, 5]
+
+A submission fails review over a principle nobody noticed was missing, so
+the builder tracks them explicitly rather than letting an omission look
+like an absence of problems.
+
+API
+---
+
+.. automodule:: qsarkit.reporting
+   :members:
+   :show-inheritance:
+
+References
+----------
+
+- OECD (2007). "Guidance Document on the Validation of (Quantitative)
+  Structure-Activity Relationship [(Q)SAR] Models," ENV/JM/MONO(2007)2.
+  :doi:`10.1787/9789264085442-en`
+- European Chemicals Agency (2016). "Practical Guide: How to Use and
+  Report (Q)SARs." :doi:`10.2823/81818`
+- Gramatica, P. (2007). "Principles of QSAR Models Validation: Internal
+  and External." QSAR Comb. Sci., 26(5), 694-701.
+  :doi:`10.1002/qsar.200610151`

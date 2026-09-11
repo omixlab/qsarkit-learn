@@ -1,0 +1,1141 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>qsarkit.models._facades - qsarkit 0.2</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">qsarkit 0.2</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../guide/index.html">User guide</a><input aria-label="Toggle navigation of User guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/quickstart.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/functional.html">The functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/curation.html">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/oecd.html">OECD validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/base.html">Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemistry.html">Chemistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/functional.html">Functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/data_quality.html">Data quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/transform.html">Transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/neighbors.html">Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cluster.html">Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/feature_selection.html">Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_selection.html">Model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/validation.html">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/explainability.html">Explainability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemspace.html">Chemical space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for qsarkit.models._facades</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Unified ``name``-dispatching QSAR regressor/classifier facades.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">ClassifierMixin</span><span class="p">,</span> <span class="n">RegressorMixin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HistGradientBoostingClassifier</span><span class="p">,</span>
+    <span class="n">HistGradientBoostingRegressor</span><span class="p">,</span>
+    <span class="n">RandomForestClassifier</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.gaussian_process</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianProcessClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">ElasticNet</span><span class="p">,</span> <span class="n">Lasso</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">,</span> <span class="n">Ridge</span><span class="p">,</span> <span class="n">RidgeClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neural_network</span><span class="w"> </span><span class="kn">import</span> <span class="n">MLPClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.utils.multiclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">unique_labels</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.base.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">ModelNotFittedError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models._gaussian_process</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianProcessQSAR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models._neural_network</span><span class="w"> </span><span class="kn">import</span> <span class="n">NeuralNetworkQSAR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models._pls</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLSRegressor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models._random_forest</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestQSAR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models._svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVMQSAR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models._tanimoto_kernel</span><span class="w"> </span><span class="kn">import</span> <span class="n">TanimotoKernel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">JaccardKNeighborsClassifier</span><span class="p">,</span> <span class="n">JaccardKNeighborsRegressor</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;QSARRegressor&quot;</span><span class="p">,</span> <span class="s2">&quot;QSARClassifier&quot;</span><span class="p">]</span>
+
+<span class="n">_BuiltinName</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="s2">&quot;svm&quot;</span><span class="p">,</span> <span class="s2">&quot;gbm&quot;</span><span class="p">,</span> <span class="s2">&quot;xgboost&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgbm&quot;</span><span class="p">,</span> <span class="s2">&quot;knn&quot;</span><span class="p">,</span> <span class="s2">&quot;pls&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ridge&quot;</span><span class="p">,</span> <span class="s2">&quot;lasso&quot;</span><span class="p">,</span> <span class="s2">&quot;elasticnet&quot;</span><span class="p">,</span> <span class="s2">&quot;mlp&quot;</span><span class="p">,</span> <span class="s2">&quot;gp&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="c1">#: Either one of the built-in names, or any scikit-learn-compatible</span>
+<span class="c1">#: estimator class or instance (XGBoost, LightGBM, CatBoost, your own).</span>
+<span class="n">_ModelName</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">_BuiltinName</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+
+<span class="n">_VALID_NAMES</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="s2">&quot;svm&quot;</span><span class="p">,</span> <span class="s2">&quot;gbm&quot;</span><span class="p">,</span> <span class="s2">&quot;xgboost&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgbm&quot;</span><span class="p">,</span> <span class="s2">&quot;knn&quot;</span><span class="p">,</span> <span class="s2">&quot;pls&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ridge&quot;</span><span class="p">,</span> <span class="s2">&quot;lasso&quot;</span><span class="p">,</span> <span class="s2">&quot;elasticnet&quot;</span><span class="p">,</span> <span class="s2">&quot;mlp&quot;</span><span class="p">,</span> <span class="s2">&quot;gp&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_invalid_name_error</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">return</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;name must be one of </span><span class="si">{</span><span class="n">_VALID_NAMES</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_estimator_like</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;True for anything exposing the scikit-learn ``fit``/``predict`` pair.</span>
+
+<span class="sd">    Deliberately duck-typed rather than an ``isinstance`` check against</span>
+<span class="sd">    :class:`~sklearn.base.BaseEstimator`: XGBoost, LightGBM and CatBoost</span>
+<span class="sd">    all ship estimators that follow the protocol without inheriting from</span>
+<span class="sd">    it, and so do plenty of in-house wrappers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">obj</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s2">&quot;predict&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_describe_estimator</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Readable name for an estimator name, class or instance.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_CustomEstimatorMixin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Shared handling of user-supplied estimators and per-method kwargs.</span>
+
+<span class="sd">    Both facades accept, in place of a built-in ``name``, any object</span>
+<span class="sd">    following the scikit-learn protocol -- an instance, or a class to be</span>
+<span class="sd">    constructed from ``model_args``/``model_params``. Extra keyword</span>
+<span class="sd">    arguments for ``fit``, ``predict`` and ``predict_proba`` are carried</span>
+<span class="sd">    separately, because those belong to the call rather than to the</span>
+<span class="sd">    constructor and some libraries only accept them there (XGBoost&#39;s</span>
+<span class="sd">    ``eval_set``, LightGBM&#39;s ``callbacks``, CatBoost&#39;s ``verbose``).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="c1"># Supplied by the concrete facades. Declared here so the mixin type</span>
+    <span class="c1"># checks on its own; both subclasses set them in __init__.</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">_ModelName</span>
+    <span class="n">model_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span>
+    <span class="n">model_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_custom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate or clone the user-supplied estimator.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">clone</span>
+
+        <span class="n">estimator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_args</span> <span class="ow">or</span> <span class="p">())</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_params</span> <span class="ow">or</span> <span class="p">{})</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">estimator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;model_args applies only when an estimator *class* is passed. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Got an instance of </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">; configure it &quot;</span>
+                <span class="s2">&quot;directly, or pass the class instead.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># Clone so repeated fits never mutate the object the caller handed</span>
+        <span class="c1"># us -- the same contract sklearn&#39;s own meta-estimators follow.</span>
+        <span class="c1"># Non-sklearn estimators without get_params are used as given.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">built</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">):</span>
+            <span class="n">built</span> <span class="o">=</span> <span class="n">estimator</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">built</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Could not apply model_params to &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">. Pass the estimator &quot;</span>
+                    <span class="s2">&quot;class instead of an instance to have them handed to the &quot;</span>
+                    <span class="s2">&quot;constructor.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">return</span> <span class="n">built</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reject a ``name`` that is neither a known string nor estimator-like.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_VALID_NAMES</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">_invalid_name_error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_estimator_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;name must be one of </span><span class="si">{</span><span class="n">_VALID_NAMES</span><span class="si">}</span><span class="s2">, or an object following &quot;</span>
+                <span class="s2">&quot;the scikit-learn API (a class or instance with .fit and &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;.predict). Got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2">, which has &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;no fit&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;fit&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;no predict&#39;</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="s2">&quot;method.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_uses_custom_estimator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_PLSDAClassifier</span><span class="p">(</span><span class="n">ClassifierMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Binary partial least squares discriminant analysis (PLS-DA).</span>
+
+<span class="sd">    Internal helper backing ``QSARClassifier(name=&quot;pls&quot;)``: fits</span>
+<span class="sd">    :class:`~qsarkit.models.PLSRegressor` on a 0/1-encoded binary target</span>
+<span class="sd">    and thresholds the continuous PLS output at 0.5 to obtain class</span>
+<span class="sd">    predictions, with :meth:`predict_proba` given by a clipped version of</span>
+<span class="sd">    that same continuous score. PLS-DA is the standard way chemometricians</span>
+<span class="sd">    turn a regression tool (PLS) into a classifier when the number of</span>
+<span class="sd">    descriptors greatly exceeds the number of compounds, a regime where</span>
+<span class="sd">    logistic regression is unstable but PLS&#39;s latent-variable projection</span>
+<span class="sd">    remains well behaved.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_components : int, default 2</span>
+<span class="sd">    scale : bool, default True</span>
+<span class="sd">    max_iter : int, default 500</span>
+<span class="sd">    tol : float, default 1e-6</span>
+<span class="sd">    copy : bool, default True</span>
+<span class="sd">        Forwarded verbatim to the internal :class:`~qsarkit.models.PLSRegressor`.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    classes_ : ndarray of shape (2,)</span>
+<span class="sd">        The two class labels seen during :meth:`fit`.</span>
+<span class="sd">    pls_ : PLSRegressor</span>
+<span class="sd">        The fitted internal PLS regressor.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Barker, M. &amp; Rayens, W. (2003). &quot;Partial least squares for</span>
+<span class="sd">      discrimination.&quot; J. Chemometrics, 17(3), 166-173.</span>
+<span class="sd">      https://doi.org/10.1002/cem.785</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">classes_</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">]</span>
+    <span class="n">pls_</span><span class="p">:</span> <span class="n">PLSRegressor</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_components</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">scale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+        <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="n">copy</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="n">n_components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copy</span> <span class="o">=</span> <span class="n">copy</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;_PLSDAClassifier&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fit the underlying PLS regressor on a 0/1-encoded target.&quot;&quot;&quot;</span>
+        <span class="n">y_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="n">unique_labels</span><span class="p">(</span><span class="n">y_arr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;PLS-DA (name=&#39;pls&#39;) supports binary classification only, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">)</span><span class="si">}</span><span class="s2"> classes.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">y_binary</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">,</span> <span class="n">y_arr</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pls_</span> <span class="o">=</span> <span class="n">PLSRegressor</span><span class="p">(</span>
+            <span class="n">n_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span>
+            <span class="n">tol</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tol</span><span class="p">,</span>
+            <span class="n">copy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y_binary</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pls_</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict the class whose side of the 0.5 threshold the score falls on.&quot;&quot;&quot;</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_score</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_proba</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class probabilities from the clipped continuous PLS score.&quot;&quot;&quot;</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_score</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p1</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="QSARRegressor">
+<a class="viewcode-back" href="../../../api/models.html#qsarkit.models.QSARRegressor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">QSARRegressor</span><span class="p">(</span><span class="n">_CustomEstimatorMixin</span><span class="p">,</span> <span class="n">RegressorMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unified, ``name``-dispatching QSAR regressor facade.</span>
+
+<span class="sd">    Wraps a broad menu of regression algorithms behind one scikit-learn</span>
+<span class="sd">    estimator, so pipelines and benchmarking code can sweep across</span>
+<span class="sd">    algorithm families by changing a single string rather than importing</span>
+<span class="sd">    and configuring each estimator by hand.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : {&quot;rf&quot;, &quot;svm&quot;, &quot;gbm&quot;, &quot;xgboost&quot;, &quot;lightgbm&quot;, &quot;knn&quot;, &quot;pls&quot;, \</span>
+<span class="sd">&quot;ridge&quot;, &quot;lasso&quot;, &quot;elasticnet&quot;, &quot;mlp&quot;, &quot;gp&quot;}</span>
+<span class="sd">        Which algorithm to build. One-line rationale for each default:</span>
+
+<span class="sd">        - ``&quot;rf&quot;``: :class:`~qsarkit.models.RandomForestQSAR` — robust,</span>
+<span class="sd">          scale-insensitive default for tabular molecular descriptors</span>
+<span class="sd">          (Svetnik et al. 2003).</span>
+<span class="sd">        - ``&quot;svm&quot;``: :class:`~qsarkit.models.SVMQSAR` — RBF support-vector</span>
+<span class="sd">          regression, strong on non-linear SAR with few hundred compounds</span>
+<span class="sd">          (Burbidge et al. 2001).</span>
+<span class="sd">        - ``&quot;gbm&quot;``: ``HistGradientBoostingRegressor`` — fast, regularized</span>
+<span class="sd">          gradient boosting with no extra install required.</span>
+<span class="sd">        - ``&quot;xgboost&quot;``: ``xgboost.XGBRegressor`` if installed, otherwise</span>
+<span class="sd">          the ``&quot;gbm&quot;`` fallback with a warning (Chen &amp; Guestrin 2016).</span>
+<span class="sd">        - ``&quot;lightgbm&quot;``: ``lightgbm.LGBMRegressor`` if installed,</span>
+<span class="sd">          otherwise the ``&quot;gbm&quot;`` fallback with a warning (Ke et al. 2017).</span>
+<span class="sd">        - ``&quot;knn&quot;``: :class:`~qsarkit.neighbors.JaccardKNeighborsRegressor`</span>
+<span class="sd">          — similarity-based read-across on fingerprints.</span>
+<span class="sd">        - ``&quot;pls&quot;``: :class:`~qsarkit.models.PLSRegressor` — handles more</span>
+<span class="sd">          descriptors than compounds via latent-variable projection</span>
+<span class="sd">          (Wold et al. 2001).</span>
+<span class="sd">        - ``&quot;ridge&quot;``: ``Ridge`` — L2-regularized linear baseline</span>
+<span class="sd">          (Hoerl &amp; Kennard 1970).</span>
+<span class="sd">        - ``&quot;lasso&quot;``: ``Lasso`` — L1-regularized, sparse linear model</span>
+<span class="sd">          for descriptor selection (Tibshirani 1996).</span>
+<span class="sd">        - ``&quot;elasticnet&quot;``: ``ElasticNet`` — L1/L2 compromise, robust to</span>
+<span class="sd">          correlated descriptors (Zou &amp; Hastie 2005).</span>
+<span class="sd">        - ``&quot;mlp&quot;``: :class:`~qsarkit.models.NeuralNetworkQSAR` — non-linear</span>
+<span class="sd">          feed-forward network (Winkler 2004).</span>
+<span class="sd">        - ``&quot;gp&quot;``: :class:`~qsarkit.models.GaussianProcessQSAR` — Tanimoto-</span>
+<span class="sd">          kernel Gaussian process with predictive uncertainty</span>
+<span class="sd">          (Ralaivola et al. 2005).</span>
+<span class="sd">    random_state : int, optional</span>
+<span class="sd">        Seed forwarded to the underlying estimator, where applicable.</span>
+<span class="sd">        Ignored when ``name`` is an estimator instance, which is used as</span>
+<span class="sd">        configured.</span>
+<span class="sd">    model_params : dict, optional</span>
+<span class="sd">        Keyword arguments for the underlying estimator&#39;s constructor,</span>
+<span class="sd">        overriding any default (e.g. ``model_params={&quot;n_estimators&quot;: 200}``</span>
+<span class="sd">        for ``name=&quot;rf&quot;``). When ``name`` is an *instance*, these are</span>
+<span class="sd">        applied with ``set_params``.</span>
+<span class="sd">    model_args : sequence, optional</span>
+<span class="sd">        Positional arguments for the constructor. Only meaningful when</span>
+<span class="sd">        ``name`` is an estimator *class*; passing them alongside an</span>
+<span class="sd">        instance raises, since the instance is already built.</span>
+<span class="sd">    fit_params : dict, optional</span>
+<span class="sd">        Extra keyword arguments passed to the estimator&#39;s ``fit``.</span>
+<span class="sd">        Some libraries only accept certain options there rather than in</span>
+<span class="sd">        the constructor -- XGBoost&#39;s ``eval_set``, LightGBM&#39;s</span>
+<span class="sd">        ``callbacks``, CatBoost&#39;s ``verbose``, or a ``sample_weight``</span>
+<span class="sd">        array.</span>
+<span class="sd">    predict_params : dict, optional</span>
+<span class="sd">        Extra keyword arguments passed to the estimator&#39;s ``predict``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    estimator_ : BaseEstimator</span>
+<span class="sd">        The fitted underlying estimator.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.datasets import make_regression</span>
+<span class="sd">    &gt;&gt;&gt; X, y = make_regression(n_samples=40, n_features=5, random_state=0)</span>
+<span class="sd">    &gt;&gt;&gt; model = QSARRegressor(name=&quot;rf&quot;, random_state=0).fit(X, y)</span>
+<span class="sd">    &gt;&gt;&gt; model.predict(X).shape</span>
+<span class="sd">    (40,)</span>
+
+<span class="sd">    ``name`` also accepts any object following the scikit-learn API, so</span>
+<span class="sd">    the facade is not limited to the built-in menu. An instance is used</span>
+<span class="sd">    as configured:</span>
+
+<span class="sd">    &gt;&gt;&gt; from sklearn.linear_model import Ridge</span>
+<span class="sd">    &gt;&gt;&gt; model = QSARRegressor(Ridge(alpha=2.0)).fit(X, y)</span>
+<span class="sd">    &gt;&gt;&gt; type(model.estimator_).__name__, model.estimator_.alpha</span>
+<span class="sd">    (&#39;Ridge&#39;, 2.0)</span>
+
+<span class="sd">    The instance you pass is cloned, never mutated, so one configured</span>
+<span class="sd">    template can seed several models:</span>
+
+<span class="sd">    &gt;&gt;&gt; template = Ridge(alpha=1.0)</span>
+<span class="sd">    &gt;&gt;&gt; _ = QSARRegressor(template).fit(X, y)</span>
+<span class="sd">    &gt;&gt;&gt; hasattr(template, &quot;coef_&quot;)       # still unfitted</span>
+<span class="sd">    False</span>
+
+<span class="sd">    A *class* is constructed from ``model_args``/``model_params``:</span>
+
+<span class="sd">    &gt;&gt;&gt; model = QSARRegressor(Ridge, model_params={&quot;alpha&quot;: 5.0}).fit(X, y)</span>
+<span class="sd">    &gt;&gt;&gt; model.estimator_.alpha</span>
+<span class="sd">    5.0</span>
+
+<span class="sd">    ``fit_params`` reaches arguments the constructor does not take -- the</span>
+<span class="sd">    same mechanism serves ``sample_weight`` here and ``eval_set`` for</span>
+<span class="sd">    XGBoost or CatBoost:</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; weights = np.linspace(0.5, 1.5, len(y))</span>
+<span class="sd">    &gt;&gt;&gt; model = QSARRegressor(Ridge, fit_params={&quot;sample_weight&quot;: weights}).fit(X, y)</span>
+<span class="sd">    &gt;&gt;&gt; model.predict(X).shape</span>
+<span class="sd">    (40,)</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Breiman, L. (2001). &quot;Random Forests.&quot; Machine Learning, 45(1),</span>
+<span class="sd">      5-32. https://doi.org/10.1023/A:1010933404324</span>
+<span class="sd">    - Cortes, C. &amp; Vapnik, V. (1995). &quot;Support-Vector Networks.&quot; Machine</span>
+<span class="sd">      Learning, 20(3), 273-297. https://doi.org/10.1007/BF00994018</span>
+<span class="sd">    - Chen, T. &amp; Guestrin, C. (2016). &quot;XGBoost: A Scalable Tree Boosting</span>
+<span class="sd">      System.&quot; KDD 2016. https://doi.org/10.1145/2939672.2939785</span>
+<span class="sd">    - Ke, G. et al. (2017). &quot;LightGBM: A Highly Efficient Gradient</span>
+<span class="sd">      Boosting Decision Tree.&quot; NeurIPS 2017.</span>
+<span class="sd">    - Wold, S., Sjostrom, M. &amp; Eriksson, L. (2001). Chemometrics and</span>
+<span class="sd">      Intelligent Laboratory Systems, 58(2), 109-130.</span>
+<span class="sd">      https://doi.org/10.1016/S0169-7439(01)00155-1</span>
+<span class="sd">    - Hoerl, A. E. &amp; Kennard, R. W. (1970). &quot;Ridge Regression: Biased</span>
+<span class="sd">      Estimation for Nonorthogonal Problems.&quot; Technometrics, 12(1),</span>
+<span class="sd">      55-67. https://doi.org/10.1080/00401706.1970.10488634</span>
+<span class="sd">    - Tibshirani, R. (1996). &quot;Regression Shrinkage and Selection via the</span>
+<span class="sd">      Lasso.&quot; J. R. Stat. Soc. B, 58(1), 267-288.</span>
+<span class="sd">      https://doi.org/10.1111/j.2517-6161.1996.tb02080.x</span>
+<span class="sd">    - Zou, H. &amp; Hastie, T. (2005). &quot;Regularization and Variable Selection</span>
+<span class="sd">      via the Elastic Net.&quot; J. R. Stat. Soc. B, 67(2), 301-320.</span>
+<span class="sd">      https://doi.org/10.1111/j.1467-9868.2005.00503.x</span>
+<span class="sd">    - Winkler, D. A. (2004). &quot;Neural Networks as Robust Tools in Drug</span>
+<span class="sd">      Design and Analysis.&quot; Mol. Biotechnol., 27(2), 139-167.</span>
+<span class="sd">      https://doi.org/10.1385/MB:27:2:139</span>
+<span class="sd">    - Ralaivola, L. et al. (2005). &quot;Graph Kernels for Chemical</span>
+<span class="sd">      Informatics.&quot; Neural Networks, 18(8), 1093-1110.</span>
+<span class="sd">      https://doi.org/10.1016/j.neunet.2005.07.009</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">estimator_</span><span class="p">:</span> <span class="n">BaseEstimator</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">_ModelName</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">model_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fit_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">predict_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span> <span class="o">=</span> <span class="n">model_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span> <span class="o">=</span> <span class="n">model_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span> <span class="o">=</span> <span class="n">fit_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predict_params</span> <span class="o">=</span> <span class="n">predict_params</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEstimator</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uses_custom_estimator</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_custom</span><span class="p">()</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_params</span> <span class="ow">or</span> <span class="p">{})</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;rf&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RandomForestQSAR</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;svm&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SVMQSAR</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;gbm&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">HistGradientBoostingRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;xgboost&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xgb</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;xgboost is not installed; falling back to sklearn &quot;</span>
+                    <span class="s2">&quot;HistGradientBoostingRegressor. Install qsarkit[boosting] &quot;</span>
+                    <span class="s2">&quot;for XGBoost.&quot;</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">HistGradientBoostingRegressor</span><span class="p">(</span>
+                    <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;lightgbm&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">lightgbm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">lgb</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;lightgbm is not installed; falling back to sklearn &quot;</span>
+                    <span class="s2">&quot;HistGradientBoostingRegressor. Install qsarkit[boosting] &quot;</span>
+                    <span class="s2">&quot;for LightGBM.&quot;</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">HistGradientBoostingRegressor</span><span class="p">(</span>
+                    <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">lgb</span><span class="o">.</span><span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;knn&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">JaccardKNeighborsRegressor</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;pls&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">PLSRegressor</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;ridge&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Ridge</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;lasso&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Lasso</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;elasticnet&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ElasticNet</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;mlp&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">NeuralNetworkQSAR</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;gp&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">GaussianProcessQSAR</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">_invalid_name_error</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="QSARRegressor.fit">
+<a class="viewcode-back" href="../../../api/models.html#qsarkit.models.QSARRegressor.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QSARRegressor&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build (from ``name``) and fit the underlying regressor.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
+<span class="sd">        y : array-like of shape (n_samples,)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QSARRegressor</span>
+<span class="sd">            The fitted estimator.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``name`` is not a recognized algorithm name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_name</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estimator_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estimator_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span> <span class="ow">or</span> <span class="p">{}))</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;estimator_&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ModelNotFittedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be fitted before calling predict().&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="QSARRegressor.predict">
+<a class="viewcode-back" href="../../../api/models.html#qsarkit.models.QSARRegressor.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict by delegating to the fitted underlying regressor.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray of shape (n_samples,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_fitted</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">estimator_</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_params</span> <span class="ow">or</span> <span class="p">{})),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="QSARClassifier">
+<a class="viewcode-back" href="../../../api/models.html#qsarkit.models.QSARClassifier">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">QSARClassifier</span><span class="p">(</span><span class="n">_CustomEstimatorMixin</span><span class="p">,</span> <span class="n">ClassifierMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unified, ``name``-dispatching QSAR classifier facade.</span>
+
+<span class="sd">    The classification counterpart of :class:`QSARRegressor`: wraps a</span>
+<span class="sd">    broad menu of classification algorithms behind one scikit-learn</span>
+<span class="sd">    estimator, selected by a single ``name`` string.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : {&quot;rf&quot;, &quot;svm&quot;, &quot;gbm&quot;, &quot;xgboost&quot;, &quot;lightgbm&quot;, &quot;knn&quot;, &quot;pls&quot;, \</span>
+<span class="sd">&quot;ridge&quot;, &quot;lasso&quot;, &quot;elasticnet&quot;, &quot;mlp&quot;, &quot;gp&quot;}</span>
+<span class="sd">        Which algorithm to build. One-line rationale for each default:</span>
+
+<span class="sd">        - ``&quot;rf&quot;``: ``RandomForestClassifier`` — robust default ensemble</span>
+<span class="sd">          for tabular fingerprints/descriptors (Svetnik et al. 2003).</span>
+<span class="sd">        - ``&quot;svm&quot;``: ``SVC`` (RBF, ``probability=True``) — strong</span>
+<span class="sd">          non-linear classifier on molecular fingerprints</span>
+<span class="sd">          (Cortes &amp; Vapnik 1995; Burbidge et al. 2001).</span>
+<span class="sd">        - ``&quot;gbm&quot;``: ``HistGradientBoostingClassifier`` — fast,</span>
+<span class="sd">          regularized gradient boosting, no extra install.</span>
+<span class="sd">        - ``&quot;xgboost&quot;``: ``xgboost.XGBClassifier`` if installed,</span>
+<span class="sd">          otherwise the ``&quot;gbm&quot;`` fallback with a warning</span>
+<span class="sd">          (Chen &amp; Guestrin 2016).</span>
+<span class="sd">        - ``&quot;lightgbm&quot;``: ``lightgbm.LGBMClassifier`` if installed,</span>
+<span class="sd">          otherwise the ``&quot;gbm&quot;`` fallback with a warning (Ke et al. 2017).</span>
+<span class="sd">        - ``&quot;knn&quot;``: :class:`~qsarkit.neighbors.JaccardKNeighborsClassifier`</span>
+<span class="sd">          — similarity-based read-across on fingerprints.</span>
+<span class="sd">        - ``&quot;pls&quot;``: an internal binary PLS-DA wrapper around</span>
+<span class="sd">          :class:`~qsarkit.models.PLSRegressor` (Barker &amp; Rayens 2003).</span>
+<span class="sd">        - ``&quot;ridge&quot;``: ``RidgeClassifier`` — fast linear baseline; **has</span>
+<span class="sd">          no native** ``predict_proba`` (calling it raises</span>
+<span class="sd">          ``AttributeError``).</span>
+<span class="sd">        - ``&quot;lasso&quot;``: ``LogisticRegression(penalty=&quot;l1&quot;, solver=&quot;liblinear&quot;)``</span>
+<span class="sd">          — sparse linear classifier (Tibshirani 1996).</span>
+<span class="sd">        - ``&quot;elasticnet&quot;``: ``LogisticRegression(penalty=&quot;elasticnet&quot;, \</span>
+<span class="sd">solver=&quot;saga&quot;)`` — L1/L2 compromise (Zou &amp; Hastie 2005).</span>
+<span class="sd">        - ``&quot;mlp&quot;``: ``MLPClassifier`` — non-linear feed-forward network</span>
+<span class="sd">          (Winkler 2004).</span>
+<span class="sd">        - ``&quot;gp&quot;``: ``GaussianProcessClassifier`` with a</span>
+<span class="sd">          :class:`~qsarkit.models.TanimotoKernel` — probabilistic</span>
+<span class="sd">          fingerprint-similarity classifier (Ralaivola et al. 2005).</span>
+<span class="sd">    random_state : int, optional</span>
+<span class="sd">        Seed forwarded to the underlying estimator, where applicable.</span>
+<span class="sd">        Ignored when ``name`` is an estimator instance, which is used as</span>
+<span class="sd">        configured.</span>
+<span class="sd">    model_params : dict, optional</span>
+<span class="sd">        Keyword arguments for the underlying estimator&#39;s constructor,</span>
+<span class="sd">        overriding any default (e.g. ``model_params={&quot;n_estimators&quot;: 200}``</span>
+<span class="sd">        for ``name=&quot;rf&quot;``). When ``name`` is an *instance*, these are</span>
+<span class="sd">        applied with ``set_params``.</span>
+<span class="sd">    model_args : sequence, optional</span>
+<span class="sd">        Positional arguments for the constructor. Only meaningful when</span>
+<span class="sd">        ``name`` is an estimator *class*; passing them alongside an</span>
+<span class="sd">        instance raises, since the instance is already built.</span>
+<span class="sd">    fit_params : dict, optional</span>
+<span class="sd">        Extra keyword arguments passed to the estimator&#39;s ``fit``.</span>
+<span class="sd">        Some libraries only accept certain options there rather than in</span>
+<span class="sd">        the constructor -- XGBoost&#39;s ``eval_set``, LightGBM&#39;s</span>
+<span class="sd">        ``callbacks``, CatBoost&#39;s ``verbose``, or a ``sample_weight``</span>
+<span class="sd">        array.</span>
+<span class="sd">    predict_params : dict, optional</span>
+<span class="sd">        Extra keyword arguments passed to the estimator&#39;s ``predict``.</span>
+<span class="sd">    predict_proba_params : dict, optional</span>
+<span class="sd">        Extra keyword arguments passed to the estimator&#39;s</span>
+<span class="sd">        ``predict_proba``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    estimator_ : BaseEstimator</span>
+<span class="sd">        The fitted underlying scikit-learn (or xgboost/lightgbm)</span>
+<span class="sd">        estimator.</span>
+<span class="sd">    classes_ : ndarray</span>
+<span class="sd">        Class labels, taken from the fitted underlying estimator.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from sklearn.datasets import make_classification</span>
+<span class="sd">    &gt;&gt;&gt; X, y = make_classification(n_samples=40, n_features=5, random_state=0)</span>
+<span class="sd">    &gt;&gt;&gt; model = QSARClassifier(name=&quot;rf&quot;, random_state=0).fit(X, y)</span>
+<span class="sd">    &gt;&gt;&gt; model.predict(X).shape</span>
+<span class="sd">    (40,)</span>
+
+<span class="sd">    As for :class:`QSARRegressor`, ``name`` accepts any estimator</span>
+<span class="sd">    following the scikit-learn API -- CatBoost, XGBoost, LightGBM or your</span>
+<span class="sd">    own -- as a class or an instance:</span>
+
+<span class="sd">    &gt;&gt;&gt; from sklearn.tree import DecisionTreeClassifier</span>
+<span class="sd">    &gt;&gt;&gt; model = QSARClassifier(</span>
+<span class="sd">    ...     DecisionTreeClassifier, model_params={&quot;max_depth&quot;: 3}, random_state=0</span>
+<span class="sd">    ... ).fit(X, y)</span>
+<span class="sd">    &gt;&gt;&gt; type(model.estimator_).__name__</span>
+<span class="sd">    &#39;DecisionTreeClassifier&#39;</span>
+<span class="sd">    &gt;&gt;&gt; model.predict_proba(X).shape</span>
+<span class="sd">    (40, 2)</span>
+
+<span class="sd">    ``classes_`` is taken from the estimator when it exposes one, and</span>
+<span class="sd">    otherwise from the labels seen during ``fit``, so a wrapper that</span>
+<span class="sd">    omits the attribute still works:</span>
+
+<span class="sd">    &gt;&gt;&gt; model.classes_.tolist()</span>
+<span class="sd">    [0, 1]</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Breiman, L. (2001). Machine Learning, 45(1), 5-32.</span>
+<span class="sd">      https://doi.org/10.1023/A:1010933404324</span>
+<span class="sd">    - Cortes, C. &amp; Vapnik, V. (1995). Machine Learning, 20(3), 273-297.</span>
+<span class="sd">      https://doi.org/10.1007/BF00994018</span>
+<span class="sd">    - Chen, T. &amp; Guestrin, C. (2016). KDD 2016.</span>
+<span class="sd">      https://doi.org/10.1145/2939672.2939785</span>
+<span class="sd">    - Ke, G. et al. (2017). NeurIPS 2017.</span>
+<span class="sd">    - Barker, M. &amp; Rayens, W. (2003). J. Chemometrics, 17(3), 166-173.</span>
+<span class="sd">      https://doi.org/10.1002/cem.785</span>
+<span class="sd">    - Hoerl, A. E. &amp; Kennard, R. W. (1970). Technometrics, 12(1), 55-67.</span>
+<span class="sd">      https://doi.org/10.1080/00401706.1970.10488634</span>
+<span class="sd">    - Tibshirani, R. (1996). J. R. Stat. Soc. B, 58(1), 267-288.</span>
+<span class="sd">      https://doi.org/10.1111/j.2517-6161.1996.tb02080.x</span>
+<span class="sd">    - Zou, H. &amp; Hastie, T. (2005). J. R. Stat. Soc. B, 67(2), 301-320.</span>
+<span class="sd">      https://doi.org/10.1111/j.1467-9868.2005.00503.x</span>
+<span class="sd">    - Winkler, D. A. (2004). Mol. Biotechnol., 27(2), 139-167.</span>
+<span class="sd">      https://doi.org/10.1385/MB:27:2:139</span>
+<span class="sd">    - Ralaivola, L. et al. (2005). Neural Networks, 18(8), 1093-1110.</span>
+<span class="sd">      https://doi.org/10.1016/j.neunet.2005.07.009</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">estimator_</span><span class="p">:</span> <span class="n">BaseEstimator</span>
+    <span class="n">classes_</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">_ModelName</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">model_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fit_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">predict_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">predict_proba_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_params</span> <span class="o">=</span> <span class="n">model_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span> <span class="o">=</span> <span class="n">model_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span> <span class="o">=</span> <span class="n">fit_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predict_params</span> <span class="o">=</span> <span class="n">predict_params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predict_proba_params</span> <span class="o">=</span> <span class="n">predict_proba_params</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseEstimator</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uses_custom_estimator</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_custom</span><span class="p">()</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_params</span> <span class="ow">or</span> <span class="p">{})</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;rf&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RandomForestClassifier</span><span class="p">(</span>
+                <span class="n">n_estimators</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;svm&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;gbm&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">(</span>
+                <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;xgboost&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xgb</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;xgboost is not installed; falling back to sklearn &quot;</span>
+                    <span class="s2">&quot;HistGradientBoostingClassifier. Install qsarkit[boosting] &quot;</span>
+                    <span class="s2">&quot;for XGBoost.&quot;</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">(</span>
+                    <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;lightgbm&quot;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">lightgbm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">lgb</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;lightgbm is not installed; falling back to sklearn &quot;</span>
+                    <span class="s2">&quot;HistGradientBoostingClassifier. Install qsarkit[boosting] &quot;</span>
+                    <span class="s2">&quot;for LightGBM.&quot;</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">(</span>
+                    <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">lgb</span><span class="o">.</span><span class="n">LGBMClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;knn&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">JaccardKNeighborsClassifier</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;pls&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_PLSDAClassifier</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;ridge&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RidgeClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;lasso&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LogisticRegression</span><span class="p">(</span>
+                <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;l1&quot;</span><span class="p">,</span>
+                <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;liblinear&quot;</span><span class="p">,</span>
+                <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">params</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;elasticnet&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LogisticRegression</span><span class="p">(</span>
+                <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;elasticnet&quot;</span><span class="p">,</span>
+                <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;saga&quot;</span><span class="p">,</span>
+                <span class="n">l1_ratio</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">params</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;mlp&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">MLPClassifier</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;gp&quot;</span><span class="p">:</span>
+            <span class="c1"># Tanimoto suits fingerprints; on signed descriptors it is not</span>
+            <span class="c1"># positive semi-definite, so `_build` is given the training data</span>
+            <span class="c1"># in fit() and picks accordingly.</span>
+            <span class="k">return</span> <span class="n">GaussianProcessClassifier</span><span class="p">(</span>
+                <span class="n">kernel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_gp_kernel</span><span class="p">(),</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">params</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">_invalid_name_error</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_default_gp_kernel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tanimoto for non-negative data, RBF otherwise.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.gaussian_process.kernels</span><span class="w"> </span><span class="kn">import</span> <span class="n">RBF</span><span class="p">,</span> <span class="n">WhiteKernel</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_fit_X&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">data</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">TanimotoKernel</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">RBF</span><span class="p">()</span> <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">()</span>
+
+<div class="viewcode-block" id="QSARClassifier.fit">
+<a class="viewcode-back" href="../../../api/models.html#qsarkit.models.QSARClassifier.fit">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QSARClassifier&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build (from ``name``) and fit the underlying classifier.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
+<span class="sd">        y : array-like of shape (n_samples,)</span>
+<span class="sd">            Class labels.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        QSARClassifier</span>
+<span class="sd">            The fitted estimator.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``name`` is not a recognized algorithm name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_name</span><span class="p">()</span>
+        <span class="c1"># Recorded so `_build` can choose a data-appropriate GP kernel.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fit_X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estimator_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">estimator_</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_params</span> <span class="ow">or</span> <span class="p">{}))</span>
+        <span class="c1"># A custom estimator need not expose `classes_` (CatBoost names it</span>
+        <span class="c1"># `classes_` only after fit; some wrappers omit it entirely), so</span>
+        <span class="c1"># fall back to the labels actually seen.</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator_</span><span class="p">,</span> <span class="s2">&quot;classes_&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">unique_labels</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">found</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_fitted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;estimator_&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ModelNotFittedError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be fitted before calling predict().&quot;</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="QSARClassifier.predict">
+<a class="viewcode-back" href="../../../api/models.html#qsarkit.models.QSARClassifier.predict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Predict by delegating to the fitted underlying classifier.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray of shape (n_samples,)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_fitted</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator_</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_params</span> <span class="ow">or</span> <span class="p">{})))</span></div>
+
+
+<div class="viewcode-block" id="QSARClassifier.predict_proba">
+<a class="viewcode-back" href="../../../api/models.html#qsarkit.models.QSARClassifier.predict_proba">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">predict_proba</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class probabilities, by delegating to the fitted classifier.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : array-like of shape (n_samples, n_features)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray of shape (n_samples, n_classes)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ModelNotFittedError</span>
+<span class="sd">            If called before :meth:`fit`.</span>
+<span class="sd">        AttributeError</span>
+<span class="sd">            If the underlying estimator has no ``predict_proba`` (e.g.</span>
+<span class="sd">            ``name=&quot;ridge&quot;``, whose ``RidgeClassifier`` backend has no</span>
+<span class="sd">            native probability estimates).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_fitted</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator_</span><span class="p">,</span> <span class="s2">&quot;predict_proba&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;The &#39;</span><span class="si">{</span><span class="n">_describe_estimator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; backend &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">estimator_</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">) does not support &quot;</span>
+                <span class="s2">&quot;predict_proba.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">estimator_</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_proba_params</span> <span class="ow">or</span> <span class="p">{})),</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+        <span class="p">)</span></div>
+</div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Frederico Schmitt Kremer
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-09-09</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=95e61db4"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>
