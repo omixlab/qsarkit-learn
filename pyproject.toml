@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qsarkit"
-version = "0.3.0"
+version = "0.4.0"
 description = "A focused Python library for QSAR modeling: structure curation, molecular representation, model building and selection, OECD-aligned validation, applicability domain, uncertainty and SAR interpretation."
 readme = "README.md"
 requires-python = ">=3.9"
