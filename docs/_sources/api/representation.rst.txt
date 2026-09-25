@@ -105,7 +105,7 @@ so ``import qsarkit`` stays cheap::
 
    from qsarkit.representation import ChemBERTaTransformer
 
-   X = ChemBERTaTransformer().transform(mols)     # needs qsarkit[nlp]
+   X = ChemBERTaTransformer().transform(mols)     # needs qsarkit-learn[nlp]
 
 API
 ---
