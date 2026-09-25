@@ -6,6 +6,14 @@ r_m^2, the Golbraikh-Tropsha criteria) and the early-recognition metrics
 used in virtual screening (enrichment factor, RIE, BEDROC).
 """
 
+from qsarkit.metrics._calibration import (
+    calibration_curve,
+    calibration_report,
+    expected_calibration_error,
+    maximum_calibration_error,
+    qq_data,
+    residual_normality,
+)
 from qsarkit.metrics._classification import (
     accuracy,
     balanced_accuracy,
@@ -25,6 +33,11 @@ from qsarkit.metrics._classification import (
     specificity,
 )
 from qsarkit.metrics._reports import qsar_classification_report, qsar_regression_report
+from qsarkit.metrics._thresholds import (
+    optimal_threshold,
+    threshold_report,
+    threshold_sweep,
+)
 from qsarkit.metrics._regression import (
     adjusted_r2_score,
     average_r2m,
@@ -52,6 +65,17 @@ from qsarkit.metrics._regression import (
 )
 
 __all__ = [
+    # calibration and residual diagnostics
+    "calibration_curve",
+    "expected_calibration_error",
+    "maximum_calibration_error",
+    "calibration_report",
+    "qq_data",
+    "residual_normality",
+    # threshold selection
+    "threshold_sweep",
+    "optimal_threshold",
+    "threshold_report",
     # regression
     "mse",
     "rmse",

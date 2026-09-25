@@ -70,15 +70,24 @@ class GlycanDescriptors(MoleculeTransformer):
     """
 
     def __init__(self, detector: Optional[GlycanDetector] = None):
-        self.detector = detector or GlycanDetector()
+        # Stored exactly as given, per the scikit-learn convention: an
+        # __init__ that substitutes a default makes get_params() report
+        # something the caller did not pass, and clone() then produces a
+        # non-identical estimator. The default is resolved in _detector().
+        self.detector = detector
+
+    def _detector(self) -> GlycanDetector:
+        """The configured detector, or a default one."""
+        return self.detector if self.detector is not None else GlycanDetector()
 
     def _describe_one(self, mol: Any) -> dict:
-        matches = self.detector.find_glycans(mol)
+        detector = self._detector()
+        matches = detector.find_glycans(mol)
         glycan_atoms = set()
         for m in matches:
             glycan_atoms |= m.all_atoms
 
-        det = self.detector.detect(mol)
+        det = detector.detect(mol)
         patterns = Counter(
             f"{m.ring_size}-ring:{_linkage_type(mol, m, glycan_atoms)}" for m in matches
         )

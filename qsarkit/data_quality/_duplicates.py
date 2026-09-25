@@ -69,7 +69,14 @@ def _identity_key(mol: Any, level: _Level) -> Optional[str]:
             return str(
                 Chem.MolToSmiles(MurckoScaffold.GetScaffoldForMol(mol))
             )
-    except Exception:
+    except (ValueError, RuntimeError, TypeError):
+        # RDKit signals an unconvertible molecule with one of these:
+        # ValueError or RuntimeError from InChI generation on an unusual
+        # valence, and TypeError for a non-Mol argument -- Boost.Python's
+        # ArgumentError, which the wrapper raises, subclasses TypeError.
+        # A record we cannot key is simply not deduplicated, which is the
+        # safe outcome. Deliberately *not* a bare `except`: a MemoryError
+        # or KeyboardInterrupt here is a real failure and must propagate.
         return None
     raise ValueError(
         "level must be 'inchikey', 'smiles', 'connectivity' or 'scaffold', "
@@ -185,9 +192,12 @@ class DuplicateDetector:
                 continue
             group = DuplicateGroup(key=key, indices=sorted(indices))
             if values is not None:
-                group.activities = [float(values[i]) for i in group.indices]
-                finite = [a for a in group.activities if np.isfinite(a)]
-                group.spread = float(max(finite) - min(finite)) if len(finite) > 1 else 0.0
+                member_values = values[np.asarray(group.indices, dtype=int)]
+                group.activities = [float(v) for v in member_values]
+                finite = member_values[np.isfinite(member_values)]
+                group.spread = (
+                    float(finite.max() - finite.min()) if finite.size > 1 else 0.0
+                )
                 group.consistent = group.spread <= self.activity_tolerance
             groups.append(group)
         groups.sort(key=lambda g: g.indices[0])

@@ -163,3 +163,20 @@ the package path, using small hardcoded molecules (aspirin, benzene,
 ethanol, a flavonoid glycoside, etc.) — not network calls. Tests for
 network-dependent clients (`qsarkit.databases.*`, live entity linking)
 should mock `requests` rather than hitting real APIs.
+
+## Documentation examples must be executable
+
+Every example in a docstring or a documentation page is run by the test
+suite (`pytest tests/docs`). Write them as `>>>` doctests, not as
+`.. code-block:: python`, so that an example which stops being true fails
+CI like any other regression.
+
+A `code-block` is acceptable only where the snippet genuinely cannot run in
+CI — it needs an optional dependency, a file that does not exist, or a
+third-party package. `tests/docs/test_documentation_examples.py` still
+checks that every `qsarkit` name such a block references actually exists.
+
+Numbers in an example must be **measured, not plausible**. Run the code and
+paste what it prints, including when the result is unflattering: a guide
+that quotes an invented R² teaches the reader to expect something the
+package does not deliver.

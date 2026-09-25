@@ -16,6 +16,7 @@ All splitters expose two interfaces:
 
 from __future__ import annotations
 
+from qsarkit.base.exceptions import RDKIT_MOLECULE_ERRORS
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Dict, Iterator, List, Optional, Sequence, Tuple
@@ -54,7 +55,9 @@ def _scaffold_of(mol: Any, include_chirality: bool = False) -> str:
         return str(
             Chem.MolToSmiles(scaffold, isomericSmiles=include_chirality)
         )
-    except Exception:
+    except RDKIT_MOLECULE_ERRORS:
+        # An unscaffoldable molecule groups with the other acyclics under
+        # the empty key, which keeps it out of every scaffold group.
         return ""
 
 

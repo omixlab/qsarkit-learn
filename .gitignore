@@ -8,10 +8,10 @@ PROMPT.md
 # Sphinx. `docs/` holds the *built* HTML for GitHub Pages and is deliberately
 # committed; everything below is build scratch that must not be published.
 #
-# Build the site with the doctree cache kept outside the output directory:
-#   sphinx-build -b html docs-sphinx/source docs -d /tmp/qsarkit-doctrees
-# Without `-d` Sphinx writes a 22 MB `.doctrees/` pickle cache into `docs/`,
-# which then gets committed and served.
+# Rebuild it with `make docs` from the repository root, which keeps Sphinx's
+# doctree cache under docs-sphinx/build/. Building straight into `docs/`
+# without `-d` writes a 22 MB `.doctrees/` pickle cache there, which then gets
+# committed and served to visitors.
 docs-sphinx/build/
 docs/.doctrees/
 

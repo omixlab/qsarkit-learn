@@ -171,6 +171,81 @@ you nothing:
    >>> loose_report["coverage"], bool(np.isnan(loose_report["rmse_ratio"]))
    (1.0, True)
 
+Which metrics do you actually need?
+-----------------------------------
+
+A short answer to a question this guide is often asked, with what qsarkit
+provides for each.
+
+**Regression**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Question
+     - Use
+   * - Does it fit?
+     - ``r2_score``, ``rmse``, ``mae``
+   * - Does it predict?
+     - ``q2_f1`` / ``q2_f2`` / ``q2_f3``, ``ccc``
+   * - Does it predict *honestly*?
+     - ``golbraikh_tropsha_criteria``
+   * - Is the fit real?
+     - ``YScrambling``
+   * - How precise is the score?
+     - ``BootstrapValidator``
+   * - Do the error assumptions hold?
+     - ``residual_normality``, ``qq_data``
+
+The last row is the one most often skipped. RMSE, :math:`R^2` and the
+Golbraikh-Tropsha criteria all assume roughly normal, homoscedastic
+errors; when that fails they still compute and quietly describe something
+else.
+
+**Classification**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 40 60
+
+   * - Question
+     - Use
+   * - Does it rank actives first?
+     - ``roc_auc``, ``bedroc``
+   * - ...on an imbalanced set?
+     - ``pr_auc``, ``enrichment_factor``
+   * - Does it classify?
+     - ``matthews_corrcoef``, ``balanced_accuracy``
+   * - Are the probabilities real?
+     - ``calibration_report``
+   * - Where should the cutoff be?
+     - ``optimal_threshold``, ``threshold_report``
+
+Three traps, in order of how often they are hit:
+
+**Accuracy on an imbalanced set.** A model that calls everything inactive
+scores 92% on an 8%-active deck. Use MCC or balanced accuracy.
+
+**ROC-AUC as a proxy for probability quality.** ROC depends only on the
+*ranking* of scores, so a model can have excellent AUC and useless
+probabilities. If you will threshold, combine or cost-weight them, check
+``calibration_report`` first — and read ``brier_skill_score`` rather than
+the raw Brier score, which looks excellent on imbalanced data and is often
+worse than predicting the base rate.
+
+**The 0.5 cutoff.** ``predict()`` cuts at 0.5, which is almost never
+right. On an imbalanced set the Youden-optimal threshold can find every
+active where 0.5 finds under half. Select it on validation data, never on
+the test set: a tuned threshold is a fitted parameter.
+
+**Bootstrap or y-randomization?** Both, for different questions.
+y-randomization asks *is the fit real* — could the model achieve this
+score on permuted labels? The bootstrap asks *how precise is the score* —
+what interval does it sit in? A model can pass the first and still have an
+interval too wide to distinguish it from any alternative, which is the
+usual situation on a few dozen compounds.
+
 Reporting
 ---------
 

@@ -1,9 +1,9 @@
-"""Execute every ``>>>`` example in ``docs/source`` and in the package itself.
+"""Execute every ``>>>`` example in ``docs-sphinx/source`` and in the package itself.
 
 Two separate guarantees:
 
 * :func:`test_documentation_example` runs the examples written in the
-  reStructuredText pages under ``docs/source``.
+  reStructuredText pages under ``docs-sphinx/source``.
 * :func:`test_docstring_example` runs the ``Examples`` sections of the
   package's own docstrings, which is what autodoc renders into the API
   reference.
@@ -17,6 +17,7 @@ from __future__ import annotations
 import doctest
 import importlib
 import pkgutil
+import re
 import sys
 from pathlib import Path
 from typing import List
@@ -27,7 +28,7 @@ import qsarkit
 from qsarkit.base import OptionalDependencyError
 
 ROOT = Path(__file__).resolve().parents[2]
-DOCS_SOURCE = ROOT / "docs" / "source"
+DOCS_SOURCE = ROOT / "docs-sphinx" / "source"
 
 # Output-formatting leniency. NORMALIZE_WHITESPACE lets an expected array span
 # several lines for readability; ELLIPSIS lets an example show the shape of a
@@ -152,42 +153,53 @@ def test_docstring_example(module_name: str) -> None:
         )
 
 
-def test_no_page_hides_its_examples_in_code_blocks() -> None:
-    """Documentation examples must be doctests, so they are executed.
+@pytest.mark.parametrize(
+    "path", _rst_files(), ids=lambda p: str(p.relative_to(DOCS_SOURCE))
+)
+def test_code_blocks_reference_real_api(path: Path) -> None:
+    """Names used in un-executed code blocks must still exist.
 
-    A ``.. code-block:: python`` is never run, so it can reference an API
-    that no longer exists and nothing notices — which is exactly how the
-    guide pages came to document classes that had been removed. Prose
-    pages are allowed a code-block only when it genuinely cannot run
-    (shell commands, snippets needing an optional dependency), and those
-    are listed here explicitly.
+    Most examples are ``.. doctest::`` blocks, which the test above runs.
+    A few must be ``.. code-block:: python`` because they cannot run here
+    -- they need an optional dependency, a file on disk, or a third-party
+    package. Those are exactly the snippets that rot unnoticed: this is
+    how the guide came to document classes that had been removed.
+
+    This checks the part that can be checked without running them: that
+    every ``from qsarkit... import X`` resolves, and every ``qsarkit.x``
+    attribute path exists.
     """
-    allowed = {
-        # Installation instructions are shell, not Python.
-        "guide/installation.rst",
-        # These show optional-dependency APIs that cannot run in CI.
-        "api/representation.rst",
-        "api/explainability.rst",
-        "api/functional.rst",
-        "guide/representation.rst",
-        "guide/quickstart.rst",
-        "guide/curation.rst",
-        "guide/modeling.rst",
-        "guide/applicability.rst",
-        "guide/sar.rst",
-        "guide/functional.rst",
-        "index.rst",
-    }
-    offenders = []
-    for path in _rst_files():
-        name = str(path.relative_to(DOCS_SOURCE))
-        if name in allowed:
+    text = path.read_text(encoding="utf-8")
+    broken: List[str] = []
+
+    for module_name, names in re.findall(
+        r"^\s*from (qsarkit[\w.]*) import ([^\n#]+)$", text, flags=re.M
+    ):
+        try:
+            module = importlib.import_module(module_name)
+        except ImportError:
+            broken.append(f"{module_name} (no such module)")
             continue
-        text = path.read_text(encoding="utf-8")
-        if ".. code-block:: python" in text:
-            offenders.append(name)
-    assert not offenders, (
-        "these pages hide Python examples in un-executed code blocks: "
-        f"{offenders}. Use `.. doctest::` so they are run, or add the page "
-        "to the allow-list above with a reason."
+        for name in (n.strip().rstrip(",") for n in names.split(",")):
+            if not name or name in {"*", "("} or name.startswith("("):
+                continue
+            if not hasattr(module, name):
+                broken.append(f"{module_name}.{name}")
+
+    for dotted in set(re.findall(r"\bqsarkit\.(\w+)\.(\w+)", text)):
+        sub, attribute = dotted
+        if sub not in qsarkit._SUBPACKAGES:
+            broken.append(f"qsarkit.{sub} (no such subpackage)")
+            continue
+        module = importlib.import_module(f"qsarkit.{sub}")
+        # A second segment may be a private module rather than an export.
+        if not hasattr(module, attribute) and not attribute.startswith("_"):
+            try:
+                importlib.import_module(f"qsarkit.{sub}.{attribute}")
+            except ImportError:
+                broken.append(f"qsarkit.{sub}.{attribute}")
+
+    assert not broken, (
+        f"{path.relative_to(ROOT)} references API that no longer exists: "
+        f"{sorted(set(broken))}"
     )

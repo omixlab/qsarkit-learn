@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from qsarkit.base.exceptions import RDKIT_MOLECULE_ERRORS
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Sequence, Tuple
@@ -86,7 +87,8 @@ def _fragment_molecule(mol: "Mol", max_cuts: int = 1) -> List[Tuple[str, str]]:
                 try:
                     Chem.SanitizeMol(piece)
                     smis.append(Chem.MolToSmiles(piece))
-                except Exception:
+                except RDKIT_MOLECULE_ERRORS:
+                    # One unusable fragment invalidates the whole cut.
                     ok = False
                     break
             if not ok:

@@ -6,20 +6,30 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
+  jobs:
+    post_checkout:
+      # Full history, so the copyright year and any version derived from
+      # tags are correct rather than reflecting a shallow clone.
+      - git fetch --unshallow || true
 
 sphinx:
-  configuration: docs/source/conf.py
-  fail_on_warning: false
+  configuration: docs-sphinx/source/conf.py
+  # Warnings are errors here. The build is clean, and the failure mode this
+  # prevents -- a broken cross-reference or malformed table shipping to the
+  # published docs unnoticed -- is exactly what CI is for.
+  fail_on_warning: true
 
 formats:
   - pdf
   - epub
+  - htmlzip
 
 python:
   install:
-    # The `docs` extra pulls Sphinx + theme; installing the package itself
-    # (without the heavy extras) lets autodoc import it. Optional deps are
-    # mocked in conf.py, so torch/transformers are never downloaded here.
+    # The `docs` extra pulls Sphinx and the theme; installing the package
+    # itself (without the heavy extras) lets autodoc import it. Optional
+    # dependencies are mocked in conf.py, so torch and transformers are
+    # never downloaded here.
     - method: pip
       path: .
       extra_requirements:

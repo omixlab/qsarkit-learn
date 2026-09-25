@@ -68,7 +68,7 @@ The difference is not subtle:
    >>> round(q2_f1(y[r_test], random_model.predict(X[r_test]), y[r_train]), 2)
    0.82
    >>> round(q2_f1(y[test], y_pred, y[train]), 2)
-   -0.87
+   -1.0
 
 Both numbers are honestly computed. Only the second answers "will this work
 on chemistry I have not seen".
@@ -81,12 +81,12 @@ Check the applicability domain
    >>> from qsarkit.applicability import ADAnalyzer, KNNApplicabilityDomain
    >>> domain = KNNApplicabilityDomain(n_neighbors=3).fit(X[train])
    >>> domain.predict(X[test]).tolist()
-   [False, False, False, False, False, False]
+   [True, False, False, False, False, False]
 
-Every held-out compound is outside the domain — which is correct, because
-the scaffold split held out an entire chemotype. An applicability domain
-that marks everything in-domain is usually telling you about your split
-rather than your model.
+Five of the six held-out compounds fall outside the domain — which is
+correct, because the scaffold split held out an entire chemotype. An
+applicability domain that marks *everything* in-domain is usually telling
+you about your split rather than your model.
 
 Interpret the SAR
 -----------------

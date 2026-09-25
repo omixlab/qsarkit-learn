@@ -46,7 +46,7 @@ from __future__ import annotations
 import importlib
 from typing import TYPE_CHECKING, Any, List
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 # Every public subpackage. Kept explicit (rather than scanned from the
 # filesystem) so that `dir(qsarkit)` and tab-completion are stable and
@@ -65,6 +65,7 @@ _SUBPACKAGES = (
     "model_selection",
     "models",
     "neighbors",
+    "persistence",
     "representation",
     "reporting",
     "sar",
@@ -89,6 +90,7 @@ if TYPE_CHECKING:  # pragma: no cover - import for type checkers only
         model_selection,
         models,
         neighbors,
+        persistence,
         representation,
         reporting,
         sar,

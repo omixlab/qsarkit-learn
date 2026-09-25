@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, List, Optional
 
 from qsarkit.base import InvalidMoleculeError, MoleculeToMoleculeTransformer
+from qsarkit.base.exceptions import RDKIT_MOLECULE_ERRORS
 
 
 class MolecularStandardizer(MoleculeToMoleculeTransformer):
@@ -133,7 +134,7 @@ class MolecularStandardizer(MoleculeToMoleculeTransformer):
 
             Chem.SanitizeMol(mol)
             return mol
-        except Exception as exc:
+        except RDKIT_MOLECULE_ERRORS as exc:
             if self.on_error == "raise":
                 raise InvalidMoleculeError(f"Standardization failed: {exc}") from exc
             return None

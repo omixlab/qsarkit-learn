@@ -32,6 +32,11 @@ References
 """
 
 from qsarkit.reporting._plots import (
+    plot_atom_contributions,
+    plot_calibration_curve,
+    plot_precision_recall,
+    plot_qq,
+    plot_threshold_sweep,
     figure_to_html,
     plot_feature_importance,
     plot_learning_curve,
@@ -43,6 +48,11 @@ from qsarkit.reporting._plots import (
 from qsarkit.reporting._report import OECDReportBuilder, QSARReport, ReportSection
 
 __all__ = [
+    "plot_calibration_curve",
+    "plot_qq",
+    "plot_threshold_sweep",
+    "plot_precision_recall",
+    "plot_atom_contributions",
     "QSARReport",
     "ReportSection",
     "OECDReportBuilder",

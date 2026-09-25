@@ -1,6 +1,7 @@
 """Shared base classes, exceptions and helpers used across all of qsarkit."""
 
 from qsarkit.base.exceptions import (
+    RDKIT_MOLECULE_ERRORS,
     InvalidMoleculeError,
     ModelNotFittedError,
     OptionalDependencyError,
@@ -16,6 +17,7 @@ from qsarkit.base.transformer import (
 
 __all__ = [
     "QsarkitError",
+    "RDKIT_MOLECULE_ERRORS",
     "InvalidMoleculeError",
     "ModelNotFittedError",
     "OptionalDependencyError",

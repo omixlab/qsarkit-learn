@@ -71,7 +71,10 @@ def _feature_names(transformer: Any, n_columns: int) -> Optional[List[str]]:
         return None
     try:
         names = [str(n) for n in getter()]
-    except Exception:
+    except (AttributeError, TypeError, ValueError, NotImplementedError):
+        # Not every transformer implements the method it advertises, and an
+        # unfitted one may raise. Feature names are a convenience, so their
+        # absence must never break a pipeline.
         return None
     return names if len(names) == n_columns else None
 
@@ -1146,3 +1149,162 @@ def collect(as_frame: bool = False) -> PipeStep:
     2
     """
     return _Collect(as_frame=as_frame)
+
+
+@feature_step
+def resample(
+    X: "npt.NDArray[Any]",
+    y: Optional["npt.NDArray[Any]"] = None,
+    mols: Optional[List[Any]] = None,
+    sampler: Any = "undersample",
+    random_state: Optional[int] = None,
+) -> _FeaturePayload:
+    """Rebalance the classes in feature space.
+
+    The counterpart of :func:`~qsarkit.functional.balance`, applied after
+    featurization. Because the rows here are just vectors, a sampler that
+    *synthesizes* new ones -- SMOTE, ADASYN, BorderlineSMOTE -- is
+    meaningful, which it is not at the molecule stage.
+
+    Parameters
+    ----------
+    X : ndarray of shape (n_samples, n_features)
+        Feature matrix.
+    y : ndarray
+        Class labels. Required; resampling an unlabelled set is
+        meaningless.
+    mols : list of Mol, optional
+        The molecules the rows came from. Kept when the sampler selects
+        existing rows, and dropped with a warning when it synthesizes new
+        ones -- a synthesized vector has no molecule, and returning a
+        mismatched list would be worse than returning none.
+    sampler : {"undersample", "oversample"} or object, default "undersample"
+        A built-in random strategy, or any `imbalanced-learn
+        <https://imbalanced-learn.org>`_ sampler with
+        ``fit_resample(X, y)``.
+    random_state : int, optional
+        Seed for the built-in strategies. Ignored for a sampler instance,
+        which carries its own.
+
+    Returns
+    -------
+    tuple
+        ``(X, y, mols)``.
+
+    Raises
+    ------
+    ValueError
+        If ``y`` is None, or ``sampler`` is neither a recognized string nor
+        an object with ``fit_resample``.
+
+    Notes
+    -----
+    **Resample the training set only.** Rebalancing the test set changes
+    the class prior you are measuring against, so a balanced test score
+    does not describe the population the model will meet. Place this step
+    after :func:`~qsarkit.functional.split`, applying it to the training
+    half alone.
+
+    Synthetic oversampling is also not free: SMOTE interpolates between
+    neighbours, and in a sparse binary fingerprint space the midpoint of
+    two molecules is a vector no molecule would produce. It often helps
+    with descriptors and often does not with fingerprints -- measure it
+    rather than assuming.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from qsarkit.functional import fingerprint, molecules, resample
+    >>> smiles = ["CCO", "CCN", "CCC", "CCCl", "c1ccccc1", "c1ccncc1"]
+    >>> labels = np.array([0, 0, 0, 0, 1, 1])
+    >>> features = molecules(smiles, labels) >> fingerprint(n_bits=64)
+    >>> balanced = features >> resample(random_state=0)
+    >>> sorted(balanced.y.tolist())
+    [0, 0, 1, 1]
+
+    Oversampling instead keeps every majority row:
+
+    >>> balanced = features >> resample("oversample", random_state=0)
+    >>> sorted(balanced.y.tolist())
+    [0, 0, 0, 0, 1, 1, 1, 1]
+
+    An imbalanced-learn sampler is passed directly:
+
+    >>> from imblearn.over_sampling import SMOTE       # doctest: +SKIP
+    >>> features >> resample(SMOTE(k_neighbors=1))     # doctest: +SKIP
+
+    References
+    ----------
+    - Chawla, N. V. et al. (2002). "SMOTE: Synthetic Minority
+      Over-sampling Technique." J. Artif. Intell. Res., 16, 321-357.
+      https://doi.org/10.1613/jair.953
+    - Lemaitre, G., Nogueira, F. & Aridas, C. K. (2017).
+      "Imbalanced-learn." J. Mach. Learn. Res., 18(17), 1-5.
+      https://jmlr.org/papers/v18/16-365
+    - He, H. & Garcia, E. A. (2009). "Learning from Imbalanced Data."
+      IEEE Trans. Knowl. Data Eng., 21(9), 1263-1284.
+      https://doi.org/10.1109/TKDE.2008.239
+    """
+    import warnings
+
+    if y is None:
+        raise ValueError(
+            "resample() needs labels; the FeatureSet is unlabelled."
+        )
+
+    if isinstance(sampler, str):
+        if sampler not in ("undersample", "oversample"):
+            raise ValueError(
+                f"sampler must be 'undersample', 'oversample', or an "
+                f"imbalanced-learn sampler, got {sampler!r}."
+            )
+        rng = np.random.RandomState(random_state)
+        classes, counts = np.unique(y, return_counts=True)
+        target = counts.min() if sampler == "undersample" else counts.max()
+        keep: List[int] = []
+        for cls, count in zip(classes, counts):
+            idx = np.flatnonzero(y == cls)
+            if count == target:
+                chosen = idx
+            else:
+                chosen = rng.choice(
+                    idx, size=target, replace=sampler == "oversample"
+                )
+            keep.extend(int(i) for i in chosen)
+        keep.sort()
+        indices = np.asarray(keep, dtype=int)
+        return (
+            X[indices],
+            y[indices],
+            None if mols is None else [mols[i] for i in indices],
+        )
+
+    if not callable(getattr(sampler, "fit_resample", None)):
+        raise ValueError(
+            f"{type(sampler).__name__} has no fit_resample(X, y) method, so "
+            "it is not an imbalanced-learn sampler. Pass 'undersample', "
+            "'oversample', or a sampler object."
+        )
+
+    X_resampled, y_resampled = sampler.fit_resample(X, y)
+    X_resampled = np.asarray(X_resampled)
+    y_resampled = np.asarray(y_resampled)
+
+    indices_attr = getattr(sampler, "sample_indices_", None)
+    if indices_attr is not None and mols is not None:
+        # A selecting sampler tells us which rows survived, so the
+        # molecules can follow them.
+        selected = np.asarray(indices_attr).ravel().astype(int)
+        return X_resampled, y_resampled, [mols[i] for i in selected]
+
+    if mols is not None:
+        warnings.warn(
+            f"{type(sampler).__name__} synthesized new rows, which "
+            "correspond to no molecule, so the molecules have been dropped "
+            "from the FeatureSet. Downstream steps needing them (a scaffold "
+            "split, a Tanimoto applicability domain, an atom-level "
+            "explanation) will no longer work on this set.",
+            UserWarning,
+            stacklevel=3,
+        )
+    return X_resampled, y_resampled, None

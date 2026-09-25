@@ -10,6 +10,7 @@ anywhere, but they build on each other and are best read in sequence.
 | [02 — Representation and chemical space](02_representation_and_chemical_space.ipynb) | `representation`, `transform`, `chemspace`, `neighbors`, `cluster` |
 | [03 — Modelling, validation and applicability](03_modeling_validation_and_applicability.ipynb) | `models`, `model_selection`, `validation`, `metrics`, `feature_selection`, `applicability`, `uncertainty` |
 | [04 — SAR, explainability and reporting](04_sar_explainability_and_reporting.ipynb) | `sar`, `explainability`, `reporting` |
+| [05 — Classification, calibration and deployment](05_classification_calibration_and_deployment.ipynb) | `metrics` (calibration, thresholds), `functional` (`resample`), `explainability` (atom-level SHAP/LIME), `persistence` |
 
 Together they touch every public subpackage.
 
@@ -47,6 +48,12 @@ It is deliberately tiny, so every cell runs instantly and every number is
 reproducible. It is also deliberately *hard*: one compound is a planted
 activity-cliff outlier, and the scaffold families are distinct enough that a
 scaffold split is genuinely difficult. Several notebooks show models scoring
-badly on it. That is the point — the numbers are honest, and a worked
-example where everything succeeds teaches nothing about the failure modes
-these tools exist to detect.
+badly on it — a scaffold-split Q²F1 of −1.0, residuals that fail every
+normality check, an applicability domain that rejects the whole test set.
+That is the point. The numbers are honest, and a worked example where
+everything succeeds teaches nothing about the failure modes these tools
+exist to detect.
+
+Notebook 5 additionally resamples the set into a 200-compound, 18%-active
+screening deck with 12% label noise, because a separable problem cannot
+demonstrate a threshold trade-off.

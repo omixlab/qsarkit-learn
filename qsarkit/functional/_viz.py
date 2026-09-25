@@ -503,7 +503,11 @@ def render_pipeline(
     )
     try:
         figure.write_image(path, format=suffix)
-    except Exception as exc:  # kaleido missing, or no engine for this format
+    except Exception as exc:
+        # Deliberately broad: a missing or misconfigured kaleido surfaces as
+        # ImportError, ValueError, RuntimeError or a Plotly-internal type
+        # depending on version, and every one of them means the same thing
+        # to the caller. The original is chained, so nothing is hidden.
         from qsarkit.base.exceptions import OptionalDependencyError
 
         raise OptionalDependencyError("kaleido", "reporting") from exc
@@ -535,7 +539,8 @@ def _try_graphviz(
         graphviz.Source(source).render(
             filename=stem, format=suffix, cleanup=True, quiet=True
         )
-    except Exception:
-        # `dot` binary absent or failed; fall back to Plotly.
+    except (graphviz.ExecutableNotFound, graphviz.CalledProcessError, OSError):
+        # The `dot` binary is a system package, not a Python one, so its
+        # absence or failure is expected; fall back to Plotly.
         return None
     return path

@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional
 
 from qsarkit.base import MoleculeToMoleculeTransformer
+from qsarkit.base.exceptions import RDKIT_MOLECULE_ERRORS
 
 # name -> SMARTS matching the group as attached to the rest of the molecule
 # via exactly one single bond (the atom marked with a leading '*' bond is
@@ -79,7 +80,10 @@ class FragmentRemover(MoleculeToMoleculeTransformer):
         groups: Optional[Dict[str, str]] = None,
         max_iterations: int = 5,
     ):
-        self.groups = groups or DEFAULT_GROUPS
+        # Stored as given, per the scikit-learn convention; the default is
+        # resolved in _resolved_groups() so get_params() reports what was
+        # actually passed and clone() round-trips.
+        self.groups = groups
         self.max_iterations = max_iterations
 
     def _remove_once(self, mol: Any, patterns: List[Any]) -> bool:
@@ -106,7 +110,8 @@ class FragmentRemover(MoleculeToMoleculeTransformer):
             new_mol = rw.GetMol()
             try:
                 Chem.SanitizeMol(new_mol)
-            except Exception:
+            except RDKIT_MOLECULE_ERRORS:
+                # This cut left an invalid molecule; try the next match.
                 continue
             mol.__init__(new_mol)
             return True
@@ -115,7 +120,8 @@ class FragmentRemover(MoleculeToMoleculeTransformer):
     def _clean_one(self, mol: Any) -> Any:
         from rdkit import Chem
 
-        patterns = [Chem.MolFromSmarts(s) for s in self.groups.values()]
+        groups = self.groups if self.groups is not None else DEFAULT_GROUPS
+        patterns = [Chem.MolFromSmarts(s) for s in groups.values()]
         current = Chem.Mol(mol)
         for _ in range(self.max_iterations):
             changed = self._remove_once(current, patterns)

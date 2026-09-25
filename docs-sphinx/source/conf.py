@@ -27,7 +27,10 @@ copyright = f"{date.today().year}, {author}"
 try:
     from qsarkit import __version__ as release
 except ImportError:  # pragma: no cover - docs build without the package
-    release = "0.2.0"
+    # Only reached if autodoc cannot import the package at all, in which
+    # case the build is already broken; the literal is a last resort and
+    # is deliberately vague rather than a stale exact version.
+    release = "unknown"
 version = ".".join(release.split(".")[:2])
 
 # -- General configuration ----------------------------------------------------
@@ -121,6 +124,72 @@ napoleon_preprocess_types = True
 # references.
 napoleon_use_ivar = True
 
+# -- Mathematics --------------------------------------------------------------
+
+# Formulas appear throughout: Q^2 variants, the Golbraikh-Tropsha criteria,
+# Tanimoto, ECE, leverage. MathJax 3 renders them in HTML.
+#
+# `mathjax3_config` loads the AMS packages (align, cases) that multi-line
+# derivations need, and registers the macros used repeatedly so each
+# docstring writes \Tanimoto rather than spelling the definition out.
+mathjax3_config = {
+    "tex": {
+        "packages": {"[+]": ["ams", "boldsymbol"]},
+        "inlineMath": [["\\(", "\\)"]],
+        "displayMath": [["\\[", "\\]"]],
+        "macros": {
+            "Tanimoto": r"T",
+            "Rsq": r"R^{2}",
+            "Qsq": [r"Q^{2}_{\mathrm{#1}}", 1],
+            "RMSE": r"\mathrm{RMSE}",
+            "ECE": r"\mathrm{ECE}",
+            "argmax": r"\operatorname*{arg\,max}",
+            "argmin": r"\operatorname*{arg\,min}",
+        },
+    },
+    "options": {
+        # Do not typeset inside code blocks: a literal backslash in a SMARTS
+        # pattern or a regex must stay literal.
+        "ignoreHtmlClass": "highlight|no-mathjax",
+        "processHtmlClass": "math|tex2jax_process",
+    },
+}
+
+# The LaTeX (PDF) builder needs the same macros declared, or a formula that
+# renders in HTML silently breaks the PDF that Read the Docs also builds.
+latex_elements = {
+    "preamble": r"""
+\usepackage{amsmath}
+\usepackage{amssymb}
+\newcommand{\Tanimoto}{T}
+\newcommand{\Rsq}{R^{2}}
+\newcommand{\Qsq}[1]{Q^{2}_{\mathrm{#1}}}
+\newcommand{\RMSE}{\mathrm{RMSE}}
+\newcommand{\ECE}{\mathrm{ECE}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+""",
+    "papersize": "a4paper",
+    "pointsize": "10pt",
+    # Unicode used in the prose (superscripts, dashes, Greek) needs a font
+    # that has the glyphs; the default LaTeX font does not.
+    "fontpkg": r"\usepackage{lmodern}",
+}
+latex_documents = [
+    (
+        master_doc,
+        "qsarkit.tex",
+        "qsarkit documentation",
+        author,
+        "manual",
+    )
+]
+
+# Numbered equations, so a formula can be referred to from the prose.
+math_number_all = False
+math_eqref_format = "Eq. {number}"
+numfig = True
+
 # -- Intersphinx --------------------------------------------------------------
 
 intersphinx_mapping = {
@@ -146,9 +215,11 @@ html_theme = "furo"
 html_title = f"qsarkit {version}"
 html_static_path = ["_static"]
 html_theme_options = {
-    "source_repository": "https://github.com/fredericokremer/qsarkit-learn",
+    "source_repository": "https://github.com/omixlab/qsarkit-learn",
     "source_branch": "main",
-    "source_directory": "docs/source/",
+    # The sources moved to docs-sphinx/; docs/ is now the built output.
+    # A wrong value here 404s the "Edit this page" link on every page.
+    "source_directory": "docs-sphinx/source/",
     "navigation_with_keys": True,
 }
 html_last_updated_fmt = "%Y-%m-%d"

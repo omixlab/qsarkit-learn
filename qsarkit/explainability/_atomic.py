@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from qsarkit.base.exceptions import RDKIT_MOLECULE_ERRORS
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Sequence
 
@@ -182,7 +183,11 @@ class AtomicContributionMap:
             variant = editable.GetMol()
             try:
                 Chem.SanitizeMol(variant)
-            except Exception:
+            except RDKIT_MOLECULE_ERRORS:
+                # Masking this atom left an invalid valence, so its
+                # contribution cannot be measured; using the unmasked
+                # molecule makes the reported weight zero, which is
+                # honest -- better than a fabricated number.
                 variant = mol
             variants.append(variant)
 
@@ -322,7 +327,7 @@ class FragmentContributionAnalyzer:
         groups: Dict[str, List[int]] = {}
         try:
             bonds = list(BRICS.FindBRICSBonds(mol))
-        except Exception:
+        except RDKIT_MOLECULE_ERRORS:
             bonds = []
         if not bonds:
             return {Chem.MolToSmiles(mol): list(range(mol.GetNumAtoms()))}

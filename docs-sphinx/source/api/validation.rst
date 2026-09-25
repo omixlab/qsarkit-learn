@@ -3,69 +3,189 @@ Validation
 
 .. currentmodule:: qsarkit.validation
 
-Cross-validation with QSAR-appropriate reporting.
+Model validation against OECD principle 4, which asks for three distinct
+things — goodness-of-fit, robustness and predictivity. A single :math:`R^2`
+addresses only the first, and it is the number most likely to be quoted.
 
-OECD principle 4 asks for goodness-of-fit, robustness *and* predictivity
-— three different things. R² on the training set is goodness-of-fit only,
-and is the number most likely to be quoted and least likely to mean
-anything.
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+
+   * - Class
+     - Answers
+   * - :class:`CrossValidator`
+     - *Does it predict?* Cross-validated :math:`Q^2`, with out-of-fold
+       predictions.
+   * - :class:`YScrambling`
+     - *Is the fit real?* Could the model score this well on permuted
+       labels?
+   * - :class:`BootstrapValidator`
+     - *How precise is the score?* An out-of-bag interval rather than a
+       point estimate.
+   * - :class:`ExternalValidator`
+     - *Does it predict on compounds it never saw?* The full QSAR metric
+       set plus the Golbraikh-Tropsha criteria.
+
+Cross-validation
+----------------
 
 .. doctest::
 
    >>> from qsarkit.models import QSARRegressor
    >>> from qsarkit.validation import CrossValidator
-   >>> X, y = demo_fingerprints(256), DEMO_Y
-   >>> report = CrossValidator(n_splits=3, random_state=0).evaluate(
-   ...     QSARRegressor("rf", random_state=0), X, y)
-   >>> round(report["q2"], 3)
-   0.607
-   >>> round(report["rmse_cv"], 3)
-   0.673
+   >>> X, y = demo_fingerprints(512), DEMO_Y
+   >>> model = QSARRegressor("rf", random_state=0)
+   >>> report = CrossValidator(n_splits=5, random_state=0).evaluate(model, X, y)
+   >>> round(report["q2"], 3), round(report["rmse_cv"], 3)
+   (0.686, 0.602)
 
-Compare with the training R² of 0.952 from :doc:`models`. The gap is the
-part that would not have survived contact with new compounds.
-
-The report includes the out-of-fold predictions, so you can compute any
-further statistic — or plot them — without re-running anything:
+The report carries the out-of-fold predictions, so any further statistic or
+plot needs no refitting:
 
 .. doctest::
 
    >>> report["y_pred_cv"].shape
    (24,)
    >>> report["method"], report["n_splits"]
-   ('kfold', 3)
+   ('kfold', 5)
 
-Choosing a scheme
------------------
+``n_splits`` comes from the splitter, not the constructor argument —
+leave-one-out on 24 compounds is 24 splits, and a report claiming 5 would
+be wrong:
 
 .. doctest::
 
-   >>> loo = CrossValidator(method="loo").evaluate(QSARRegressor("ridge"), X, y)
-   >>> loo["n_splits"]
+   >>> CrossValidator(method="loo").evaluate(QSARRegressor("ridge"), X, y)["n_splits"]
    24
 
-``n_splits`` is reported from the splitter, not from the constructor
-argument — leave-one-out on 24 compounds is 24 splits, and a report that
-claimed "5" would be wrong.
+``"repeated_kfold"`` averages over several partitions, which matters on
+small datasets where one k-fold estimate is dominated by the luck of the
+split. ``"leave_group_out"`` is the one to use when compounds come in
+groups — a scaffold series, an assay batch, a source publication.
 
-``"kfold"``
-   The default. Cheap and adequate for a first look.
-``"repeated_kfold"``
-   Averages over several partitions, which matters on small datasets
-   where a single k-fold estimate is dominated by the luck of the split.
-``"loo"``
-   Maximum training data per fold, but a famously high-variance estimate
-   of generalization error, and expensive.
-``"leave_group_out"``
-   The one to use when compounds come in groups — a scaffold series, an
-   assay batch, a source publication. Leaving out a whole group is the
-   only way to avoid scoring the model on its own analogues.
+Robustness: y-scrambling
+------------------------
 
-.. warning::
+Refit the model on randomly permuted activities. If the scrambled models
+score anywhere near the real one, the apparent performance came from the
+model's flexibility relative to the dataset size, not from a
+structure-activity relationship.
 
-   Cross-validating a random split still measures interpolation. For an
-   honest figure, cross-validate over scaffold-aware folds — see
-   :doc:`model_selection` — or report both and let the gap speak.
+.. doctest::
+
+   >>> from qsarkit.validation import YScrambling
+   >>> scramble = YScrambling(n_iterations=50, random_state=0).run(model, X, y)
+   >>> round(scramble["real_score"], 3)
+   0.953
+   >>> round(scramble["mean_scrambled_score"], 3)
+   0.839
+   >>> scramble["p_value"] < 0.05
+   True
+
+.. danger::
+
+   Read those numbers again. The model fits **randomly permuted
+   activities** to :math:`R^2 = 0.84` on average, against 0.95 on the real
+   ones. The p-value clears 0.05, but the honest reading is that most of
+   this model's apparent fit is capacity: 24 compounds described by 512
+   features will fit almost anything.
+
+   This is exactly the failure y-scrambling exists to expose, and it is
+   invisible in the training :math:`R^2` that would otherwise be reported.
+
+The p-value can never be exactly zero — a permutation test cannot
+distinguish "very unlikely" from "impossible", so reporting 0 would claim
+more than was measured:
+
+.. doctest::
+
+   >>> small = YScrambling(n_iterations=20, random_state=0).run(model, X, y)
+   >>> round(small["p_value"], 4) == round(1 / 21, 4)
+   True
+
+:meth:`YScrambling.plot` shows the scrambled distribution with the real
+score marked, which is more informative than either number alone:
+
+.. doctest::
+
+   >>> scrambler = YScrambling(n_iterations=20, random_state=0)
+   >>> _ = scrambler.run(model, X, y)
+   >>> type(scrambler.plot()).__name__
+   'Figure'
+
+Precision: the bootstrap
+------------------------
+
+A single cross-validated :math:`Q^2` is one number with no error bar.
+Resampling the training set and scoring out-of-bag gives the spread:
+
+.. doctest::
+
+   >>> from qsarkit.validation import BootstrapValidator
+   >>> boot = BootstrapValidator(n_iterations=30, random_state=0).run(model, X, y)
+   >>> round(boot["mean_score"], 2)
+   0.34
+   >>> round(boot["ci_upper"] - boot["ci_lower"], 2)
+   1.85
+
+An interval nearly two :math:`R^2` units wide. **Any comparison between two
+models on this dataset that turns on less than that is noise** — and the
+interval is the only thing that says so.
+
+Scoring is out-of-bag, not in-bag: about 36.8% of the data is left out of
+each resample, and scoring there rather than on the fitted rows is what
+makes this an estimate of generalization instead of of fit.
+
+Predictivity: external validation
+---------------------------------
+
+.. doctest::
+
+   >>> from qsarkit.model_selection import RandomSplitter
+   >>> from qsarkit.validation import ExternalValidator
+   >>> train, test = next(RandomSplitter(test_size=0.25, random_state=0).split(X, y))
+   >>> cv = CrossValidator(n_splits=5, random_state=0).evaluate(model, X[train], y[train])
+   >>> fitted = QSARRegressor("rf", random_state=0).fit(X[train], y[train])
+   >>> result = ExternalValidator(q2=cv["q2"]).validate(
+   ...     fitted, X[test], y[test], y[train])
+   >>> round(result["r2"], 3), round(result["q2_f1"], 3)
+   (0.821, 0.823)
+
+Supply ``y_train`` so Q²F1 is scaled by the *training* set variance, which
+is what makes it comparable across differently-centred test sets. Supply
+``q2`` so Golbraikh-Tropsha criterion 1 can be evaluated rather than
+reporting ``None``:
+
+.. doctest::
+
+   >>> result["golbraikh_tropsha"]["passed"]
+   False
+   >>> gt = result["golbraikh_tropsha"]
+   >>> [k for k in sorted(gt) if k.startswith("criterion") and gt[k] is False]
+   ['criterion_1_q2', 'criterion_3_r0']
+
+An :math:`R^2` of 0.82 on the test set looks respectable and would have
+been reported as a success. Criterion 1 fails because the cross-validated
+:math:`Q^2` of 0.24 is below the 0.5 threshold; criterion 3 concerns
+regression through the origin — the predictions correlate with the truth
+but are systematically offset. Running the full check is what turns a
+respectable-looking number into an accurate picture.
+
+.. note::
+
+   None of these validators mutates the estimator you hand them: each
+   clones it before fitting, so the same configured model can be passed to
+   all four.
+
+   .. doctest::
+
+      >>> template = QSARRegressor("ridge")
+      >>> _ = YScrambling(n_iterations=5, random_state=0).run(template, X, y)
+      >>> hasattr(template, "estimator_")
+      False
+
+See :doc:`../guide/oecd` for how these fit together into a reportable
+validation, and :doc:`metrics` for the statistics they compute.
 
 API
 ---
@@ -77,14 +197,22 @@ API
 References
 ----------
 
-- OECD (2007). "Guidance Document on the Validation of (Quantitative)
-  Structure-Activity Relationship [(Q)SAR] Models," ENV/JM/MONO(2007)2.
+- OECD (2007). *Guidance Document on the Validation of (Quantitative)
+  Structure-Activity Relationship [(Q)SAR] Models*, ENV/JM/MONO(2007)2.
   :doi:`10.1787/9789264085442-en`
-- Gramatica, P. (2007). "Principles of QSAR Models Validation: Internal
-  and External." QSAR Comb. Sci., 26(5), 694-701.
-  :doi:`10.1002/qsar.200610151`
-- Golbraikh, A. & Tropsha, A. (2002). "Beware of q2!" J. Mol. Graph.
-  Model., 20(4), 269-276. :doi:`10.1016/S1093-3263(01)00123-1`
+- Golbraikh, A. & Tropsha, A. (2002). "Beware of q2!" *J. Mol. Graph.
+  Model.*, 20(4), 269-276. :doi:`10.1016/S1093-3263(01)00123-1`
+- Rücker, C., Rücker, G. & Meringer, M. (2007). "y-Randomization and Its
+  Variants in QSPR/QSAR." *J. Chem. Inf. Model.*, 47(6), 2345-2357.
+  :doi:`10.1021/ci700157b`
+- Tropsha, A., Gramatica, P. & Gombar, V. K. (2003). "The Importance of
+  Being Earnest." *QSAR Comb. Sci.*, 22(1), 69-77.
+  :doi:`10.1002/qsar.200390007`
+- Efron, B. & Tibshirani, R. J. (1993). *An Introduction to the Bootstrap.*
+  Chapman & Hall. :doi:`10.1201/9780429246593`
+- Consonni, V., Ballabio, D. & Todeschini, R. (2009). "Comments on the
+  Definition of the Q2 Parameter for QSAR Validation." *J. Chem. Inf.
+  Model.*, 49(7), 1669-1678. :doi:`10.1021/ci900115y`
 - Varma, S. & Simon, R. (2006). "Bias in Error Estimation When Using
-  Cross-Validation for Model Selection." BMC Bioinformatics, 7, 91.
+  Cross-Validation for Model Selection." *BMC Bioinformatics*, 7, 91.
   :doi:`10.1186/1471-2105-7-91`

@@ -253,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/api/validation.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs-sphinx/source/api/validation.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/api/validation.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs-sphinx/source/api/validation.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -277,62 +277,177 @@
         <article role="main" id="furo-main-content">
           <section id="validation">
 <h1>Validation<a class="headerlink" href="#validation" title="Link to this heading">¶</a></h1>
-<p>Cross-validation with QSAR-appropriate reporting.</p>
-<p>OECD principle 4 asks for goodness-of-fit, robustness <em>and</em> predictivity
-— three different things. R² on the training set is goodness-of-fit only,
-and is the number most likely to be quoted and least likely to mean
-anything.</p>
+<p>Model validation against OECD principle 4, which asks for three distinct
+things — goodness-of-fit, robustness and predictivity. A single <span class="math notranslate nohighlight">\(R^2\)</span>
+addresses only the first, and it is the number most likely to be quoted.</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Class</p></th>
+<th class="head"><p>Answers</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="#qsarkit.validation.CrossValidator" title="qsarkit.validation.CrossValidator"><code class="xref py py-class docutils literal notranslate"><span class="pre">CrossValidator</span></code></a></p></td>
+<td><p><em>Does it predict?</em> Cross-validated <span class="math notranslate nohighlight">\(Q^2\)</span>, with out-of-fold
+predictions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qsarkit.validation.YScrambling" title="qsarkit.validation.YScrambling"><code class="xref py py-class docutils literal notranslate"><span class="pre">YScrambling</span></code></a></p></td>
+<td><p><em>Is the fit real?</em> Could the model score this well on permuted
+labels?</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#qsarkit.validation.BootstrapValidator" title="qsarkit.validation.BootstrapValidator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BootstrapValidator</span></code></a></p></td>
+<td><p><em>How precise is the score?</em> An out-of-bag interval rather than a
+point estimate.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#qsarkit.validation.ExternalValidator" title="qsarkit.validation.ExternalValidator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExternalValidator</span></code></a></p></td>
+<td><p><em>Does it predict on compounds it never saw?</em> The full QSAR metric
+set plus the Golbraikh-Tropsha criteria.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="cross-validation">
+<h2>Cross-validation<a class="headerlink" href="#cross-validation" title="Link to this heading">¶</a></h2>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARRegressor</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CrossValidator</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">demo_fingerprints</span><span class="p">(</span><span class="mi">256</span><span class="p">),</span> <span class="n">DEMO_Y</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">CrossValidator</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.607</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;rmse_cv&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.673</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">demo_fingerprints</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span> <span class="n">DEMO_Y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">CrossValidator</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;rmse_cv&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">(0.686, 0.602)</span>
 </pre></div>
 </div>
-<p>Compare with the training R² of 0.952 from <a class="reference internal" href="models.html"><span class="doc">Models</span></a>. The gap is the
-part that would not have survived contact with new compounds.</p>
-<p>The report includes the out-of-fold predictions, so you can compute any
-further statistic — or plot them — without re-running anything:</p>
+<p>The report carries the out-of-fold predictions, so any further statistic or
+plot needs no refitting:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;y_pred_cv&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
 <span class="go">(24,)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">],</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;n_splits&quot;</span><span class="p">]</span>
-<span class="go">(&#39;kfold&#39;, 3)</span>
+<span class="go">(&#39;kfold&#39;, 5)</span>
 </pre></div>
 </div>
-<section id="choosing-a-scheme">
-<h2>Choosing a scheme<a class="headerlink" href="#choosing-a-scheme" title="Link to this heading">¶</a></h2>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">loo</span> <span class="o">=</span> <span class="n">CrossValidator</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;loo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;ridge&quot;</span><span class="p">),</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">loo</span><span class="p">[</span><span class="s2">&quot;n_splits&quot;</span><span class="p">]</span>
+<p><code class="docutils literal notranslate"><span class="pre">n_splits</span></code> comes from the splitter, not the constructor argument —
+leave-one-out on 24 compounds is 24 splits, and a report claiming 5 would
+be wrong:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CrossValidator</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;loo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;ridge&quot;</span><span class="p">),</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)[</span><span class="s2">&quot;n_splits&quot;</span><span class="p">]</span>
 <span class="go">24</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">n_splits</span></code> is reported from the splitter, not from the constructor
-argument — leave-one-out on 24 compounds is 24 splits, and a report that
-claimed “5” would be wrong.</p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;kfold&quot;</span></code></dt><dd><p>The default. Cheap and adequate for a first look.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;repeated_kfold&quot;</span></code></dt><dd><p>Averages over several partitions, which matters on small datasets
-where a single k-fold estimate is dominated by the luck of the split.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;loo&quot;</span></code></dt><dd><p>Maximum training data per fold, but a famously high-variance estimate
-of generalization error, and expensive.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">&quot;leave_group_out&quot;</span></code></dt><dd><p>The one to use when compounds come in groups — a scaffold series, an
-assay batch, a source publication. Leaving out a whole group is the
-only way to avoid scoring the model on its own analogues.</p>
-</dd>
-</dl>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Cross-validating a random split still measures interpolation. For an
-honest figure, cross-validate over scaffold-aware folds — see
-<a class="reference internal" href="model_selection.html"><span class="doc">Model selection</span></a> — or report both and let the gap speak.</p>
+<p><code class="docutils literal notranslate"><span class="pre">&quot;repeated_kfold&quot;</span></code> averages over several partitions, which matters on
+small datasets where one k-fold estimate is dominated by the luck of the
+split. <code class="docutils literal notranslate"><span class="pre">&quot;leave_group_out&quot;</span></code> is the one to use when compounds come in
+groups — a scaffold series, an assay batch, a source publication.</p>
+</section>
+<section id="robustness-y-scrambling">
+<h2>Robustness: y-scrambling<a class="headerlink" href="#robustness-y-scrambling" title="Link to this heading">¶</a></h2>
+<p>Refit the model on randomly permuted activities. If the scrambled models
+score anywhere near the real one, the apparent performance came from the
+model’s flexibility relative to the dataset size, not from a
+structure-activity relationship.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">YScrambling</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scramble</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.953</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.839</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;p_value&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
+<span class="go">True</span>
+</pre></div>
 </div>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>Read those numbers again. The model fits <strong>randomly permuted
+activities</strong> to <span class="math notranslate nohighlight">\(R^2 = 0.84\)</span> on average, against 0.95 on the real
+ones. The p-value clears 0.05, but the honest reading is that most of
+this model’s apparent fit is capacity: 24 compounds described by 512
+features will fit almost anything.</p>
+<p>This is exactly the failure y-scrambling exists to expose, and it is
+invisible in the training <span class="math notranslate nohighlight">\(R^2\)</span> that would otherwise be reported.</p>
+</div>
+<p>The p-value can never be exactly zero — a permutation test cannot
+distinguish “very unlikely” from “impossible”, so reporting 0 would claim
+more than was measured:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">small</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">small</span><span class="p">[</span><span class="s2">&quot;p_value&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#qsarkit.validation.YScrambling.plot" title="qsarkit.validation.YScrambling.plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">YScrambling.plot()</span></code></a> shows the scrambled distribution with the real
+score marked, which is more informative than either number alone:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scrambler</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">scrambler</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">scrambler</span><span class="o">.</span><span class="n">plot</span><span class="p">())</span><span class="o">.</span><span class="vm">__name__</span>
+<span class="go">&#39;Figure&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="precision-the-bootstrap">
+<h2>Precision: the bootstrap<a class="headerlink" href="#precision-the-bootstrap" title="Link to this heading">¶</a></h2>
+<p>A single cross-validated <span class="math notranslate nohighlight">\(Q^2\)</span> is one number with no error bar.
+Resampling the training set and scoring out-of-bag gives the spread:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">BootstrapValidator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">boot</span> <span class="o">=</span> <span class="n">BootstrapValidator</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">boot</span><span class="p">[</span><span class="s2">&quot;mean_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">0.34</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">boot</span><span class="p">[</span><span class="s2">&quot;ci_upper&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">boot</span><span class="p">[</span><span class="s2">&quot;ci_lower&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">1.85</span>
+</pre></div>
+</div>
+<p>An interval nearly two <span class="math notranslate nohighlight">\(R^2\)</span> units wide. <strong>Any comparison between two
+models on this dataset that turns on less than that is noise</strong> — and the
+interval is the only thing that says so.</p>
+<p>Scoring is out-of-bag, not in-bag: about 36.8% of the data is left out of
+each resample, and scoring there rather than on the fitted rows is what
+makes this an estimate of generalization instead of of fit.</p>
+</section>
+<section id="predictivity-external-validation">
+<h2>Predictivity: external validation<a class="headerlink" href="#predictivity-external-validation" title="Link to this heading">¶</a></h2>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomSplitter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExternalValidator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">RandomSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv</span> <span class="o">=</span> <span class="n">CrossValidator</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fitted</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">ExternalValidator</span><span class="p">(</span><span class="n">q2</span><span class="o">=</span><span class="n">cv</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">fitted</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;r2&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;q2_f1&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">(0.821, 0.823)</span>
+</pre></div>
+</div>
+<p>Supply <code class="docutils literal notranslate"><span class="pre">y_train</span></code> so Q²F1 is scaled by the <em>training</em> set variance, which
+is what makes it comparable across differently-centred test sets. Supply
+<code class="docutils literal notranslate"><span class="pre">q2</span></code> so Golbraikh-Tropsha criterion 1 can be evaluated rather than
+reporting <code class="docutils literal notranslate"><span class="pre">None</span></code>:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;golbraikh_tropsha&quot;</span><span class="p">][</span><span class="s2">&quot;passed&quot;</span><span class="p">]</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gt</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;golbraikh_tropsha&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">gt</span><span class="p">)</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;criterion&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">gt</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">]</span>
+<span class="go">[&#39;criterion_1_q2&#39;, &#39;criterion_3_r0&#39;]</span>
+</pre></div>
+</div>
+<p>An <span class="math notranslate nohighlight">\(R^2\)</span> of 0.82 on the test set looks respectable and would have
+been reported as a success. Criterion 1 fails because the cross-validated
+<span class="math notranslate nohighlight">\(Q^2\)</span> of 0.24 is below the 0.5 threshold; criterion 3 concerns
+regression through the origin — the predictions correlate with the truth
+but are systematically offset. Running the full check is what turns a
+respectable-looking number into an accurate picture.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>None of these validators mutates the estimator you hand them: each
+clones it before fitting, so the same configured model can be passed to
+all four.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;ridge&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="s2">&quot;estimator_&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</div>
+<p>See <a class="reference internal" href="../guide/oecd.html"><span class="doc">OECD validation</span></a> for how these fit together into a reportable
+validation, and <a class="reference internal" href="metrics.html"><span class="doc">Metrics</span></a> for the statistics they compute.</p>
 </section>
 <section id="module-qsarkit.validation">
 <span id="api"></span><h2>API<a class="headerlink" href="#module-qsarkit.validation" title="Link to this heading">¶</a></h2>
@@ -732,16 +847,24 @@ usable out-of-bag set).</p>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>OECD (2007). “Guidance Document on the Validation of (Quantitative)
-Structure-Activity Relationship [(Q)SAR] Models,” ENV/JM/MONO(2007)2.
+<li><p>OECD (2007). <em>Guidance Document on the Validation of (Quantitative)
+Structure-Activity Relationship [(Q)SAR] Models</em>, ENV/JM/MONO(2007)2.
 <a class="extlink-doi reference external" href="https://doi.org/10.1787/9789264085442-en">doi:10.1787/9789264085442-en</a></p></li>
-<li><p>Gramatica, P. (2007). “Principles of QSAR Models Validation: Internal
-and External.” QSAR Comb. Sci., 26(5), 694-701.
-<a class="extlink-doi reference external" href="https://doi.org/10.1002/qsar.200610151">doi:10.1002/qsar.200610151</a></p></li>
-<li><p>Golbraikh, A. &amp; Tropsha, A. (2002). “Beware of q2!” J. Mol. Graph.
-Model., 20(4), 269-276. <a class="extlink-doi reference external" href="https://doi.org/10.1016/S1093-3263(01)00123-1">doi:10.1016/S1093-3263(01)00123-1</a></p></li>
+<li><p>Golbraikh, A. &amp; Tropsha, A. (2002). “Beware of q2!” <em>J. Mol. Graph.
+Model.</em>, 20(4), 269-276. <a class="extlink-doi reference external" href="https://doi.org/10.1016/S1093-3263(01)00123-1">doi:10.1016/S1093-3263(01)00123-1</a></p></li>
+<li><p>Rücker, C., Rücker, G. &amp; Meringer, M. (2007). “y-Randomization and Its
+Variants in QSPR/QSAR.” <em>J. Chem. Inf. Model.</em>, 47(6), 2345-2357.
+<a class="extlink-doi reference external" href="https://doi.org/10.1021/ci700157b">doi:10.1021/ci700157b</a></p></li>
+<li><p>Tropsha, A., Gramatica, P. &amp; Gombar, V. K. (2003). “The Importance of
+Being Earnest.” <em>QSAR Comb. Sci.</em>, 22(1), 69-77.
+<a class="extlink-doi reference external" href="https://doi.org/10.1002/qsar.200390007">doi:10.1002/qsar.200390007</a></p></li>
+<li><p>Efron, B. &amp; Tibshirani, R. J. (1993). <em>An Introduction to the Bootstrap.</em>
+Chapman &amp; Hall. <a class="extlink-doi reference external" href="https://doi.org/10.1201/9780429246593">doi:10.1201/9780429246593</a></p></li>
+<li><p>Consonni, V., Ballabio, D. &amp; Todeschini, R. (2009). “Comments on the
+Definition of the Q2 Parameter for QSAR Validation.” <em>J. Chem. Inf.
+Model.</em>, 49(7), 1669-1678. <a class="extlink-doi reference external" href="https://doi.org/10.1021/ci900115y">doi:10.1021/ci900115y</a></p></li>
 <li><p>Varma, S. &amp; Simon, R. (2006). “Bias in Error Estimation When Using
-Cross-Validation for Model Selection.” BMC Bioinformatics, 7, 91.
+Cross-Validation for Model Selection.” <em>BMC Bioinformatics</em>, 7, 91.
 <a class="extlink-doi reference external" href="https://doi.org/10.1186/1471-2105-7-91">doi:10.1186/1471-2105-7-91</a></p></li>
 </ul>
 </section>
@@ -804,7 +927,10 @@ Cross-Validation for Model Selection.” BMC Bioinformatics, 7, 91.
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Validation</a><ul>
-<li><a class="reference internal" href="#choosing-a-scheme">Choosing a scheme</a></li>
+<li><a class="reference internal" href="#cross-validation">Cross-validation</a></li>
+<li><a class="reference internal" href="#robustness-y-scrambling">Robustness: y-scrambling</a></li>
+<li><a class="reference internal" href="#precision-the-bootstrap">Precision: the bootstrap</a></li>
+<li><a class="reference internal" href="#predictivity-external-validation">Predictivity: external validation</a></li>
 <li><a class="reference internal" href="#module-qsarkit.validation">API</a><ul>
 <li><a class="reference internal" href="#qsarkit.validation.CrossValidator"><code class="docutils literal notranslate"><span class="pre">CrossValidator</span></code></a><ul>
 <li><a class="reference internal" href="#qsarkit.validation.CrossValidator.method"><code class="docutils literal notranslate"><span class="pre">CrossValidator.method</span></code></a></li>
@@ -851,5 +977,7 @@ Cross-Validation for Model Selection.” BMC Bioinformatics, 7, 91.
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>window.MathJax = {"tex": {"packages": {"[+]": ["ams", "boldsymbol"]}, "inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "macros": {"Tanimoto": "T", "Rsq": "R^{2}", "Qsq": ["Q^{2}_{\\mathrm{#1}}", 1], "RMSE": "\\mathrm{RMSE}", "ECE": "\\mathrm{ECE}", "argmax": "\\operatorname*{arg\\,max}", "argmin": "\\operatorname*{arg\\,min}"}}, "options": {"ignoreHtmlClass": "highlight|no-mathjax", "processHtmlClass": "math|tex2jax_process"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     </body>
 </html>

@@ -1,0 +1,26 @@
+# Files to ship in the source distribution beyond what setuptools infers.
+#
+# The test suite is included deliberately: a downstream packager (conda-forge,
+# a Linux distribution) builds from the sdist and needs to be able to run the
+# tests to verify the build. `package.md` and the notebooks are the
+# documentation someone would want alongside the code.
+
+include LICENSE
+include README.md
+include package.md
+include CONTRIBUTING_STYLE.md
+include pyproject.toml
+
+recursive-include tests *.py
+recursive-include notebooks *.ipynb *.md
+recursive-include typings *.pyi
+
+# The RDKit stub shadow is required for `mypy qsarkit` to run at all; see
+# the note in the README.
+include qsarkit/py.typed
+
+# Never ship build artefacts or caches.
+global-exclude *.py[cod]
+global-exclude __pycache__
+prune docs
+prune docs-sphinx/build

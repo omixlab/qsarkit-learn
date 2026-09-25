@@ -44,6 +44,12 @@ References
   https://doi.org/10.1787/9789264085442-en
 """
 
+from qsarkit.explainability._atom_maps import (
+    AttributionAtomMapper,
+    bit_atom_environments,
+    bit_weights_to_atom_weights,
+    draw_atom_weights,
+)
 from qsarkit.explainability._atomic import (
     AtomicContribution,
     AtomicContributionMap,
@@ -58,6 +64,11 @@ from qsarkit.explainability._importance import (
 )
 
 __all__ = [
+    # per-atom projection of feature attributions
+    "AttributionAtomMapper",
+    "bit_atom_environments",
+    "bit_weights_to_atom_weights",
+    "draw_atom_weights",
     "PermutationImportance",
     "SHAPExplainer",
     "LIMEExplainer",

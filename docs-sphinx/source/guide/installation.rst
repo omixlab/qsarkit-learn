@@ -3,7 +3,7 @@ Installation
 
 .. code-block:: bash
 
-   pip install qsarkit
+   pip install git+https://github.com/omixlab/qsarkit-learn
 
 That installs the core: NumPy, SciPy, pandas, scikit-learn, RDKit,
 NetworkX, requests and Plotly. Everything in :mod:`qsarkit.chemistry`,
@@ -50,7 +50,7 @@ Development install
 
 .. code-block:: bash
 
-   git clone https://github.com/fredericokremer/qsarkit-learn
+   git clone https://github.com/omixlab/qsarkit-learn
    cd qsarkit-learn
    pip install -e ".[dev]"
 
@@ -60,13 +60,37 @@ Development install
    mypy qsarkit                       # strict type check
    ruff check qsarkit                 # lint
 
-Building the documentation:
+Verifying a source distribution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The sdist ships the test suite, so a packager can verify a build without
+the repository:
+
+.. code-block:: bash
+
+   tar xf qsarkit-0.3.0.tar.gz
+   cd qsarkit-0.3.0
+   pip install ".[dev]"
+   pytest                             # the notebooks need `-m slow`
+
+Building the documentation. The sources are in ``docs-sphinx/``; the built
+site lives in ``docs/`` and is committed, because that is what GitHub Pages
+serves:
 
 .. code-block:: bash
 
    pip install -e ".[docs]"
-   sphinx-build -b html docs/source docs/build/html
-   sphinx-build -b doctest docs/source docs/build/doctest   # run every example
+
+   make docs        # rebuild and copy the site into docs/
+   make preview     # build into docs-sphinx/build/html, leaving docs/ alone
+   make doctest     # execute every example in this documentation
+   make linkcheck   # verify external links resolve
+
+``make docs`` builds from scratch with warnings treated as errors, so a
+broken cross-reference cannot reach the published site and a page deleted
+from the source cannot linger in it. The same targets are available from
+inside ``docs-sphinx/``, where the one that writes to ``../docs`` is called
+``make publish``.
 
 .. note::
 

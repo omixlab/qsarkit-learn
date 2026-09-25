@@ -253,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/guide/installation.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs-sphinx/source/guide/installation.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/guide/installation.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs-sphinx/source/guide/installation.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -277,7 +277,7 @@
         <article role="main" id="furo-main-content">
           <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qsarkit
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/omixlab/qsarkit-learn
 </pre></div>
 </div>
 <p>That installs the core: NumPy, SciPy, pandas, scikit-learn, RDKit,
@@ -353,12 +353,22 @@ pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot
 pytest<span class="w">                             </span><span class="c1"># the notebooks need `-m slow`</span>
 </pre></div>
 </div>
-<p>Building the documentation:</p>
+<p>Building the documentation. The sources are in <code class="docutils literal notranslate"><span class="pre">docs-sphinx/</span></code>; the built
+site lives in <code class="docutils literal notranslate"><span class="pre">docs/</span></code> and is committed, because that is what GitHub Pages
+serves:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[docs]&quot;</span>
-sphinx-build<span class="w"> </span>-b<span class="w"> </span>html<span class="w"> </span>docs/source<span class="w"> </span>docs/build/html
-sphinx-build<span class="w"> </span>-b<span class="w"> </span>doctest<span class="w"> </span>docs/source<span class="w"> </span>docs/build/doctest<span class="w">   </span><span class="c1"># run every example</span>
+
+make<span class="w"> </span>docs<span class="w">        </span><span class="c1"># rebuild and copy the site into docs/</span>
+make<span class="w"> </span>preview<span class="w">     </span><span class="c1"># build into docs-sphinx/build/html, leaving docs/ alone</span>
+make<span class="w"> </span>doctest<span class="w">     </span><span class="c1"># execute every example in this documentation</span>
+make<span class="w"> </span>linkcheck<span class="w">   </span><span class="c1"># verify external links resolve</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">docs</span></code> builds from scratch with warnings treated as errors, so a
+broken cross-reference cannot reach the published site and a page deleted
+from the source cannot linger in it. The same targets are available from
+inside <code class="docutils literal notranslate"><span class="pre">docs-sphinx/</span></code>, where the one that writes to <code class="docutils literal notranslate"><span class="pre">../docs</span></code> is called
+<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">publish</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">typings/</span></code> holds a local stub shadow for RDKit. The <code class="docutils literal notranslate"><span class="pre">rdkit-stubs</span></code>

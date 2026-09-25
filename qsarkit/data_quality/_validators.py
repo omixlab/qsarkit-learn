@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from qsarkit.base.exceptions import RDKIT_MOLECULE_ERRORS
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Sequence
 
@@ -141,7 +142,7 @@ class StructureValidator:
         issues: List[ValidationIssue] = []
         try:
             Chem.SanitizeMol(Chem.Mol(mol))
-        except Exception as exc:
+        except RDKIT_MOLECULE_ERRORS as exc:
             issues.append(
                 ValidationIssue(index, "sanitization_failed", str(exc), True)
             )

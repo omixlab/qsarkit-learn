@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from qsarkit.base.exceptions import RDKIT_MOLECULE_ERRORS
 from typing import Any, List, Optional, Sequence
 
 
@@ -96,7 +97,9 @@ class CoreExtractor:
         core = rw.GetMol()
         try:
             Chem.SanitizeMol(core)
-        except Exception:
+        except RDKIT_MOLECULE_ERRORS:
+            # Trimming can leave an unsanitizable fragment; the untrimmed
+            # Murcko scaffold is the correct fallback.
             return scaffold
         return core
 

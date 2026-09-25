@@ -26,6 +26,9 @@ _EXTRA_FOR_MODULE = {
     "umap": "embedding_viz",
     "kaleido": "reporting",
     "reportlab": "reporting",
+    "skops": "persistence",
+    "skops.io": "persistence",
+    "imblearn": "balancing",
 }
 
 
@@ -47,6 +50,23 @@ def require(module_name: str) -> Any:
     OptionalDependencyError
         If the module is not installed. The error message names the pip
         extra (``qsarkit[extra]``) that installs it.
+
+    Examples
+    --------
+    >>> from qsarkit.base import require
+    >>> require("numpy").__name__
+    'numpy'
+
+    A missing dependency raises an error naming the extra that provides
+    it, rather than an ``ImportError`` the caller has to interpret:
+
+    >>> require("nonexistent_package_xyz")
+    Traceback (most recent call last):
+        ...
+    qsarkit.base.exceptions.OptionalDependencyError: This feature requires...
+
+    Call it inside ``__init__`` or ``fit``, never at module import time --
+    that is what keeps ``import qsarkit`` from pulling in PyTorch.
     """
     try:
         return importlib.import_module(module_name)

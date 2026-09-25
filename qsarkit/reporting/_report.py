@@ -746,7 +746,11 @@ def _rasterize_figures(figures: Sequence[Any]) -> Dict[int, bytes]:
     for i, figure in enumerate(figures):
         try:
             images[i] = figure.to_image(format="png", scale=2)
-        except Exception as exc:  # kaleido missing, or no engine available
+        except Exception as exc:
+            # Deliberately broad: a missing or misconfigured kaleido surfaces
+            # as ImportError, ValueError, RuntimeError or a Plotly-internal
+            # type depending on version, and all mean the same thing here.
+            # The original is chained, so nothing is hidden.
             raise OptionalDependencyError("kaleido", "reporting") from exc
     return images
 

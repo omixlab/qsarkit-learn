@@ -31,9 +31,21 @@ _LOG = get_logger(__name__)
 
 
 def _mol_from_smiles(smiles: str, sanitize: bool = True) -> Optional[Any]:
-    from rdkit import Chem
+    """Parse one SMILES, returning ``None`` rather than logging a failure.
 
-    return Chem.MolFromSmiles(smiles, sanitize=sanitize)
+    RDKit writes a five-line parse error to stderr for every unparseable
+    record. A curation workflow is expected to receive bad input -- that is
+    what ``on_error`` is for -- so a file with a thousand bad rows would
+    bury its own report. ``BlockLogs`` restores whatever logging state the
+    caller had, rather than switching it back on underneath them.
+    """
+    from rdkit import Chem, rdBase
+
+    blocker = rdBase.BlockLogs()
+    try:
+        return Chem.MolFromSmiles(smiles, sanitize=sanitize)
+    finally:
+        del blocker
 
 
 def read_smiles(

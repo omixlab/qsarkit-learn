@@ -1,15 +1,35 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+# setuptools>=77 understands the PEP 639 `license`/`license-files` fields.
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "qsarkit"
-version = "0.2.0"
+version = "0.3.0"
 description = "A focused Python library for QSAR modeling: structure curation, molecular representation, model building and selection, OECD-aligned validation, applicability domain, uncertainty and SAR interpretation."
 readme = "README.md"
 requires-python = ">=3.9"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "Frederico Schmitt Kremer" }]
+keywords = [
+    "qsar", "cheminformatics", "rdkit", "molecular-descriptors",
+    "machine-learning", "drug-discovery", "applicability-domain",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Typing :: Typed",
+]
 dependencies = [
     "numpy>=1.23",
     "scipy>=1.9",
@@ -20,12 +40,25 @@ dependencies = [
     "plotly>=5.15",
 ]
 
+# Shown in the sidebar on PyPI. Without these the project page carries no
+# links at all.
+[project.urls]
+Homepage = "https://github.com/omixlab/qsarkit-learn"
+Documentation = "https://omixlab.github.io/qsarkit-learn/"
+Repository = "https://github.com/omixlab/qsarkit-learn"
+Issues = "https://github.com/omixlab/qsarkit-learn/issues"
+Changelog = "https://omixlab.github.io/qsarkit-learn/changelog.html"
+
 [project.optional-dependencies]
 embeddings = ["gensim>=4.3"]
 nlp = ["transformers>=4.30", "torch>=2.0"]
 explainability = ["shap>=0.42", "lime>=0.2"]
 boosting = ["xgboost>=1.7", "lightgbm>=3.3"]
 reporting = ["kaleido>=0.2.1", "reportlab>=4.0"]
+# Pickle-free model persistence. Without it, qsarkit.persistence still
+# imports but save/load raise, naming this extra.
+persistence = ["skops>=0.9"]
+balancing = ["imbalanced-learn>=0.11"]
 embedding_viz = ["umap-learn>=0.5"]
 dev = [
     "pytest>=7.3",
@@ -50,6 +83,7 @@ all = [
     "gensim>=4.3", "transformers>=4.30", "torch>=2.0",
     "shap>=0.42", "lime>=0.2", "xgboost>=1.7", "lightgbm>=3.3",
     "kaleido>=0.2.1", "reportlab>=4.0", "umap-learn>=0.5",
+    "skops>=0.9", "imbalanced-learn>=0.11",
 ]
 
 [tool.setuptools.packages.find]
@@ -125,18 +159,17 @@ disallow_untyped_calls = false
 
 # RDKit is handled by the local stub shadow in typings/ (see the README);
 # these are the remaining optional dependencies that ship no type stubs.
-[[tool.mypy.overrides]]
-module = [
-    "rdkit.*", "sklearn.*", "scipy.*", "plotly.*", "networkx.*",
-    "transformers.*", "torch.*", "gensim.*", "shap.*", "lime.*",
-    "umap.*", "xgboost.*", "lightgbm.*", "joblib.*", "nbformat.*",
-    "nbclient.*", "reportlab.*",
-]
-ignore_missing_imports = true
+# `ignore_missing_imports = true` is already set globally above, so these
+# per-module overrides only mattered when it was not. mypy reports them as
+# unused sections; the list is kept as documentation of which third-party
+# packages ship no type information, with the redundant flag removed.
+#
+# Untyped: rdkit (see the typings/ shadow), sklearn, scipy, plotly,
+# networkx, transformers, torch, gensim, shap, lime, umap, xgboost,
+# lightgbm, joblib, nbformat, nbclient, reportlab, skops, imblearn.
 
-[[tool.mypy.overrides]]
-module = "tests.*"
-disallow_untyped_defs = false
+# Note: `files = ["qsarkit"]` above means the test suite is not type-checked,
+# so no `tests.*` override is needed. Run `mypy tests` explicitly to check it.
 
 # ------------------------------------------------------------------ ruff ----
 [tool.ruff]

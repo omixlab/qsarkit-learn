@@ -89,6 +89,7 @@ from qsarkit.functional._model_steps import (
     fingerprint,
     fit,
     impute,
+    resample,
     scale,
     select_features,
     split,
@@ -157,6 +158,7 @@ __all__ = [
     "drop_constant",
     "drop_correlated",
     "select_features",
+    "resample",
     # terminals
     "split",
     "fit",

@@ -24,6 +24,7 @@ from qsarkit.functional import (
     impute,
     molecules,
     pipeline,
+    resample,
     scale,
     select_features,
     split,
@@ -280,3 +281,83 @@ class TestMixedPipelines:
     def test_molecule_step_after_featurize_is_rejected(self, demo):
         with pytest.raises(TypeError, match="must come before"):
             demo >> fingerprint(n_bits=16) >> desalt()
+
+
+class TestResample:
+    """Class rebalancing in feature space, where synthesis is meaningful."""
+
+    @pytest.fixture
+    def imbalanced(self):
+        labels = np.array([0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1])
+        return molecules(SMILES, labels) >> fingerprint(n_bits=64)
+
+    def test_undersampling_equalizes_the_classes(self, imbalanced):
+        balanced = imbalanced >> resample(random_state=0)
+        _, counts = np.unique(balanced.y, return_counts=True)
+        assert len(set(counts)) == 1
+
+    def test_oversampling_equalizes_upward(self, imbalanced):
+        balanced = imbalanced >> resample("oversample", random_state=0)
+        _, counts = np.unique(balanced.y, return_counts=True)
+        assert len(set(counts)) == 1
+        assert len(balanced) > len(imbalanced) / 2
+
+    def test_features_and_labels_stay_aligned(self, imbalanced):
+        balanced = imbalanced >> resample(random_state=0)
+        assert balanced.X.shape[0] == balanced.y.shape[0]
+
+    def test_molecules_follow_the_selected_rows(self, imbalanced):
+        balanced = imbalanced >> resample(random_state=0)
+        assert balanced.mols is not None
+        assert len(balanced.mols) == len(balanced)
+
+    def test_a_selecting_sampler_keeps_the_molecules(self, imbalanced):
+        class _Selector:
+            def fit_resample(self, X, y):
+                self.sample_indices_ = np.array([0, 8])
+                return X[[0, 8]], y[[0, 8]]
+
+        balanced = imbalanced >> resample(_Selector())
+        assert balanced.mols is not None and len(balanced.mols) == 2
+
+    def test_a_synthesizing_sampler_drops_the_molecules_and_warns(
+        self, imbalanced
+    ):
+        """A synthesized row corresponds to no molecule.
+
+        Returning a mismatched list would be worse than returning none, so
+        they are dropped — loudly, because downstream steps that need them
+        will now fail.
+        """
+        class _Synthesizer:
+            def fit_resample(self, X, y):
+                return np.vstack([X, X[:1]]), np.append(y, 1)
+
+        with pytest.warns(UserWarning, match="synthesized new rows"):
+            balanced = imbalanced >> resample(_Synthesizer())
+        assert balanced.mols is None
+        assert len(balanced) == len(imbalanced) + 1
+
+    def test_needs_labels(self):
+        unlabelled = molecules(SMILES) >> fingerprint(n_bits=32)
+        with pytest.raises(ValueError, match="needs labels"):
+            unlabelled >> resample()
+
+    def test_rejects_an_unknown_strategy(self, imbalanced):
+        with pytest.raises(ValueError, match="sampler must be"):
+            imbalanced >> resample("magic")
+
+    def test_rejects_an_object_that_is_not_a_sampler(self, imbalanced):
+        with pytest.raises(ValueError, match="fit_resample"):
+            imbalanced >> resample(object())
+
+    def test_is_reproducible(self, imbalanced):
+        first = imbalanced >> resample(random_state=7)
+        second = imbalanced >> resample(random_state=7)
+        assert np.array_equal(first.X, second.X)
+
+    def test_an_already_balanced_set_is_unchanged(self):
+        labels = np.array([0, 1] * 6)
+        balanced_input = molecules(SMILES, labels) >> fingerprint(n_bits=32)
+        result = balanced_input >> resample(random_state=0)
+        assert len(result) == len(balanced_input)

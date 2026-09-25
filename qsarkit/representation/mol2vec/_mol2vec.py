@@ -46,6 +46,21 @@ def mol_to_sentence(mol: "Mol", radius: int) -> List[str]:
     list of str
         The molecule's sentence, one token per (atom, radius) substructure.
 
+    Examples
+    --------
+    >>> from rdkit import Chem
+    >>> from qsarkit.representation import mol_to_sentence
+    >>> sentence = mol_to_sentence(Chem.MolFromSmiles("CCO"), radius=1)
+    >>> len(sentence)
+    6
+    >>> all(token.isdigit() or token.lstrip("-").isdigit() for token in sentence)
+    True
+
+    The "sentence" is the Morgan identifier of every atom at every radius
+    up to ``radius``, ordered so that an atom's identifiers are adjacent --
+    which is what lets a word2vec model learn substructure context. Three
+    atoms at two radii gives six tokens.
+
     References
     ----------
     - Jaeger, S., Fulle, S. & Turk, S. (2018). "Mol2vec: Unsupervised
@@ -53,11 +68,20 @@ def mol_to_sentence(mol: "Mol", radius: int) -> List[str]:
       Model., 58(1), 27-35. https://doi.org/10.1021/acs.jcim.7b00616
     - Reference implementation: https://github.com/samoturk/mol2vec
     """
-    from rdkit.Chem import AllChem
+    from rdkit.Chem import rdFingerprintGenerator
 
     radii = list(range(int(radius) + 1))
-    bit_info: dict = {}
-    AllChem.GetMorganFingerprint(mol, int(radius), bitInfo=bit_info)
+    # The generator API rather than the deprecated
+    # AllChem.GetMorganFingerprint. Mol2Vec needs the *unhashed*
+    # identifiers, which is what a sparse-count fingerprint gives: hashing
+    # into a fixed width would collide distinct substructures onto one
+    # token and corrupt the vocabulary.
+    generator = rdFingerprintGenerator.GetMorganGenerator(radius=int(radius))
+    output = rdFingerprintGenerator.AdditionalOutput()
+    output.AllocateAtomToBits()
+    output.AllocateBitInfoMap()
+    generator.GetSparseCountFingerprint(mol, additionalOutput=output)
+    bit_info = output.GetBitInfoMap()
 
     # identifier_by_atom_radius[atom_idx][r] = identifier, or None if that
     # atom has no substructure of radius r (e.g. terminal atoms at r > 0).

@@ -18,6 +18,7 @@ import numpy as np
 import numpy.typing as npt
 
 from qsarkit.functional._core import step
+from qsarkit.base.exceptions import RDKIT_MOLECULE_ERRORS
 
 if TYPE_CHECKING:  # pragma: no cover
     from rdkit.Chem import Mol
@@ -150,7 +151,10 @@ def desalt(X: List[Any], y: Optional[npt.NDArray[Any]] = None) -> _Payload:
             continue
         try:
             out.append(chooser.choose(mol))
-        except Exception:
+        except RDKIT_MOLECULE_ERRORS:
+            # A molecule the fragment chooser cannot resolve becomes None,
+            # keeping its position so `y` stays aligned; drop_invalid()
+            # removes it together with its label.
             out.append(None)
     return out, y
 
@@ -194,7 +198,7 @@ def neutralize(X: List[Any], y: Optional[npt.NDArray[Any]] = None) -> _Payload:
             continue
         try:
             out.append(uncharger.uncharge(mol))
-        except Exception:
+        except RDKIT_MOLECULE_ERRORS:
             out.append(None)
     return out, y
 
@@ -241,7 +245,7 @@ def canonicalize_tautomers(
             continue
         try:
             out.append(enumerator.Canonicalize(mol))
-        except Exception:
+        except RDKIT_MOLECULE_ERRORS:
             out.append(None)
     return out, y
 
@@ -435,7 +439,7 @@ def remove_duplicates(
                 return str(
                     Chem.MolToSmiles(MurckoScaffold.GetScaffoldForMol(mol))
                 )
-        except Exception:
+        except RDKIT_MOLECULE_ERRORS:
             return None
         raise ValueError(
             f"on must be 'inchikey', 'smiles' or 'scaffold', got {on!r}."
@@ -499,8 +503,9 @@ def remove_duplicates(
 def balance(
     X: List[Any],
     y: Optional[npt.NDArray[Any]] = None,
-    method: Literal["undersample", "oversample"] = "undersample",
+    method: Any = "undersample",
     random_state: Optional[int] = None,
+    featurizer: Optional[Any] = None,
 ) -> _Payload:
     """Balance a classification set across its label values.
 
@@ -508,17 +513,60 @@ def balance(
     ----------
     X : list of Mol
     y : ndarray
-        Class labels. Required — balancing an unlabelled set is
+        Class labels. Required -- balancing an unlabelled set is
         meaningless, so this raises rather than silently doing nothing.
-    method : {"undersample", "oversample"}, default "undersample"
-        Undersampling discards majority-class molecules; oversampling
-        duplicates minority-class ones.
+    method : {"undersample", "oversample"} or sampler, default "undersample"
+        ``"undersample"`` discards majority-class molecules and
+        ``"oversample"`` duplicates minority-class ones, both by simple
+        random choice.
+
+        Alternatively, any `imbalanced-learn
+        <https://imbalanced-learn.org>`_ sampler with
+        ``fit_resample(X, y)``. It must be one that *selects* existing
+        samples rather than synthesizing new ones -- see the note below.
     random_state : int, optional
-        Seed, for reproducibility.
+        Seed, for reproducibility. Ignored when ``method`` is a sampler
+        instance, which carries its own.
+    featurizer : object, optional
+        Transformer used to featurize the molecules for a sampler that
+        needs a feature matrix (``TomekLinks``, ``EditedNearestNeighbours``,
+        ``NearMiss``, ...). Defaults to
+        :class:`~qsarkit.representation.MorganFingerprint`. Unused by the
+        two built-in string methods, which work on indices alone.
 
     Returns
     -------
     (list of Mol, ndarray)
+
+    Raises
+    ------
+    ValueError
+        If ``y`` is None, if ``method`` is an unrecognized string, or if a
+        supplied sampler synthesizes samples instead of selecting them.
+
+    Notes
+    -----
+    **Why SMOTE cannot be used here.** SMOTE and its relatives
+    (``ADASYN``, ``BorderlineSMOTE``) balance a dataset by interpolating
+    *new feature vectors* between existing ones. In descriptor space that
+    is a defensible trick; at the molecule stage it is not, because the
+    interpolated vector corresponds to no molecule -- there is nothing to
+    put in the returned list. Such a sampler is therefore rejected with an
+    explanation rather than silently producing rows whose structures are
+    fabricated.
+
+    If you want SMOTE, apply it after featurization, where the objects
+    being synthesized are honestly just vectors::
+
+        molecules(smiles, y) >> fingerprint() >> resample(SMOTE())
+
+    See :func:`~qsarkit.functional.resample`.
+
+    **Balance the training set only.** Resampling the test set changes the
+    class prior you are measuring against, so a balanced test score does
+    not describe the deployment population. Put this step after
+    :func:`~qsarkit.functional.split`, or apply it to the training half
+    alone.
 
     Examples
     --------
@@ -530,6 +578,24 @@ def balance(
     >>> sorted(y.tolist())
     [0, 1]
 
+    Oversampling keeps every majority-class molecule and repeats the
+    minority ones:
+
+    >>> mols, y = (
+    ...     molecules(["CCO", "CCN", "CCC", "c1ccccc1"], [0, 0, 0, 1])
+    ...     >> balance("oversample", random_state=0)
+    ... )
+    >>> sorted(y.tolist())
+    [0, 0, 0, 1, 1, 1]
+
+    An imbalanced-learn sampler that selects rather than synthesizes works
+    directly:
+
+    >>> from imblearn.under_sampling import RandomUnderSampler  # doctest: +SKIP
+    >>> mols, y = (
+    ...     molecules(smiles, labels) >> balance(RandomUnderSampler())
+    ... )  # doctest: +SKIP
+
     References
     ----------
     - He, H. & Garcia, E. A. (2009). "Learning from Imbalanced Data."
@@ -538,21 +604,31 @@ def balance(
     - Chawla, N. V. et al. (2002). "SMOTE: Synthetic Minority
       Over-sampling Technique." J. Artif. Intell. Res., 16, 321-357.
       https://doi.org/10.1613/jair.953
+    - Lemaitre, G., Nogueira, F. & Aridas, C. K. (2017).
+      "Imbalanced-learn: A Python Toolbox to Tackle the Curse of
+      Imbalanced Datasets in Machine Learning." J. Mach. Learn. Res.,
+      18(17), 1-5. https://jmlr.org/papers/v18/16-365
     """
     if y is None:
         raise ValueError(
             "balance() needs labels; the MoleculeSet is unlabelled."
         )
+
+    if not isinstance(method, str):
+        keep = _sampler_indices(method, X, y, featurizer)
+        return _subset(X, y, keep)
+
     if method not in ("undersample", "oversample"):
         raise ValueError(
-            f"method must be 'undersample' or 'oversample', got {method!r}."
+            f"method must be 'undersample', 'oversample', or an "
+            f"imbalanced-learn sampler, got {method!r}."
         )
 
     rng = np.random.RandomState(random_state)
     classes, counts = np.unique(y, return_counts=True)
     target = counts.min() if method == "undersample" else counts.max()
 
-    keep: List[int] = []
+    keep = []
     for cls, count in zip(classes, counts):
         idx = np.flatnonzero(y == cls)
         if count == target:
@@ -565,6 +641,68 @@ def balance(
 
     keep.sort()
     return _subset(X, y, keep)
+
+
+def _sampler_indices(
+    sampler: Any,
+    mols: List[Any],
+    y: "npt.NDArray[Any]",
+    featurizer: Optional[Any],
+) -> List[int]:
+    """Run an imbalanced-learn sampler and recover the molecules it kept.
+
+    Parameters
+    ----------
+    sampler : object
+        Anything with ``fit_resample(X, y)``.
+    mols : list of Mol
+        The molecules, featurized to give the sampler something to work on.
+    y : ndarray
+        Class labels.
+    featurizer : object, optional
+        Transformer for the molecules; Morgan fingerprints by default.
+
+    Returns
+    -------
+    list of int
+        Positions to keep, so the molecules and labels stay aligned.
+
+    Raises
+    ------
+    ValueError
+        If the object has no ``fit_resample``, or if it synthesizes samples
+        rather than selecting them.
+    """
+    if not callable(getattr(sampler, "fit_resample", None)):
+        raise ValueError(
+            f"{type(sampler).__name__} has no fit_resample(X, y) method, so "
+            "it is not an imbalanced-learn sampler. Pass 'undersample', "
+            "'oversample', or a sampler object."
+        )
+
+    if featurizer is None:
+        from qsarkit.representation import MorganFingerprint
+
+        featurizer = MorganFingerprint(radius=2, n_bits=1024)
+    features = np.asarray(featurizer.transform(mols))
+
+    sampler.fit_resample(features, y)
+
+    # A selecting sampler records which rows it kept; a synthesizing one
+    # cannot, because its output rows are new. That attribute is therefore
+    # exactly the test for whether the sampler is usable on molecules.
+    indices = getattr(sampler, "sample_indices_", None)
+    if indices is None:
+        raise ValueError(
+            f"{type(sampler).__name__} does not expose sample_indices_, "
+            "which means it synthesizes new feature vectors rather than "
+            "selecting existing samples. There is no molecule corresponding "
+            "to a synthesized vector, so it cannot be used at this stage.\\n"
+            "Apply it after featurization instead, where the objects being "
+            "created are honestly just vectors:\\n"
+            "    molecules(X, y) >> fingerprint() >> resample(SMOTE())"
+        )
+    return sorted(int(i) for i in np.asarray(indices).ravel())
 
 
 @step

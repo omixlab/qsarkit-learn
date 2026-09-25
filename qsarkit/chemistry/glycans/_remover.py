@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from qsarkit.base.exceptions import RDKIT_MOLECULE_ERRORS
 from typing import Any, List, Optional
 
 from qsarkit.chemistry.glycans._detector import GlycanDetector
@@ -97,7 +98,10 @@ class GlycanRemover:
             atom.SetNoImplicit(False)
         try:
             Chem.SanitizeMol(frag_mol)
-        except Exception:
+        except RDKIT_MOLECULE_ERRORS:
+            # Fragmentation is followed by unsanitized GetMolFrags below,
+            # which works regardless; sanitizing here only improves the
+            # aglycone when it happens to succeed.
             pass
 
         frag_atom_indices = Chem.GetMolFrags(frag_mol, asMols=False, sanitizeFrags=False)
@@ -110,7 +114,9 @@ class GlycanRemover:
         for frag, atom_idx in zip(frags, frag_atom_indices):
             try:
                 Chem.SanitizeMol(frag)
-            except Exception:
+            except RDKIT_MOLECULE_ERRORS:
+                # An unsanitizable fragment is still classifiable by its
+                # atom indices, which is all the loop below needs.
                 pass
             if all(idx in glycan_atoms for idx in atom_idx):
                 removed.append(frag)
