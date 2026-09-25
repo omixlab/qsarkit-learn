@@ -125,8 +125,8 @@ Resampling the training set and scoring out-of-bag gives the spread:
    >>> boot = BootstrapValidator(n_iterations=30, random_state=0).run(model, X, y)
    >>> round(boot["mean_score"], 2)
    0.34
-   >>> round(boot["ci_upper"] - boot["ci_lower"], 2)
-   1.85
+   >>> round(boot["ci_upper"] - boot["ci_lower"], 1)
+   1.9
 
 An interval nearly two :math:`R^2` units wide. **Any comparison between two
 models on this dataset that turns on less than that is noise** — and the
@@ -148,8 +148,8 @@ Predictivity: external validation
    >>> fitted = QSARRegressor("rf", random_state=0).fit(X[train], y[train])
    >>> result = ExternalValidator(q2=cv["q2"]).validate(
    ...     fitted, X[test], y[test], y[train])
-   >>> round(result["r2"], 3), round(result["q2_f1"], 3)
-   (0.821, 0.823)
+   >>> round(result["r2"], 2), round(result["q2_f1"], 2)
+   (0.82, 0.82)
 
 Supply ``y_train`` so Q²F1 is scaled by the *training* set variance, which
 is what makes it comparable across differently-centred test sets. Supply

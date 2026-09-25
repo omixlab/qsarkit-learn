@@ -46,7 +46,7 @@ from __future__ import annotations
 import json
 import warnings
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 from qsarkit.base.exceptions import OptionalDependencyError
 from qsarkit.persistence._metadata import BUNDLE_FORMAT_VERSION, ModelMetadata
@@ -576,23 +576,49 @@ def load_model(
 
 
 
-def _qsarkit_types(path: Path) -> List[str]:
-    """Names of qsarkit's own classes inside a skops file.
+#: Namespaces qsarkit trusts without the caller listing individual types.
+#:
+#: skops refuses, by design, to reconstruct any type it does not explicitly
+#: trust, and several estimators qsarkit offers are built from types on that
+#: list: ``rf`` from ``sklearn.tree._tree.Tree``, ``gbm`` from
+#: ``TreePredictor``, ``mlp`` from ``AdamOptimizer``, ``gp`` from the
+#: Gaussian-process kernels. skops 0.16 stopped trusting ``Tree`` by
+#: default, which silently broke loading a saved random forest -- the
+#: package default, and every persistence example in the documentation.
+#:
+#: This is a namespace policy rather than a list of type names because the
+#: set of refused types is not stable enough to enumerate: for the same
+#: estimator on the same data, skops 0.13 refuses five types from ``gbm``
+#: (``IdentityLink``, ``Interval``, ``HalfSquaredError``, ``_BinMapper``,
+#: ``TreePredictor``) where skops 0.16 refuses one, and which
+#: Gaussian-process kernels appear depends on the fitted kernel. A
+#: hardcoded list would break on every upgrade on either side.
+#:
+#: What this does and does not promise: the class is always resolved from
+#: the installed library, never built from the file, so no code arrives with
+#: the bundle. The file does supply the attributes, and for ``Tree`` those
+#: are raw node indices that scikit-learn follows without bounds checking,
+#: so a hostile bundle can still crash the process at ``predict`` time.
+#: Loading a bundle you did not produce remains an act of trust. Anything
+#: outside these namespaces -- a third-party estimator, a hand-written
+#: class, a pickled callable -- is still refused until the caller names it,
+#: and :func:`inspect_bundle` reports both groups separately.
+_AUTO_TRUSTED_PREFIXES: Tuple[str, ...] = ("qsarkit.", "sklearn.")
 
-    skops refuses, by design, to reconstruct any type it does not
-    explicitly trust -- which includes qsarkit's own estimators. Trusting
-    those is safe in the same sense that ``import qsarkit`` is: the class
-    comes from the installed package, not from the file, and the file only
-    supplies attribute values. Types from anywhere else are still refused
-    until the caller names them, which is what keeps loading a stranger's
-    model a considered act rather than a default.
-    """
+
+def _is_auto_trusted(name: str) -> bool:
+    """Whether qsarkit trusts ``name`` without the caller listing it."""
+    return name.startswith(_AUTO_TRUSTED_PREFIXES)
+
+
+def _auto_trusted_types(path: Path) -> List[str]:
+    """The types inside a skops file that qsarkit trusts on its own."""
     skops_io = _require_skops()
     try:
         found = skops_io.get_untrusted_types(file=path)
     except Exception:  # pragma: no cover - unreadable file, reported later
         return []
-    return [name for name in found if name.startswith("qsarkit.")]
+    return [name for name in found if _is_auto_trusted(name)]
 
 
 def _load_object(
@@ -608,7 +634,7 @@ def _load_object(
         return joblib.load(target)
 
     skops_io = _require_skops()
-    allowed = _qsarkit_types(target) + list(trusted or ())
+    allowed = _auto_trusted_types(target) + list(trusted or ())
     try:
         return skops_io.load(target, trusted=allowed)
     except Exception as exc:
@@ -641,10 +667,15 @@ def inspect_bundle(path: PathLike) -> Dict[str, Any]:
     Returns
     -------
     dict
-        ``manifest``, ``metadata``, and ``untrusted`` -- the third-party
-        type names that would need listing in
-        ``load_model(trusted=...)``. qsarkit's own classes are trusted
-        automatically and are not reported here.
+        ``manifest``, ``metadata``, ``untrusted`` and ``auto_trusted``.
+        ``untrusted`` holds the type names that would block a load until
+        they are passed to ``load_model(trusted=...)``; ``auto_trusted``
+        holds the ones qsarkit accepts on your behalf -- its own classes,
+        plus the scikit-learn internals its estimator menu produces (see
+        :data:`_AUTO_TRUSTED_PREFIXES`). An empty ``untrusted`` means
+        the bundle loads as it stands, not that nothing in it is
+        executable, so inspect ``auto_trusted`` too for a bundle you did
+        not produce.
 
     Raises
     ------
@@ -683,21 +714,22 @@ def inspect_bundle(path: PathLike) -> Dict[str, Any]:
     metadata = _read_json(metadata_path) if metadata_path.is_file() else {}
 
     untrusted: List[str] = []
+    auto_trusted: List[str] = []
     for filename in manifest.get("files", {}).values():
         target = directory / filename
         if target.suffix != ".skops" or not target.is_file():
             continue
         skops_io = _require_skops()
-        # qsarkit's own classes load without being listed, so reporting
-        # them here would just be noise the caller has to filter out.
-        untrusted.extend(
-            name
-            for name in skops_io.get_untrusted_types(file=target)
-            if not name.startswith("qsarkit.")
-        )
+        # Split rather than filter: `untrusted` is what would block a load,
+        # so it is the actionable list, but the types qsarkit trusts on the
+        # caller's behalf are still reported -- hiding them would make this
+        # a less honest answer to "what is in this file" than skops gives.
+        for name in skops_io.get_untrusted_types(file=target):
+            (auto_trusted if _is_auto_trusted(name) else untrusted).append(name)
 
     return {
         "manifest": manifest,
         "metadata": metadata,
         "untrusted": sorted(set(untrusted)),
+        "auto_trusted": sorted(set(auto_trusted)),
     }

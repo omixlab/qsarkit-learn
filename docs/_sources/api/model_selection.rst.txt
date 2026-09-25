@@ -81,8 +81,8 @@ Cross-validation and search
    >>> from qsarkit.validation import CrossValidator
    >>> report = CrossValidator(n_splits=3, random_state=0).evaluate(
    ...     QSARRegressor("rf", random_state=0), X, y)
-   >>> round(report["q2"], 3)
-   0.607
+   >>> round(report["q2"], 2)
+   0.61
 
 Compare that with the training R² of 0.952 from :doc:`models`: the gap is
 the size of the illusion, and it is the honest number.

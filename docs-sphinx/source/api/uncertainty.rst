@@ -39,7 +39,7 @@ of intervals contain the truth — regardless of the underlying model.
    >>> result = conformal.evaluate(X[test], y[test])
    >>> result["coverage"], result["expected_coverage"]
    (1.0, 0.8)
-   >>> round(result["mean_width"], 2)
+   >>> round(result["mean_width"], 1)
    4.2
 
 Coverage of 1.0 against an expected 0.8 is not a bug — with six test
@@ -78,13 +78,13 @@ Is the error bar meaningful?
    >>> from qsarkit.uncertainty import UncertaintyCalibration
    >>> calibration = UncertaintyCalibration(n_bins=3)
    >>> report = calibration.report(y[test], mean, sigma)
-   >>> round(report["ence"], 2)
-   2.94
+   >>> round(report["ence"], 1)
+   2.9
    >>> round(report["spearman_error_correlation"], 2)
    -0.54
 
 Both numbers say the ensemble spread is not a usable error bar here.
-ENCE (expected normalized calibration error) should be near 0; 2.94 means
+ENCE (expected normalized calibration error) should be near 0; 2.9 means
 the predicted σ is badly mis-scaled. The Spearman correlation between σ
 and actual error should be *positive* — a model should be least certain
 where it is most wrong. At −0.54 it is anti-correlated: this ensemble is

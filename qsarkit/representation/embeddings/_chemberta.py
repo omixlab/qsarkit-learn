@@ -38,7 +38,7 @@ class ChemBERTaTransformer(_BaseHFEncoderTransformer):
 
     Notes
     -----
-    Loading requires the ``nlp`` extra (``pip install qsarkit[nlp]``, which
+    Loading requires the ``nlp`` extra (``pip install qsarkit-learn[nlp]``, which
     installs ``torch`` and ``transformers``) and, for the default
     checkpoint, either network access to the Hugging Face Hub or a
     previously populated local HF cache / offline ``model_name`` path. No

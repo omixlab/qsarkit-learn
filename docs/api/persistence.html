@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Utilities" href="utils.html"><link rel="prev" title="Reporting" href="reporting.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Persistence - qsarkit 0.4</title>
+        <title>Persistence - qsarkit 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.4</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.4</span>
+  <span class="sidebar-brand-text">qsarkit 0.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -861,10 +861,15 @@ build, so you can decide what to trust before anything is executed.</p>
 <dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Path</span></code></a>]</span>) – The bundle directory.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">manifest</span></code>, <code class="docutils literal notranslate"><span class="pre">metadata</span></code>, and <code class="docutils literal notranslate"><span class="pre">untrusted</span></code> – the third-party
-type names that would need listing in
-<code class="docutils literal notranslate"><span class="pre">load_model(trusted=...)</span></code>. qsarkit’s own classes are trusted
-automatically and are not reported here.</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">manifest</span></code>, <code class="docutils literal notranslate"><span class="pre">metadata</span></code>, <code class="docutils literal notranslate"><span class="pre">untrusted</span></code> and <code class="docutils literal notranslate"><span class="pre">auto_trusted</span></code>.
+<code class="docutils literal notranslate"><span class="pre">untrusted</span></code> holds the type names that would block a load until
+they are passed to <code class="docutils literal notranslate"><span class="pre">load_model(trusted=...)</span></code>; <code class="docutils literal notranslate"><span class="pre">auto_trusted</span></code>
+holds the ones qsarkit accepts on your behalf – its own classes,
+plus the scikit-learn internals its estimator menu produces (see
+<code class="xref py py-data docutils literal notranslate"><span class="pre">_AUTO_TRUSTED_PREFIXES</span></code>). An empty <code class="docutils literal notranslate"><span class="pre">untrusted</span></code> means
+the bundle loads as it stands, not that nothing in it is
+executable, so inspect <code class="docutils literal notranslate"><span class="pre">auto_trusted</span></code> too for a bundle you did
+not produce.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>

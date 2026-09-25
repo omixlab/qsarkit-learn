@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Applicability domain" href="applicability.html"><link rel="prev" title="Metrics" href="metrics.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Validation - qsarkit 0.4</title>
+        <title>Validation - qsarkit 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.4</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.4</span>
+  <span class="sidebar-brand-text">qsarkit 0.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -393,8 +393,8 @@ Resampling the training set and scoring out-of-bag gives the spread:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">boot</span> <span class="o">=</span> <span class="n">BootstrapValidator</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">boot</span><span class="p">[</span><span class="s2">&quot;mean_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
 <span class="go">0.34</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">boot</span><span class="p">[</span><span class="s2">&quot;ci_upper&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">boot</span><span class="p">[</span><span class="s2">&quot;ci_lower&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">1.85</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">boot</span><span class="p">[</span><span class="s2">&quot;ci_upper&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">boot</span><span class="p">[</span><span class="s2">&quot;ci_lower&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">1.9</span>
 </pre></div>
 </div>
 <p>An interval nearly two <span class="math notranslate nohighlight">\(R^2\)</span> units wide. <strong>Any comparison between two
@@ -413,8 +413,8 @@ makes this an estimate of generalization instead of of fit.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fitted</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">ExternalValidator</span><span class="p">(</span><span class="n">q2</span><span class="o">=</span><span class="n">cv</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">fitted</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;r2&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;q2_f1&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">(0.821, 0.823)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;r2&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;q2_f1&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">(0.82, 0.82)</span>
 </pre></div>
 </div>
 <p>Supply <code class="docutils literal notranslate"><span class="pre">y_train</span></code> so Q²F1 is scaled by the <em>training</em> set variance, which

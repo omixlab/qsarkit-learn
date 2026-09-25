@@ -348,7 +348,7 @@ class QSARReport:
             repository needs.
         include_figures : bool, default True
             Embed the report's figures. Requires ``kaleido``
-            (``pip install qsarkit[reporting]``); pass ``False`` for a
+            (``pip install qsarkit-learn[reporting]``); pass ``False`` for a
             text-and-tables document without it.
 
         Returns
@@ -575,7 +575,7 @@ class QSARReport:
             return as a string.
         include_figures : bool, default True
             Rasterize and embed the report's Plotly figures. Requires
-            ``kaleido`` (``pip install qsarkit[reporting]``). Pass
+            ``kaleido`` (``pip install qsarkit-learn[reporting]``). Pass
             ``False`` to produce a tables-and-text PDF without it.
         page_size : {"A4", "letter"}, default "A4"
 

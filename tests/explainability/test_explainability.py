@@ -433,6 +433,9 @@ class TestSHAPExplainer:
         )
 
     def test_rejects_unknown_explainer_type(self, numeric):
+        # _build() imports shap before it validates, so without the extra the
+        # (correct) OptionalDependencyError arrives first.
+        pytest.importorskip("shap")
         _, _, model = numeric
         with pytest.raises(ValueError, match="explainer_type must be"):
             SHAPExplainer(model, explainer_type="bogus")._build()

@@ -235,3 +235,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Manuscript drafts. Deliberately untracked: the paper is written and revised
+# outside this repository's history, and journal submissions carry their own
+# versioning. Remove this entry if the manuscript should ship with the code.
+paper/

@@ -62,7 +62,7 @@ Both need the ``explainability`` extra::
 
    from qsarkit.explainability import LIMEExplainer, SHAPExplainer
 
-   shap_values = SHAPExplainer(model).explain(X)      # needs qsarkit[explainability]
+   shap_values = SHAPExplainer(model).explain(X)      # needs qsarkit-learn[explainability]
 
 SHAP's ``TreeExplainer`` is exact and fast for tree ensembles;
 ``KernelExplainer`` is model-agnostic and slow enough that you will want

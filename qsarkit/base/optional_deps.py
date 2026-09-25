@@ -49,7 +49,7 @@ def require(module_name: str) -> Any:
     ------
     OptionalDependencyError
         If the module is not installed. The error message names the pip
-        extra (``qsarkit[extra]``) that installs it.
+        extra (``qsarkit-learn[extra]``) that installs it.
 
     Examples
     --------

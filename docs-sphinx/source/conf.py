@@ -31,6 +31,11 @@ except ImportError:  # pragma: no cover - docs build without the package
     # case the build is already broken; the literal is a last resort and
     # is deliberately vague rather than a stale exact version.
     release = "unknown"
+# Sphinx's `version` is the short form by convention; `release` is the exact
+# one. The rendered title uses `release`, so the published site always shows
+# the same number as `qsarkit.__version__` -- which test_docs_version_matches
+# in tests/docs/ then enforces, so a forgotten `make docs` cannot ship a site
+# labelled with the previous release.
 version = ".".join(release.split(".")[:2])
 
 # -- General configuration ----------------------------------------------------
@@ -212,7 +217,7 @@ extlinks = {
 # -- HTML output --------------------------------------------------------------
 
 html_theme = "furo"
-html_title = f"qsarkit {version}"
+html_title = f"qsarkit {release}"
 html_static_path = ["_static"]
 html_theme_options = {
     "source_repository": "https://github.com/omixlab/qsarkit-learn",

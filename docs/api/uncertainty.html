@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="SAR interpretation" href="sar.html"><link rel="prev" title="Applicability domain" href="applicability.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Uncertainty - qsarkit 0.4</title>
+        <title>Uncertainty - qsarkit 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.4</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.4</span>
+  <span class="sidebar-brand-text">qsarkit 0.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -305,7 +305,7 @@ of intervals contain the truth — regardless of the underlying model.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">conformal</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;coverage&quot;</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;expected_coverage&quot;</span><span class="p">]</span>
 <span class="go">(1.0, 0.8)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;mean_width&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;mean_width&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
 <span class="go">4.2</span>
 </pre></div>
 </div>
@@ -339,14 +339,14 @@ calibration diagnostics below matter.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.uncertainty</span><span class="w"> </span><span class="kn">import</span> <span class="n">UncertaintyCalibration</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calibration</span> <span class="o">=</span> <span class="n">UncertaintyCalibration</span><span class="p">(</span><span class="n">n_bins</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">calibration</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;ence&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">2.94</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;ence&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">2.9</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;spearman_error_correlation&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
 <span class="go">-0.54</span>
 </pre></div>
 </div>
 <p>Both numbers say the ensemble spread is not a usable error bar here.
-ENCE (expected normalized calibration error) should be near 0; 2.94 means
+ENCE (expected normalized calibration error) should be near 0; 2.9 means
 the predicted σ is badly mis-scaled. The Spearman correlation between σ
 and actual error should be <em>positive</em> — a model should be least certain
 where it is most wrong. At −0.54 it is anti-correlated: this ensemble is

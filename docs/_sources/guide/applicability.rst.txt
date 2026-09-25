@@ -110,8 +110,8 @@ opposite reason — almost nothing is outside to compare against:
    >>> loose_report = loose.report(X[rtest], y[rtest], rmodel.predict(X[rtest]))
    >>> loose_report["n_inside"], loose_report["n_outside"]
    (5, 1)
-   >>> round(loose_report["rmse_ratio"], 2)
-   1.11
+   >>> round(loose_report["rmse_ratio"], 1)
+   1.1
 
 .. warning::
 

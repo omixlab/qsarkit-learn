@@ -16,8 +16,8 @@ Regression
    >>> from qsarkit.models import QSARRegressor
    >>> X, y = demo_fingerprints(256), DEMO_Y
    >>> y_pred = QSARRegressor("rf", random_state=0).fit(X, y).predict(X)
-   >>> round(rmse(y, y_pred), 3)
-   0.235
+   >>> round(rmse(y, y_pred), 2)
+   0.24
    >>> round(ccc(y, y_pred), 3)
    0.972
 

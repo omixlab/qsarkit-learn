@@ -353,3 +353,85 @@ class TestInspect:
         (tmp_path / "empty").mkdir()
         with pytest.raises(ValueError, match="manifest"):
             inspect_bundle(tmp_path / "empty")
+
+
+class TestAutoTrustedNamespaces:
+    """The trust policy for types qsarkit does not own.
+
+    skops refuses, by design, to reconstruct types it does not explicitly
+    trust, and several estimators qsarkit offers are built from such types.
+    skops 0.16 stopped trusting ``sklearn.tree._tree.Tree`` by default,
+    which silently broke loading a saved random forest: the package default.
+
+    These tests deliberately assert the *policy* -- every estimator round
+    trips, and nothing outside the trusted namespaces is accepted -- rather
+    than which specific types some skops version happens to refuse. That set
+    is not stable: for the same estimator, skops 0.13 refuses five types
+    from ``gbm`` where 0.16 refuses one.
+    """
+
+    @pytest.mark.parametrize(
+        "name", ["rf", "gbm", "mlp", "gp", "svm", "knn", "pls", "ridge"]
+    )
+    def test_every_builtin_estimator_round_trips(self, data, name, tmp_path):
+        X, y = data
+        model = QSARRegressor(name, random_state=0).fit(X, y)
+        reloaded = load_model(save_model(model, tmp_path / name))
+        assert np.allclose(reloaded.predict(X), model.predict(X))
+
+    def test_a_loadable_bundle_still_reports_what_it_contains(
+        self, data, tmp_path
+    ):
+        """An empty ``untrusted`` must not mean an empty answer."""
+        X, y = data
+        model = QSARRegressor("rf", random_state=0).fit(X, y)
+        report = inspect_bundle(save_model(model, tmp_path / "m"))
+
+        assert report["untrusted"] == []
+        # Whatever this skops version flags, it is reported rather than
+        # dropped -- older ones flag nothing here, newer ones flag Tree.
+        assert all(
+            name.startswith(("qsarkit.", "sklearn."))
+            for name in report["auto_trusted"]
+        )
+
+    @pytest.mark.parametrize(
+        "name, trusted",
+        [
+            ("qsarkit.models._facades.QSARRegressor", True),
+            ("sklearn.tree._tree.Tree", True),
+            ("sklearn.gaussian_process.kernels.RBF", True),
+            ("xgboost.sklearn.XGBRegressor", False),
+            ("numpy.core.multiarray._reconstruct", False),
+            ("posix.system", False),
+            ("builtins.eval", False),
+            ("mypackage.MyEstimator", False),
+        ],
+    )
+    def test_only_the_two_namespaces_are_auto_trusted(self, name, trusted):
+        """A third-party or hand-written type still needs naming."""
+        from qsarkit.persistence._bundle import _is_auto_trusted
+
+        assert _is_auto_trusted(name) is trusted
+
+    def test_an_untrusted_type_is_refused_then_loads_when_named(
+        self, data, tmp_path, monkeypatch
+    ):
+        """The refusal path, independent of any skops version's defaults."""
+        from qsarkit.persistence import _bundle
+
+        X, y = data
+        model = QSARRegressor("rf", random_state=0).fit(X, y)
+        path = save_model(model, tmp_path / "m")
+
+        # Ask before changing anything: if this skops version trusts the
+        # forest's internals natively there is nothing for qsarkit to refuse,
+        # and the branch cannot be reached.
+        if not inspect_bundle(path)["auto_trusted"]:
+            pytest.skip("this skops version trusts these types natively")
+
+        # Empty the policy so whatever skops refuses stays refused; the
+        # branch under test is qsarkit's, not skops'.
+        monkeypatch.setattr(_bundle, "_AUTO_TRUSTED_PREFIXES", ())
+        with pytest.raises(ValueError, match="skops declined to load"):
+            load_model(path)

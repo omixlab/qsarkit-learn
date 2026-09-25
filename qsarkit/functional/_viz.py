@@ -277,7 +277,7 @@ def plot_pipeline(
     >>> type(figure).__name__
     'Figure'
 
-    Export needs kaleido (``pip install qsarkit[reporting]``):
+    Export needs kaleido (``pip install qsarkit-learn[reporting]``):
 
     >>> figure.write_image("pipeline.png")     # doctest: +SKIP
 
@@ -467,7 +467,7 @@ def render_pipeline(
     Notes
     -----
     The Plotly path needs ``kaleido`` for static export
-    (``pip install qsarkit[reporting]``); the Graphviz path needs the
+    (``pip install qsarkit-learn[reporting]``); the Graphviz path needs the
     ``dot`` binary, which is a system package rather than a Python one.
 
     References

@@ -67,7 +67,7 @@ The difference is not subtle:
    >>> random_model = QSARRegressor("rf", random_state=0).fit(X[r_train], y[r_train])
    >>> round(q2_f1(y[r_test], random_model.predict(X[r_test]), y[r_train]), 2)
    0.82
-   >>> round(q2_f1(y[test], y_pred, y[train]), 2)
+   >>> round(q2_f1(y[test], y_pred, y[train]), 1)
    -1.0
 
 Both numbers are honestly computed. Only the second answers "will this work

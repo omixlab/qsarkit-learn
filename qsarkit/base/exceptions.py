@@ -26,7 +26,7 @@ class OptionalDependencyError(QsarkitError):
     def __init__(self, package: str, extra: str | None = None):
         msg = f"This feature requires the optional dependency '{package}'."
         if extra:
-            msg += f" Install it with: pip install qsarkit[{extra}]"
+            msg += f" Install it with: pip install qsarkit-learn[{extra}]"
         else:
             msg += f" Install it with: pip install {package}"
         super().__init__(msg)

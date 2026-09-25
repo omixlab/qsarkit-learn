@@ -411,7 +411,7 @@ class QSARRegressor(_CustomEstimatorMixin, RegressorMixin, BaseEstimator):
             except ImportError:
                 warnings.warn(
                     "xgboost is not installed; falling back to sklearn "
-                    "HistGradientBoostingRegressor. Install qsarkit[boosting] "
+                    "HistGradientBoostingRegressor. Install qsarkit-learn[boosting] "
                     "for XGBoost.",
                     stacklevel=2,
                 )
@@ -425,7 +425,7 @@ class QSARRegressor(_CustomEstimatorMixin, RegressorMixin, BaseEstimator):
             except ImportError:
                 warnings.warn(
                     "lightgbm is not installed; falling back to sklearn "
-                    "HistGradientBoostingRegressor. Install qsarkit[boosting] "
+                    "HistGradientBoostingRegressor. Install qsarkit-learn[boosting] "
                     "for LightGBM.",
                     stacklevel=2,
                 )
@@ -665,7 +665,7 @@ solver="saga")`` — L1/L2 compromise (Zou & Hastie 2005).
             except ImportError:
                 warnings.warn(
                     "xgboost is not installed; falling back to sklearn "
-                    "HistGradientBoostingClassifier. Install qsarkit[boosting] "
+                    "HistGradientBoostingClassifier. Install qsarkit-learn[boosting] "
                     "for XGBoost.",
                     stacklevel=2,
                 )
@@ -679,7 +679,7 @@ solver="saga")`` — L1/L2 compromise (Zou & Hastie 2005).
             except ImportError:
                 warnings.warn(
                     "lightgbm is not installed; falling back to sklearn "
-                    "HistGradientBoostingClassifier. Install qsarkit[boosting] "
+                    "HistGradientBoostingClassifier. Install qsarkit-learn[boosting] "
                     "for LightGBM.",
                     stacklevel=2,
                 )

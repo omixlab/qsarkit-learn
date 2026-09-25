@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Metrics" href="metrics.html"><link rel="prev" title="Feature selection" href="feature_selection.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Model selection - qsarkit 0.4</title>
+        <title>Model selection - qsarkit 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.4</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.4</span>
+  <span class="sidebar-brand-text">qsarkit 0.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -344,8 +344,8 @@ others cost you.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CrossValidator</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">CrossValidator</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.607</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">0.61</span>
 </pre></div>
 </div>
 <p>Compare that with the training R² of 0.952 from <a class="reference internal" href="models.html"><span class="doc">Models</span></a>: the gap is

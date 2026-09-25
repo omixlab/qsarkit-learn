@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.persistence._bundle - qsarkit 0.4</title>
+        <title>qsarkit.persistence._bundle - qsarkit 0.4.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.4</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.4.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.4</span>
+  <span class="sidebar-brand-text">qsarkit 0.4.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -313,7 +313,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.base.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">OptionalDependencyError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.persistence._metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">BUNDLE_FORMAT_VERSION</span><span class="p">,</span> <span class="n">ModelMetadata</span>
@@ -867,23 +867,49 @@
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_qsarkit_types</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Names of qsarkit&#39;s own classes inside a skops file.</span>
+<span class="c1">#: Namespaces qsarkit trusts without the caller listing individual types.</span>
+<span class="c1">#:</span>
+<span class="c1">#: skops refuses, by design, to reconstruct any type it does not explicitly</span>
+<span class="c1">#: trust, and several estimators qsarkit offers are built from types on that</span>
+<span class="c1">#: list: ``rf`` from ``sklearn.tree._tree.Tree``, ``gbm`` from</span>
+<span class="c1">#: ``TreePredictor``, ``mlp`` from ``AdamOptimizer``, ``gp`` from the</span>
+<span class="c1">#: Gaussian-process kernels. skops 0.16 stopped trusting ``Tree`` by</span>
+<span class="c1">#: default, which silently broke loading a saved random forest -- the</span>
+<span class="c1">#: package default, and every persistence example in the documentation.</span>
+<span class="c1">#:</span>
+<span class="c1">#: This is a namespace policy rather than a list of type names because the</span>
+<span class="c1">#: set of refused types is not stable enough to enumerate: for the same</span>
+<span class="c1">#: estimator on the same data, skops 0.13 refuses five types from ``gbm``</span>
+<span class="c1">#: (``IdentityLink``, ``Interval``, ``HalfSquaredError``, ``_BinMapper``,</span>
+<span class="c1">#: ``TreePredictor``) where skops 0.16 refuses one, and which</span>
+<span class="c1">#: Gaussian-process kernels appear depends on the fitted kernel. A</span>
+<span class="c1">#: hardcoded list would break on every upgrade on either side.</span>
+<span class="c1">#:</span>
+<span class="c1">#: What this does and does not promise: the class is always resolved from</span>
+<span class="c1">#: the installed library, never built from the file, so no code arrives with</span>
+<span class="c1">#: the bundle. The file does supply the attributes, and for ``Tree`` those</span>
+<span class="c1">#: are raw node indices that scikit-learn follows without bounds checking,</span>
+<span class="c1">#: so a hostile bundle can still crash the process at ``predict`` time.</span>
+<span class="c1">#: Loading a bundle you did not produce remains an act of trust. Anything</span>
+<span class="c1">#: outside these namespaces -- a third-party estimator, a hand-written</span>
+<span class="c1">#: class, a pickled callable -- is still refused until the caller names it,</span>
+<span class="c1">#: and :func:`inspect_bundle` reports both groups separately.</span>
+<span class="n">_AUTO_TRUSTED_PREFIXES</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;qsarkit.&quot;</span><span class="p">,</span> <span class="s2">&quot;sklearn.&quot;</span><span class="p">)</span>
 
-<span class="sd">    skops refuses, by design, to reconstruct any type it does not</span>
-<span class="sd">    explicitly trust -- which includes qsarkit&#39;s own estimators. Trusting</span>
-<span class="sd">    those is safe in the same sense that ``import qsarkit`` is: the class</span>
-<span class="sd">    comes from the installed package, not from the file, and the file only</span>
-<span class="sd">    supplies attribute values. Types from anywhere else are still refused</span>
-<span class="sd">    until the caller names them, which is what keeps loading a stranger&#39;s</span>
-<span class="sd">    model a considered act rather than a default.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_auto_trusted</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Whether qsarkit trusts ``name`` without the caller listing it.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">_AUTO_TRUSTED_PREFIXES</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_auto_trusted_types</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The types inside a skops file that qsarkit trusts on its own.&quot;&quot;&quot;</span>
     <span class="n">skops_io</span> <span class="o">=</span> <span class="n">_require_skops</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">found</span> <span class="o">=</span> <span class="n">skops_io</span><span class="o">.</span><span class="n">get_untrusted_types</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: no cover - unreadable file, reported later</span>
         <span class="k">return</span> <span class="p">[]</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">found</span> <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;qsarkit.&quot;</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">found</span> <span class="k">if</span> <span class="n">_is_auto_trusted</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_load_object</span><span class="p">(</span>
@@ -899,7 +925,7 @@
         <span class="k">return</span> <span class="n">joblib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
 
     <span class="n">skops_io</span> <span class="o">=</span> <span class="n">_require_skops</span><span class="p">()</span>
-    <span class="n">allowed</span> <span class="o">=</span> <span class="n">_qsarkit_types</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">trusted</span> <span class="ow">or</span> <span class="p">())</span>
+    <span class="n">allowed</span> <span class="o">=</span> <span class="n">_auto_trusted_types</span><span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">trusted</span> <span class="ow">or</span> <span class="p">())</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">skops_io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">trusted</span><span class="o">=</span><span class="n">allowed</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
@@ -934,10 +960,15 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict</span>
-<span class="sd">        ``manifest``, ``metadata``, and ``untrusted`` -- the third-party</span>
-<span class="sd">        type names that would need listing in</span>
-<span class="sd">        ``load_model(trusted=...)``. qsarkit&#39;s own classes are trusted</span>
-<span class="sd">        automatically and are not reported here.</span>
+<span class="sd">        ``manifest``, ``metadata``, ``untrusted`` and ``auto_trusted``.</span>
+<span class="sd">        ``untrusted`` holds the type names that would block a load until</span>
+<span class="sd">        they are passed to ``load_model(trusted=...)``; ``auto_trusted``</span>
+<span class="sd">        holds the ones qsarkit accepts on your behalf -- its own classes,</span>
+<span class="sd">        plus the scikit-learn internals its estimator menu produces (see</span>
+<span class="sd">        :data:`_AUTO_TRUSTED_PREFIXES`). An empty ``untrusted`` means</span>
+<span class="sd">        the bundle loads as it stands, not that nothing in it is</span>
+<span class="sd">        executable, so inspect ``auto_trusted`` too for a bundle you did</span>
+<span class="sd">        not produce.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
@@ -976,23 +1007,24 @@
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">_read_json</span><span class="p">(</span><span class="n">metadata_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">metadata_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="k">else</span> <span class="p">{}</span>
 
     <span class="n">untrusted</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">auto_trusted</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">manifest</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;files&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">directory</span> <span class="o">/</span> <span class="n">filename</span>
         <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.skops&quot;</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="k">continue</span>
         <span class="n">skops_io</span> <span class="o">=</span> <span class="n">_require_skops</span><span class="p">()</span>
-        <span class="c1"># qsarkit&#39;s own classes load without being listed, so reporting</span>
-        <span class="c1"># them here would just be noise the caller has to filter out.</span>
-        <span class="n">untrusted</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
-            <span class="n">name</span>
-            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">skops_io</span><span class="o">.</span><span class="n">get_untrusted_types</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;qsarkit.&quot;</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="c1"># Split rather than filter: `untrusted` is what would block a load,</span>
+        <span class="c1"># so it is the actionable list, but the types qsarkit trusts on the</span>
+        <span class="c1"># caller&#39;s behalf are still reported -- hiding them would make this</span>
+        <span class="c1"># a less honest answer to &quot;what is in this file&quot; than skops gives.</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">skops_io</span><span class="o">.</span><span class="n">get_untrusted_types</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">target</span><span class="p">):</span>
+            <span class="p">(</span><span class="n">auto_trusted</span> <span class="k">if</span> <span class="n">_is_auto_trusted</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">else</span> <span class="n">untrusted</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">{</span>
         <span class="s2">&quot;manifest&quot;</span><span class="p">:</span> <span class="n">manifest</span><span class="p">,</span>
         <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="p">,</span>
         <span class="s2">&quot;untrusted&quot;</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">untrusted</span><span class="p">)),</span>
+        <span class="s2">&quot;auto_trusted&quot;</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">auto_trusted</span><span class="p">)),</span>
     <span class="p">}</span></div>
 
 </pre></div>
