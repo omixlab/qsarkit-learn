@@ -305,6 +305,7 @@ Feature steps
 .. autofunction:: drop_constant
 .. autofunction:: drop_correlated
 .. autofunction:: select_features
+.. autofunction:: resample
 
 Terminal steps
 --------------

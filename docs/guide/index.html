@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Installation" href="installation.html"><link rel="prev" title="qsarkit" href="../index.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>User guide - qsarkit 0.2</title>
+        <title>User guide - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
 <li class="toctree-l2"><a class="reference internal" href="applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -251,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/blob/main/docs/source/guide/index.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/guide/index.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/edit/main/docs/source/guide/index.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/guide/index.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -278,12 +280,20 @@
 <p>Workflow-oriented walkthroughs. Each page covers one stage of the QSAR
 workflow and links to the API reference for the details.</p>
 <p>Every example in this documentation is executed by the test suite, so the
-output shown is what the code actually produces. They share one demo
-dataset — 24 compounds in four substituent families with synthetic pIC50
-values, defined in <code class="docutils literal notranslate"><span class="pre">docs/source/demo_data.py</span></code> — available in every
-example as <code class="docutils literal notranslate"><span class="pre">DEMO_SMILES</span></code>, <code class="docutils literal notranslate"><span class="pre">DEMO_Y</span></code> and <code class="docutils literal notranslate"><span class="pre">demo_mols</span></code>.</p>
-<p>For runnable end-to-end walkthroughs, see the four
-<a class="reference external" href="https://github.com/fredericokremer/qsarkit-learn/tree/main/notebooks">example notebooks</a>,
+output shown is what the code actually produces — including the
+unflattering numbers. They share one demo dataset, defined in
+<code class="docutils literal notranslate"><span class="pre">docs-sphinx/source/demo_data.py</span></code> and available in every example as
+<code class="docutils literal notranslate"><span class="pre">DEMO_SMILES</span></code>, <code class="docutils literal notranslate"><span class="pre">DEMO_Y</span></code> and <code class="docutils literal notranslate"><span class="pre">demo_mols</span></code>.</p>
+<p>The demo set is 24 compounds in four substituent series with synthetic
+pIC50 values, resolving to three Bemis-Murcko scaffolds. It is deliberately
+small, so every example runs instantly, and deliberately <em>hard</em>: one
+compound is a planted activity-cliff outlier and the scaffold families are
+distinct enough that a scaffold split is genuinely difficult. Several pages
+here show models scoring badly on it. That is the point — an example where
+everything succeeds teaches nothing about the failure modes these tools
+exist to detect.</p>
+<p>For runnable end-to-end walkthroughs, see the five
+<a class="reference external" href="https://github.com/omixlab/qsarkit-learn/tree/main/notebooks">example notebooks</a>,
 which together cover every public subpackage.</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -318,6 +328,8 @@ which together cover every public subpackage.</p>
 <li class="toctree-l2"><a class="reference internal" href="curation.html#glycans">Glycans</a></li>
 <li class="toctree-l2"><a class="reference internal" href="curation.html#protecting-groups-and-cores">Protecting groups and cores</a></li>
 <li class="toctree-l2"><a class="reference internal" href="curation.html#dataset-level-curation">Dataset-level curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="curation.html#checking-the-activity-column">Checking the activity column</a></li>
+<li class="toctree-l2"><a class="reference internal" href="curation.html#the-same-thing-as-a-pipe">The same thing as a pipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="curation.html#references">References</a></li>
 </ul>
 </li>
@@ -331,9 +343,12 @@ which together cover every public subpackage.</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modeling.html">Modeling</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="modeling.html#estimators">Estimators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeling.html#any-estimator-not-just-the-menu">Any estimator, not just the menu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modeling.html#splitting">Splitting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modeling.html#feature-selection">Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeling.html#hyperparameters">Hyperparameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modeling.html#metrics">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modeling.html#the-same-thing-as-a-pipe">The same thing as a pipe</a></li>
 <li class="toctree-l2"><a class="reference internal" href="modeling.html#references">References</a></li>
 </ul>
 </li>
@@ -341,6 +356,7 @@ which together cover every public subpackage.</p>
 <li class="toctree-l2"><a class="reference internal" href="applicability.html#the-interface">The interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="applicability.html#choosing-a-definition">Choosing a definition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="applicability.html#does-the-domain-actually-help">Does the domain actually help?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="applicability.html#choosing-the-threshold">Choosing the threshold</a></li>
 <li class="toctree-l2"><a class="reference internal" href="applicability.html#references">References</a></li>
 </ul>
 </li>
@@ -356,9 +372,21 @@ which together cover every public subpackage.</p>
 <li class="toctree-l1"><a class="reference internal" href="oecd.html">OECD validation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html#principle-4-in-practice">Principle 4 in practice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html#principle-3-the-applicability-domain">Principle 3: the applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oecd.html#which-metrics-do-you-actually-need">Which metrics do you actually need?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html#reporting">Reporting</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html#output-formats">Output formats</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deployment.html">Saving and sharing a model</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html#why-not-pickle">Why not pickle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html#the-bundle-format">The bundle format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html#saving">Saving</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html#what-the-metadata-is-for">What the metadata is for</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html#guardrails">Guardrails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html#loading-someone-else-s-model">Loading someone else’s model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html#what-to-ship-alongside">What to ship alongside</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html#references">References</a></li>
 </ul>
 </li>
 </ul>
@@ -400,7 +428,7 @@ which together cover every public subpackage.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-10</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -415,7 +443,7 @@ which together cover every public subpackage.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

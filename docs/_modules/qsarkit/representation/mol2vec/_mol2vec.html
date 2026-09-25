@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Search" href="../../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.representation.mol2vec._mol2vec - qsarkit 0.2</title>
+        <title>qsarkit.representation.mol2vec._mol2vec - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../../../../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -203,6 +203,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../guide/applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../guide/sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../guide/oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../guide/deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -225,6 +226,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -313,6 +315,21 @@
 <span class="sd">    list of str</span>
 <span class="sd">        The molecule&#39;s sentence, one token per (atom, radius) substructure.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from rdkit import Chem</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.representation import mol_to_sentence</span>
+<span class="sd">    &gt;&gt;&gt; sentence = mol_to_sentence(Chem.MolFromSmiles(&quot;CCO&quot;), radius=1)</span>
+<span class="sd">    &gt;&gt;&gt; len(sentence)</span>
+<span class="sd">    6</span>
+<span class="sd">    &gt;&gt;&gt; all(token.isdigit() or token.lstrip(&quot;-&quot;).isdigit() for token in sentence)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    The &quot;sentence&quot; is the Morgan identifier of every atom at every radius</span>
+<span class="sd">    up to ``radius``, ordered so that an atom&#39;s identifiers are adjacent --</span>
+<span class="sd">    which is what lets a word2vec model learn substructure context. Three</span>
+<span class="sd">    atoms at two radii gives six tokens.</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    - Jaeger, S., Fulle, S. &amp; Turk, S. (2018). &quot;Mol2vec: Unsupervised</span>
@@ -320,11 +337,20 @@
 <span class="sd">      Model., 58(1), 27-35. https://doi.org/10.1021/acs.jcim.7b00616</span>
 <span class="sd">    - Reference implementation: https://github.com/samoturk/mol2vec</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">AllChem</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">rdFingerprintGenerator</span>
 
     <span class="n">radii</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">radius</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-    <span class="n">bit_info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">AllChem</span><span class="o">.</span><span class="n">GetMorganFingerprint</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">radius</span><span class="p">),</span> <span class="n">bitInfo</span><span class="o">=</span><span class="n">bit_info</span><span class="p">)</span>
+    <span class="c1"># The generator API rather than the deprecated</span>
+    <span class="c1"># AllChem.GetMorganFingerprint. Mol2Vec needs the *unhashed*</span>
+    <span class="c1"># identifiers, which is what a sparse-count fingerprint gives: hashing</span>
+    <span class="c1"># into a fixed width would collide distinct substructures onto one</span>
+    <span class="c1"># token and corrupt the vocabulary.</span>
+    <span class="n">generator</span> <span class="o">=</span> <span class="n">rdFingerprintGenerator</span><span class="o">.</span><span class="n">GetMorganGenerator</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">radius</span><span class="p">))</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">rdFingerprintGenerator</span><span class="o">.</span><span class="n">AdditionalOutput</span><span class="p">()</span>
+    <span class="n">output</span><span class="o">.</span><span class="n">AllocateAtomToBits</span><span class="p">()</span>
+    <span class="n">output</span><span class="o">.</span><span class="n">AllocateBitInfoMap</span><span class="p">()</span>
+    <span class="n">generator</span><span class="o">.</span><span class="n">GetSparseCountFingerprint</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">additionalOutput</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
+    <span class="n">bit_info</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">GetBitInfoMap</span><span class="p">()</span>
 
     <span class="c1"># identifier_by_atom_radius[atom_idx][r] = identifier, or None if that</span>
     <span class="c1"># atom has no substructure of radius r (e.g. terminal atoms at r &gt; 0).</span>
@@ -640,7 +666,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -655,7 +681,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../../../../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#"><link rel="search" title="Search" href="search.html">
 
-    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 --><title>Index - qsarkit 0.2</title>
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 --><title>Index - qsarkit 0.3</title>
 <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -161,7 +161,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -182,7 +182,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -202,6 +202,7 @@
 <li class="toctree-l2"><a class="reference internal" href="guide/applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -224,6 +225,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -298,10 +300,10 @@
 </li>
         <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.add_dataset_section">add_dataset_section() (qsarkit.reporting.QSARReport method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/reporting.html#qsarkit.reporting.OECDReportBuilder.add_evidence">add_evidence() (qsarkit.reporting.OECDReportBuilder method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.add_model_section">add_model_section() (qsarkit.reporting.QSARReport method)</a>
 </li>
         <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.add_section">add_section() (qsarkit.reporting.QSARReport method)</a>
@@ -322,11 +324,15 @@
 </li>
         <li><a href="api/functional.html#qsarkit.functional.apply">apply() (in module qsarkit.functional)</a>
 </li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AttributionAtomMapper.atom_weights">atom_weights() (qsarkit.explainability.AttributionAtomMapper method)</a>
+</li>
         <li><a href="api/explainability.html#qsarkit.explainability.AtomicContribution">AtomicContribution (class in qsarkit.explainability)</a>
 </li>
         <li><a href="api/explainability.html#qsarkit.explainability.AtomicContributionMap">AtomicContributionMap (class in qsarkit.explainability)</a>
 </li>
         <li><a href="api/representation.html#qsarkit.representation.AtomPairFingerprint">AtomPairFingerprint (class in qsarkit.representation)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AttributionAtomMapper">AttributionAtomMapper (class in qsarkit.explainability)</a>
 </li>
         <li><a href="api/representation.html#qsarkit.representation.AvalonFingerprint">AvalonFingerprint (class in qsarkit.representation)</a>
 </li>
@@ -360,13 +366,17 @@
 </li>
         <li><a href="api/chemistry.html#qsarkit.chemistry.CoreExtractor.bemis_murcko">bemis_murcko() (qsarkit.chemistry.CoreExtractor method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/chemspace.html#qsarkit.chemspace.bemis_murcko_smiles">bemis_murcko_smiles() (in module qsarkit.chemspace)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/model_selection.html#qsarkit.model_selection.NestedCV.best_params_">best_params_ (qsarkit.model_selection.NestedCV attribute)</a>
 </li>
         <li><a href="api/metrics.html#qsarkit.metrics.bias">bias() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.bit_atom_environments">bit_atom_environments() (in module qsarkit.explainability)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.bit_weights_to_atom_weights">bit_weights_to_atom_weights() (in module qsarkit.explainability)</a>
 </li>
         <li><a href="api/validation.html#qsarkit.validation.BootstrapValidator">BootstrapValidator (class in qsarkit.validation)</a>
 </li>
@@ -394,6 +404,10 @@
   <h2>C</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/metrics.html#qsarkit.metrics.calibration_curve">calibration_curve() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.calibration_report">calibration_report() (in module qsarkit.metrics)</a>
+</li>
         <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.calibration_scores_">calibration_scores_ (qsarkit.uncertainty.ConformalClassifier attribute)</a>
 
         <ul>
@@ -440,16 +454,18 @@
 </li>
         <li><a href="api/functional.html#qsarkit.functional.collect">collect() (in module qsarkit.functional)</a>
 </li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AttributionAtomMapper.collision_rate">collision_rate() (qsarkit.explainability.AttributionAtomMapper method)</a>
+</li>
         <li><a href="api/chemspace.html#qsarkit.chemspace.ChemicalSpaceCoverage.compare">compare() (qsarkit.chemspace.ChemicalSpaceCoverage method)</a>
 
         <ul>
           <li><a href="api/chemspace.html#qsarkit.chemspace.DiversityAnalyzer.compare">(qsarkit.chemspace.DiversityAnalyzer method)</a>
 </li>
         </ul></li>
-        <li><a href="api/explainability.html#qsarkit.explainability.PartialDependence.compute">compute() (qsarkit.explainability.PartialDependence method)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/explainability.html#qsarkit.explainability.PartialDependence.compute">compute() (qsarkit.explainability.PartialDependence method)</a>
+</li>
         <li><a href="api/chemspace.html#qsarkit.chemspace.compute_fingerprints">compute_fingerprints() (in module qsarkit.chemspace)</a>
 </li>
         <li><a href="api/utils.html#qsarkit.utils.configure_logging">configure_logging() (in module qsarkit.utils)</a>
@@ -494,6 +510,8 @@
         </ul></li>
         <li><a href="api/uncertainty.html#qsarkit.uncertainty.UncertaintyCalibration.coverage_curve">coverage_curve() (qsarkit.uncertainty.UncertaintyCalibration method)</a>
 </li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.created">created (qsarkit.persistence.ModelMetadata attribute)</a>
+</li>
         <li><a href="api/functional.html#qsarkit.functional.cross_validate">cross_validate() (in module qsarkit.functional)</a>
 </li>
         <li><a href="api/validation.html#qsarkit.validation.CrossValidator">CrossValidator (class in qsarkit.validation)</a>
@@ -532,6 +550,8 @@
 </li>
         <li><a href="api/functional.html#qsarkit.functional.describe">describe() (in module qsarkit.functional)</a>
 </li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.description">description (qsarkit.persistence.ModelMetadata attribute)</a>
+</li>
         <li><a href="api/representation.html#qsarkit.representation.DescriptorCalculator">DescriptorCalculator (class in qsarkit.representation)</a>
 </li>
         <li><a href="api/chemistry.html#qsarkit.chemistry.MolecularGraph.descriptors">descriptors() (qsarkit.chemistry.MolecularGraph method)</a>
@@ -560,6 +580,8 @@
 </li>
         <li><a href="api/functional.html#qsarkit.functional.PipelineNode.domain">domain (qsarkit.functional.PipelineNode attribute)</a>
 </li>
+        <li><a href="api/explainability.html#qsarkit.explainability.draw_atom_weights">draw_atom_weights() (in module qsarkit.explainability)</a>
+</li>
         <li><a href="api/functional.html#qsarkit.functional.drop_constant">drop_constant() (in module qsarkit.functional)</a>
 </li>
         <li><a href="api/functional.html#qsarkit.functional.drop_correlated">drop_correlated() (in module qsarkit.functional)</a>
@@ -586,6 +608,8 @@
 </li>
         <li><a href="api/uncertainty.html#qsarkit.uncertainty.UncertaintyCalibration.ence">ence() (qsarkit.uncertainty.UncertaintyCalibration method)</a>
 </li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.endpoint">endpoint (qsarkit.persistence.ModelMetadata attribute)</a>
+</li>
         <li><a href="api/metrics.html#qsarkit.metrics.enrichment_factor">enrichment_factor() (in module qsarkit.metrics)</a>
 </li>
         <li><a href="api/applicability.html#qsarkit.applicability.EnsembleAD">EnsembleAD (class in qsarkit.applicability)</a>
@@ -593,6 +617,12 @@
         <li><a href="api/uncertainty.html#qsarkit.uncertainty.EnsembleUncertainty">EnsembleUncertainty (class in qsarkit.uncertainty)</a>
 </li>
         <li><a href="api/base.html#qsarkit.base.ensure_mol_list">ensure_mol_list() (in module qsarkit.base)</a>
+</li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.environment">environment (qsarkit.persistence.ModelMetadata attribute)</a>
+</li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.environment_differences">environment_differences() (qsarkit.persistence.ModelMetadata method)</a>
+</li>
+        <li><a href="api/persistence.html#qsarkit.persistence.environment_summary">environment_summary() (in module qsarkit.persistence)</a>
 </li>
         <li><a href="api/models.html#qsarkit.models.ConsensusModel.estimator_">estimator_ (qsarkit.models.ConsensusModel attribute)</a>
 
@@ -602,10 +632,10 @@
           <li><a href="api/models.html#qsarkit.models.QSARRegressor.estimator_">(qsarkit.models.QSARRegressor attribute)</a>
 </li>
         </ul></li>
-        <li><a href="api/uncertainty.html#qsarkit.uncertainty.EnsembleUncertainty.estimators_">estimators_ (qsarkit.uncertainty.EnsembleUncertainty attribute)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/uncertainty.html#qsarkit.uncertainty.EnsembleUncertainty.estimators_">estimators_ (qsarkit.uncertainty.EnsembleUncertainty attribute)</a>
+</li>
         <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.evaluate">evaluate() (qsarkit.uncertainty.ConformalClassifier method)</a>
 
         <ul>
@@ -614,6 +644,8 @@
           <li><a href="api/validation.html#qsarkit.validation.CrossValidator.evaluate">(qsarkit.validation.CrossValidator method)</a>
 </li>
         </ul></li>
+        <li><a href="api/metrics.html#qsarkit.metrics.expected_calibration_error">expected_calibration_error() (in module qsarkit.metrics)</a>
+</li>
         <li><a href="api/explainability.html#qsarkit.explainability.AtomicContributionMap.explain">explain() (qsarkit.explainability.AtomicContributionMap method)</a>
 
         <ul>
@@ -634,6 +666,8 @@
         </ul></li>
         <li><a href="api/validation.html#qsarkit.validation.ExternalValidator">ExternalValidator (class in qsarkit.validation)</a>
 </li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.extra">extra (qsarkit.persistence.ModelMetadata attribute)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -647,7 +681,11 @@
         <li><a href="api/data_quality.html#qsarkit.data_quality.ValidationIssue.fatal">fatal (qsarkit.data_quality.ValidationIssue attribute)</a>
 </li>
         <li><a href="api/functional.html#qsarkit.functional.FeatureSet.feature_names">feature_names (qsarkit.functional.FeatureSet attribute)</a>
+
+        <ul>
+          <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.feature_names">(qsarkit.persistence.ModelMetadata attribute)</a>
 </li>
+        </ul></li>
         <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.feature_names_">feature_names_ (qsarkit.sar.FreeWilsonAnalysis attribute)</a>
 </li>
         <li><a href="api/functional.html#qsarkit.functional.feature_step">feature_step() (in module qsarkit.functional)</a>
@@ -814,6 +852,8 @@
 </li>
         <li><a href="api/representation.html#qsarkit.representation.fold_on_bits">fold_on_bits() (in module qsarkit.representation)</a>
 </li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.format_version">format_version (qsarkit.persistence.ModelMetadata attribute)</a>
+</li>
         <li><a href="api/explainability.html#qsarkit.explainability.FragmentContributionAnalyzer">FragmentContributionAnalyzer (class in qsarkit.explainability)</a>
 </li>
         <li><a href="api/representation.html#qsarkit.representation.FragmentDescriptors">FragmentDescriptors (class in qsarkit.representation)</a>
@@ -822,9 +862,15 @@
 </li>
         <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis">FreeWilsonAnalysis (class in qsarkit.sar)</a>
 </li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.from_dict">from_dict() (qsarkit.persistence.ModelMetadata class method)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AttributionAtomMapper.from_lime">from_lime() (qsarkit.explainability.AttributionAtomMapper method)</a>
+</li>
         <li><a href="api/utils.html#qsarkit.utils.from_pactivity">from_pactivity() (in module qsarkit.utils)</a>
 </li>
         <li><a href="api/representation.html#qsarkit.representation.Mol2VecTransformer.from_pretrained">from_pretrained() (qsarkit.representation.Mol2VecTransformer class method)</a>
+</li>
+        <li><a href="api/explainability.html#qsarkit.explainability.AttributionAtomMapper.from_shap">from_shap() (qsarkit.explainability.AttributionAtomMapper method)</a>
 </li>
         <li><a href="api/reporting.html#qsarkit.reporting.OECDReportBuilder.from_validation">from_validation() (qsarkit.reporting.OECDReportBuilder method)</a>
 </li>
@@ -942,6 +988,8 @@
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/persistence.html#qsarkit.persistence.inspect_bundle">inspect_bundle() (in module qsarkit.persistence)</a>
+</li>
         <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.intercept_">intercept_ (qsarkit.sar.FreeWilsonAnalysis attribute)</a>
 </li>
         <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalRegressor.interval_width">interval_width() (qsarkit.uncertainty.ConformalRegressor method)</a>
@@ -1040,6 +1088,10 @@
 </li>
         <li><a href="api/representation.html#qsarkit.representation.LipinskiDescriptors">LipinskiDescriptors (class in qsarkit.representation)</a>
 </li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelBundle.load">load() (qsarkit.persistence.ModelBundle class method)</a>
+</li>
+        <li><a href="api/persistence.html#qsarkit.persistence.load_model">load_model() (in module qsarkit.persistence)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -1061,6 +1113,8 @@
         <li><a href="api/sar.html#qsarkit.sar.MatchedPair">MatchedPair (class in qsarkit.sar)</a>
 </li>
         <li><a href="api/metrics.html#qsarkit.metrics.matthews_corrcoef">matthews_corrcoef() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.maximum_calibration_error">maximum_calibration_error() (in module qsarkit.metrics)</a>
 </li>
         <li><a href="api/cluster.html#qsarkit.cluster.MaxMinPicker">MaxMinPicker (class in qsarkit.cluster)</a>
 </li>
@@ -1092,6 +1146,10 @@
 </li>
         <li><a href="api/sar.html#qsarkit.sar.MMPAnalyzer">MMPAnalyzer (class in qsarkit.sar)</a>
 </li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelBundle">ModelBundle (class in qsarkit.persistence)</a>
+</li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata">ModelMetadata (class in qsarkit.persistence)</a>
+</li>
         <li><a href="api/base.html#qsarkit.base.ModelNotFittedError">ModelNotFittedError</a>
 </li>
         <li>
@@ -1121,6 +1179,8 @@
           <li><a href="api/models.html#module-qsarkit.models">qsarkit.models</a>
 </li>
           <li><a href="api/neighbors.html#module-qsarkit.neighbors">qsarkit.neighbors</a>
+</li>
+          <li><a href="api/persistence.html#module-qsarkit.persistence">qsarkit.persistence</a>
 </li>
           <li><a href="api/reporting.html#module-qsarkit.reporting">qsarkit.reporting</a>
 </li>
@@ -1209,6 +1269,8 @@
           <li><a href="api/cluster.html#qsarkit.cluster.SphereExclusionClustering.n_clusters_">(qsarkit.cluster.SphereExclusionClustering attribute)</a>
 </li>
         </ul></li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.n_features">n_features (qsarkit.persistence.ModelMetadata attribute)</a>
+</li>
         <li><a href="api/applicability.html#qsarkit.applicability.BaseApplicabilityDomain.n_features_in_">n_features_in_ (qsarkit.applicability.BaseApplicabilityDomain attribute)</a>
 
         <ul>
@@ -1271,8 +1333,14 @@
 </li>
         <li><a href="api/validation.html#qsarkit.validation.CrossValidator.n_splits">n_splits (qsarkit.validation.CrossValidator attribute)</a>
 </li>
-        <li><a href="api/functional.html#qsarkit.functional.PipeStep.name">name (qsarkit.functional.PipeStep attribute)</a>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.n_training_samples">n_training_samples (qsarkit.persistence.ModelMetadata attribute)</a>
 </li>
+        <li><a href="api/functional.html#qsarkit.functional.PipeStep.name">name (qsarkit.functional.PipeStep attribute)</a>
+
+        <ul>
+          <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.name">(qsarkit.persistence.ModelMetadata attribute)</a>
+</li>
+        </ul></li>
         <li><a href="api/transform.html#qsarkit.transform.NaNHandler">NaNHandler (class in qsarkit.transform)</a>
 </li>
         <li><a href="api/chemspace.html#qsarkit.chemspace.NearestNeighborAnalyzer.nearest_similarity">nearest_similarity() (qsarkit.chemspace.NearestNeighborAnalyzer method)</a>
@@ -1301,6 +1369,8 @@
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/metrics.html#qsarkit.metrics.optimal_threshold">optimal_threshold() (in module qsarkit.metrics)</a>
+</li>
         <li><a href="api/base.html#qsarkit.base.OptionalDependencyError">OptionalDependencyError</a>
 </li>
     </ul></td>
@@ -1365,7 +1435,11 @@
         </ul></li>
         <li><a href="api/applicability.html#qsarkit.applicability.ADAnalyzer.plot_accuracy_vs_coverage">plot_accuracy_vs_coverage() (qsarkit.applicability.ADAnalyzer method)</a>
 </li>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_atom_contributions">plot_atom_contributions() (in module qsarkit.reporting)</a>
+</li>
         <li><a href="api/uncertainty.html#qsarkit.uncertainty.UncertaintyCalibration.plot_calibration">plot_calibration() (qsarkit.uncertainty.UncertaintyCalibration method)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_calibration_curve">plot_calibration_curve() (in module qsarkit.reporting)</a>
 </li>
         <li><a href="api/reporting.html#qsarkit.reporting.plot_feature_importance">plot_feature_importance() (in module qsarkit.reporting)</a>
 </li>
@@ -1375,13 +1449,19 @@
 </li>
         <li><a href="api/functional.html#qsarkit.functional.plot_pipeline">plot_pipeline() (in module qsarkit.functional)</a>
 </li>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_precision_recall">plot_precision_recall() (in module qsarkit.reporting)</a>
+</li>
         <li><a href="api/reporting.html#qsarkit.reporting.plot_predicted_vs_observed">plot_predicted_vs_observed() (in module qsarkit.reporting)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_qq">plot_qq() (in module qsarkit.reporting)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/reporting.html#qsarkit.reporting.plot_residuals">plot_residuals() (in module qsarkit.reporting)</a>
 </li>
         <li><a href="api/reporting.html#qsarkit.reporting.plot_roc_curve">plot_roc_curve() (in module qsarkit.reporting)</a>
+</li>
+        <li><a href="api/reporting.html#qsarkit.reporting.plot_threshold_sweep">plot_threshold_sweep() (in module qsarkit.reporting)</a>
 </li>
         <li><a href="api/reporting.html#qsarkit.reporting.plot_williams">plot_williams() (in module qsarkit.reporting)</a>
 </li>
@@ -1406,6 +1486,8 @@
 </li>
           <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsRegressor.predict">(qsarkit.neighbors.JaccardKNeighborsRegressor method)</a>
 </li>
+          <li><a href="api/persistence.html#qsarkit.persistence.ModelBundle.predict">(qsarkit.persistence.ModelBundle method)</a>
+</li>
           <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.predict">(qsarkit.sar.FreeWilsonAnalysis method)</a>
 </li>
           <li><a href="api/uncertainty.html#qsarkit.uncertainty.BaseUncertaintyEstimator.predict">(qsarkit.uncertainty.BaseUncertaintyEstimator method)</a>
@@ -1423,6 +1505,8 @@
           <li><a href="api/uncertainty.html#qsarkit.uncertainty.QuantileRegressionUncertainty.predict_interval">(qsarkit.uncertainty.QuantileRegressionUncertainty method)</a>
 </li>
         </ul></li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelBundle.predict_mols">predict_mols() (qsarkit.persistence.ModelBundle method)</a>
+</li>
         <li><a href="api/models.html#qsarkit.models.BaselineModel.predict_proba">predict_proba() (qsarkit.models.BaselineModel method)</a>
 
         <ul>
@@ -1431,6 +1515,8 @@
           <li><a href="api/models.html#qsarkit.models.QSARClassifier.predict_proba">(qsarkit.models.QSARClassifier method)</a>
 </li>
           <li><a href="api/neighbors.html#qsarkit.neighbors.JaccardKNeighborsClassifier.predict_proba">(qsarkit.neighbors.JaccardKNeighborsClassifier method)</a>
+</li>
+          <li><a href="api/persistence.html#qsarkit.persistence.ModelBundle.predict_proba">(qsarkit.persistence.ModelBundle method)</a>
 </li>
         </ul></li>
         <li><a href="api/uncertainty.html#qsarkit.uncertainty.ConformalClassifier.predict_set">predict_set() (qsarkit.uncertainty.ConformalClassifier method)</a>
@@ -1466,6 +1552,8 @@
         <li><a href="api/metrics.html#qsarkit.metrics.q2_f2">q2_f2() (in module qsarkit.metrics)</a>
 </li>
         <li><a href="api/metrics.html#qsarkit.metrics.q2_f3">q2_f3() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.qq_data">qq_data() (in module qsarkit.metrics)</a>
 </li>
         <li><a href="api/metrics.html#qsarkit.metrics.qsar_classification_report">qsar_classification_report() (in module qsarkit.metrics)</a>
 </li>
@@ -1536,8 +1624,6 @@
           <li><a href="api/metrics.html#module-qsarkit.metrics">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     qsarkit.model_selection
 
@@ -1545,6 +1631,8 @@
           <li><a href="api/model_selection.html#module-qsarkit.model_selection">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     qsarkit.models
 
@@ -1557,6 +1645,13 @@
 
         <ul>
           <li><a href="api/neighbors.html#module-qsarkit.neighbors">module</a>
+</li>
+        </ul></li>
+        <li>
+    qsarkit.persistence
+
+        <ul>
+          <li><a href="api/persistence.html#module-qsarkit.persistence">module</a>
 </li>
         </ul></li>
         <li>
@@ -1608,6 +1703,8 @@
           <li><a href="api/validation.html#module-qsarkit.validation">module</a>
 </li>
         </ul></li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.qsarkit_version">qsarkit_version (qsarkit.persistence.ModelMetadata attribute)</a>
+</li>
         <li><a href="api/base.html#qsarkit.base.QsarkitError">QsarkitError</a>
 </li>
         <li><a href="api/models.html#qsarkit.models.QSARRegressor">QSARRegressor (class in qsarkit.models)</a>
@@ -1674,10 +1771,10 @@
 </li>
         <li><a href="api/functional.html#qsarkit.functional.remove_protecting_groups">remove_protecting_groups() (in module qsarkit.functional)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/data_quality.html#qsarkit.data_quality.CurationReport.removed">removed (qsarkit.data_quality.CurationReport attribute)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/functional.html#qsarkit.functional.FeatureSet.render">render() (qsarkit.functional.FeatureSet method)</a>
 
         <ul>
@@ -1705,6 +1802,10 @@
         <li><a href="api/reporting.html#qsarkit.reporting.ReportSection">ReportSection (class in qsarkit.reporting)</a>
 </li>
         <li><a href="api/base.html#qsarkit.base.require">require() (in module qsarkit.base)</a>
+</li>
+        <li><a href="api/functional.html#qsarkit.functional.resample">resample() (in module qsarkit.functional)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.residual_normality">residual_normality() (in module qsarkit.metrics)</a>
 </li>
         <li><a href="api/sar.html#qsarkit.sar.FreeWilsonAnalysis.residuals">residuals() (qsarkit.sar.FreeWilsonAnalysis method)</a>
 </li>
@@ -1760,7 +1861,13 @@
 </li>
         <li><a href="api/sar.html#qsarkit.sar.ActivityLandscapePlotter.sas_data">sas_data() (qsarkit.sar.ActivityLandscapePlotter method)</a>
 </li>
-        <li><a href="api/representation.html#qsarkit.representation.Mol2VecTransformer.save">save() (qsarkit.representation.Mol2VecTransformer method)</a>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelBundle.save">save() (qsarkit.persistence.ModelBundle method)</a>
+
+        <ul>
+          <li><a href="api/representation.html#qsarkit.representation.Mol2VecTransformer.save">(qsarkit.representation.Mol2VecTransformer method)</a>
+</li>
+        </ul></li>
+        <li><a href="api/persistence.html#qsarkit.persistence.save_model">save_model() (in module qsarkit.persistence)</a>
 </li>
         <li><a href="api/chemspace.html#qsarkit.chemspace.ScaffoldAnalyzer">ScaffoldAnalyzer (class in qsarkit.chemspace)</a>
 </li>
@@ -2090,9 +2197,15 @@
 </li>
         <li><a href="api/applicability.html#qsarkit.applicability.TanimotoSimilarityAD">TanimotoSimilarityAD (class in qsarkit.applicability)</a>
 </li>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.task">task (qsarkit.persistence.ModelMetadata attribute)</a>
+</li>
         <li><a href="api/reporting.html#qsarkit.reporting.ReportSection.text">text (qsarkit.reporting.ReportSection attribute)</a>
 </li>
         <li><a href="api/applicability.html#qsarkit.applicability.BaseApplicabilityDomain.threshold_">threshold_ (qsarkit.applicability.BaseApplicabilityDomain attribute)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.threshold_report">threshold_report() (in module qsarkit.metrics)</a>
+</li>
+        <li><a href="api/metrics.html#qsarkit.metrics.threshold_sweep">threshold_sweep() (in module qsarkit.metrics)</a>
 </li>
         <li><a href="api/model_selection.html#qsarkit.model_selection.TimeSplitter">TimeSplitter (class in qsarkit.model_selection)</a>
 </li>
@@ -2116,9 +2229,11 @@
           <li><a href="api/sar.html#qsarkit.sar.MMPAnalyzer.to_dataframe">(qsarkit.sar.MMPAnalyzer method)</a>
 </li>
         </ul></li>
-        <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.to_dict">to_dict() (qsarkit.reporting.QSARReport method)</a>
+        <li><a href="api/persistence.html#qsarkit.persistence.ModelMetadata.to_dict">to_dict() (qsarkit.persistence.ModelMetadata method)</a>
 
         <ul>
+          <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.to_dict">(qsarkit.reporting.QSARReport method)</a>
+</li>
           <li><a href="api/reporting.html#qsarkit.reporting.ReportSection.to_dict">(qsarkit.reporting.ReportSection method)</a>
 </li>
         </ul></li>
@@ -2132,14 +2247,14 @@
           <li><a href="api/functional.html#qsarkit.functional.PipeStep.to_dot">(qsarkit.functional.PipeStep method)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/functional.html#qsarkit.functional.FeatureSet.to_frame">to_frame() (qsarkit.functional.FeatureSet method)</a>
 
         <ul>
           <li><a href="api/functional.html#qsarkit.functional.MoleculeSet.to_frame">(qsarkit.functional.MoleculeSet method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.to_html">to_html() (qsarkit.reporting.QSARReport method)</a>
 </li>
         <li><a href="api/reporting.html#qsarkit.reporting.QSARReport.to_json">to_json() (qsarkit.reporting.QSARReport method)</a>
@@ -2316,7 +2431,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-10</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -2331,7 +2446,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="_static/documentation_options.js?v=f129cdf0"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

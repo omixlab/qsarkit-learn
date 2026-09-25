@@ -28,4 +28,5 @@ algorithm it implements.
    explainability
    chemspace
    reporting
+   persistence
    utils

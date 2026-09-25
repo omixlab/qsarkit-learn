@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.functional._model_steps - qsarkit 0.2</title>
+        <title>qsarkit.functional._model_steps - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -203,6 +203,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../guide/applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../guide/sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../guide/oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -225,6 +226,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -336,7 +338,10 @@
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">getter</span><span class="p">()]</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">NotImplementedError</span><span class="p">):</span>
+        <span class="c1"># Not every transformer implements the method it advertises, and an</span>
+        <span class="c1"># unfitted one may raise. Feature names are a convenience, so their</span>
+        <span class="c1"># absence must never break a pipeline.</span>
         <span class="k">return</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">names</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_columns</span> <span class="k">else</span> <span class="kc">None</span>
 
@@ -1450,6 +1455,168 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_Collect</span><span class="p">(</span><span class="n">as_frame</span><span class="o">=</span><span class="n">as_frame</span><span class="p">)</span></div>
 
+
+
+<div class="viewcode-block" id="resample">
+<a class="viewcode-back" href="../../../api/functional.html#qsarkit.functional.resample">[docs]</a>
+<span class="nd">@feature_step</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">resample</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sampler</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;undersample&quot;</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_FeaturePayload</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rebalance the classes in feature space.</span>
+
+<span class="sd">    The counterpart of :func:`~qsarkit.functional.balance`, applied after</span>
+<span class="sd">    featurization. Because the rows here are just vectors, a sampler that</span>
+<span class="sd">    *synthesizes* new ones -- SMOTE, ADASYN, BorderlineSMOTE -- is</span>
+<span class="sd">    meaningful, which it is not at the molecule stage.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    X : ndarray of shape (n_samples, n_features)</span>
+<span class="sd">        Feature matrix.</span>
+<span class="sd">    y : ndarray</span>
+<span class="sd">        Class labels. Required; resampling an unlabelled set is</span>
+<span class="sd">        meaningless.</span>
+<span class="sd">    mols : list of Mol, optional</span>
+<span class="sd">        The molecules the rows came from. Kept when the sampler selects</span>
+<span class="sd">        existing rows, and dropped with a warning when it synthesizes new</span>
+<span class="sd">        ones -- a synthesized vector has no molecule, and returning a</span>
+<span class="sd">        mismatched list would be worse than returning none.</span>
+<span class="sd">    sampler : {&quot;undersample&quot;, &quot;oversample&quot;} or object, default &quot;undersample&quot;</span>
+<span class="sd">        A built-in random strategy, or any `imbalanced-learn</span>
+<span class="sd">        &lt;https://imbalanced-learn.org&gt;`_ sampler with</span>
+<span class="sd">        ``fit_resample(X, y)``.</span>
+<span class="sd">    random_state : int, optional</span>
+<span class="sd">        Seed for the built-in strategies. Ignored for a sampler instance,</span>
+<span class="sd">        which carries its own.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        ``(X, y, mols)``.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``y`` is None, or ``sampler`` is neither a recognized string nor</span>
+<span class="sd">        an object with ``fit_resample``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    **Resample the training set only.** Rebalancing the test set changes</span>
+<span class="sd">    the class prior you are measuring against, so a balanced test score</span>
+<span class="sd">    does not describe the population the model will meet. Place this step</span>
+<span class="sd">    after :func:`~qsarkit.functional.split`, applying it to the training</span>
+<span class="sd">    half alone.</span>
+
+<span class="sd">    Synthetic oversampling is also not free: SMOTE interpolates between</span>
+<span class="sd">    neighbours, and in a sparse binary fingerprint space the midpoint of</span>
+<span class="sd">    two molecules is a vector no molecule would produce. It often helps</span>
+<span class="sd">    with descriptors and often does not with fingerprints -- measure it</span>
+<span class="sd">    rather than assuming.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.functional import fingerprint, molecules, resample</span>
+<span class="sd">    &gt;&gt;&gt; smiles = [&quot;CCO&quot;, &quot;CCN&quot;, &quot;CCC&quot;, &quot;CCCl&quot;, &quot;c1ccccc1&quot;, &quot;c1ccncc1&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; labels = np.array([0, 0, 0, 0, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; features = molecules(smiles, labels) &gt;&gt; fingerprint(n_bits=64)</span>
+<span class="sd">    &gt;&gt;&gt; balanced = features &gt;&gt; resample(random_state=0)</span>
+<span class="sd">    &gt;&gt;&gt; sorted(balanced.y.tolist())</span>
+<span class="sd">    [0, 0, 1, 1]</span>
+
+<span class="sd">    Oversampling instead keeps every majority row:</span>
+
+<span class="sd">    &gt;&gt;&gt; balanced = features &gt;&gt; resample(&quot;oversample&quot;, random_state=0)</span>
+<span class="sd">    &gt;&gt;&gt; sorted(balanced.y.tolist())</span>
+<span class="sd">    [0, 0, 0, 0, 1, 1, 1, 1]</span>
+
+<span class="sd">    An imbalanced-learn sampler is passed directly:</span>
+
+<span class="sd">    &gt;&gt;&gt; from imblearn.over_sampling import SMOTE       # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; features &gt;&gt; resample(SMOTE(k_neighbors=1))     # doctest: +SKIP</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Chawla, N. V. et al. (2002). &quot;SMOTE: Synthetic Minority</span>
+<span class="sd">      Over-sampling Technique.&quot; J. Artif. Intell. Res., 16, 321-357.</span>
+<span class="sd">      https://doi.org/10.1613/jair.953</span>
+<span class="sd">    - Lemaitre, G., Nogueira, F. &amp; Aridas, C. K. (2017).</span>
+<span class="sd">      &quot;Imbalanced-learn.&quot; J. Mach. Learn. Res., 18(17), 1-5.</span>
+<span class="sd">      https://jmlr.org/papers/v18/16-365</span>
+<span class="sd">    - He, H. &amp; Garcia, E. A. (2009). &quot;Learning from Imbalanced Data.&quot;</span>
+<span class="sd">      IEEE Trans. Knowl. Data Eng., 21(9), 1263-1284.</span>
+<span class="sd">      https://doi.org/10.1109/TKDE.2008.239</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;resample() needs labels; the FeatureSet is unlabelled.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">sampler</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;undersample&quot;</span><span class="p">,</span> <span class="s2">&quot;oversample&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;sampler must be &#39;undersample&#39;, &#39;oversample&#39;, or an &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;imbalanced-learn sampler, got </span><span class="si">{</span><span class="n">sampler</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="n">classes</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">if</span> <span class="n">sampler</span> <span class="o">==</span> <span class="s2">&quot;undersample&quot;</span> <span class="k">else</span> <span class="n">counts</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">keep</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="n">counts</span><span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="bp">cls</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
+                <span class="n">chosen</span> <span class="o">=</span> <span class="n">idx</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">chosen</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+                    <span class="n">idx</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">target</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="n">sampler</span> <span class="o">==</span> <span class="s2">&quot;oversample&quot;</span>
+                <span class="p">)</span>
+            <span class="n">keep</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chosen</span><span class="p">)</span>
+        <span class="n">keep</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">keep</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">X</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span>
+            <span class="n">y</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span>
+            <span class="kc">None</span> <span class="k">if</span> <span class="n">mols</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">mols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="s2">&quot;fit_resample&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> has no fit_resample(X, y) method, so &quot;</span>
+            <span class="s2">&quot;it is not an imbalanced-learn sampler. Pass &#39;undersample&#39;, &quot;</span>
+            <span class="s2">&quot;&#39;oversample&#39;, or a sampler object.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">X_resampled</span><span class="p">,</span> <span class="n">y_resampled</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">fit_resample</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">X_resampled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X_resampled</span><span class="p">)</span>
+    <span class="n">y_resampled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_resampled</span><span class="p">)</span>
+
+    <span class="n">indices_attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="s2">&quot;sample_indices_&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">indices_attr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">mols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># A selecting sampler tells us which rows survived, so the</span>
+        <span class="c1"># molecules can follow them.</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices_attr</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X_resampled</span><span class="p">,</span> <span class="n">y_resampled</span><span class="p">,</span> <span class="p">[</span><span class="n">mols</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">selected</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">mols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> synthesized new rows, which &quot;</span>
+            <span class="s2">&quot;correspond to no molecule, so the molecules have been dropped &quot;</span>
+            <span class="s2">&quot;from the FeatureSet. Downstream steps needing them (a scaffold &quot;</span>
+            <span class="s2">&quot;split, a Tanimoto applicability domain, an atom-level &quot;</span>
+            <span class="s2">&quot;explanation) will no longer work on this set.&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">X_resampled</span><span class="p">,</span> <span class="n">y_resampled</span><span class="p">,</span> <span class="kc">None</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -1468,7 +1635,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -1483,7 +1650,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../../../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

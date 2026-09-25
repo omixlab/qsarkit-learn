@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.reporting._plots - qsarkit 0.2</title>
+        <title>qsarkit.reporting._plots - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -203,6 +203,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../guide/applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../guide/sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../guide/oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -225,6 +226,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -267,7 +269,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
@@ -276,6 +278,11 @@
     <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;plot_calibration_curve&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;plot_qq&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;plot_threshold_sweep&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;plot_precision_recall&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;plot_atom_contributions&quot;</span><span class="p">,</span>
     <span class="s2">&quot;plot_predicted_vs_observed&quot;</span><span class="p">,</span>
     <span class="s2">&quot;plot_residuals&quot;</span><span class="p">,</span>
     <span class="s2">&quot;plot_williams&quot;</span><span class="p">,</span>
@@ -402,6 +409,24 @@
 <span class="sd">    -------</span>
 <span class="sd">    plotly.graph_objects.Figure</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import plot_residuals</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; truth = rng.normal(size=50)</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_residuals(truth, truth + rng.normal(scale=0.2, size=50))</span>
+<span class="sd">    &gt;&gt;&gt; type(figure).__name__</span>
+<span class="sd">    &#39;Figure&#39;</span>
+
+<span class="sd">    Standardized residuals put the conventional +/-3 sigma lines on a</span>
+<span class="sd">    fixed scale, so an outlier is visible without knowing the endpoint&#39;s</span>
+<span class="sd">    units:</span>
+
+<span class="sd">    &gt;&gt;&gt; raw = plot_residuals(truth, truth, standardized=False)</span>
+<span class="sd">    &gt;&gt;&gt; raw.layout.yaxis.title.text is not None</span>
+<span class="sd">    True</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    - Gramatica, P. (2007). QSAR Comb. Sci., 26(5), 694-701.</span>
@@ -470,6 +495,27 @@
 <span class="sd">    -------</span>
 <span class="sd">    plotly.graph_objects.Figure</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.applicability import LeverageAD</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import plot_williams</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; X = rng.normal(size=(40, 4))</span>
+<span class="sd">    &gt;&gt;&gt; truth = X[:, 0] * 2 + rng.normal(scale=0.2, size=40)</span>
+<span class="sd">    &gt;&gt;&gt; leverage = LeverageAD().fit(X).score_samples(X)</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_williams(leverage, truth, truth + rng.normal(scale=0.2, size=40))</span>
+<span class="sd">    &gt;&gt;&gt; type(figure).__name__</span>
+<span class="sd">    &#39;Figure&#39;</span>
+
+<span class="sd">    The two lines are what make it a Williams plot: ``h_star`` marks the</span>
+<span class="sd">    leverage threshold and ``residual_limit`` the residual one, so a point</span>
+<span class="sd">    beyond either is influential, an outlier, or both.</span>
+
+<span class="sd">    &gt;&gt;&gt; figure = plot_williams(leverage, truth, truth, h_star=0.3, residual_limit=2.5)</span>
+<span class="sd">    &gt;&gt;&gt; len(figure.layout.shapes) &gt;= 2</span>
+<span class="sd">    True</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    - Gramatica, P. (2007). QSAR Comb. Sci., 26(5), 694-701.</span>
@@ -535,6 +581,23 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    plotly.graph_objects.Figure</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import plot_roc_curve</span>
+<span class="sd">    &gt;&gt;&gt; scores = np.linspace(1.0, 0.0, 100)</span>
+<span class="sd">    &gt;&gt;&gt; labels = np.zeros(100); labels[:10] = 1     # actives ranked first</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_roc_curve(labels, scores)</span>
+<span class="sd">    &gt;&gt;&gt; type(figure).__name__</span>
+<span class="sd">    &#39;Figure&#39;</span>
+<span class="sd">    &gt;&gt;&gt; figure.data[1].name                          # AUC shown in the legend</span>
+<span class="sd">    &#39;ROC (AUC = 1.000)&#39;</span>
+
+<span class="sd">    On an imbalanced screening set prefer</span>
+<span class="sd">    :func:`plot_precision_recall`: ROC&#39;s specificity axis is dominated by</span>
+<span class="sd">    the inactive majority, so a model can look excellent while its</span>
+<span class="sd">    top-ranked compounds are mostly false positives.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -604,6 +667,21 @@
 <span class="sd">    -------</span>
 <span class="sd">    plotly.graph_objects.Figure</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import plot_learning_curve</span>
+<span class="sd">    &gt;&gt;&gt; sizes = np.array([10, 20, 40, 80])</span>
+<span class="sd">    &gt;&gt;&gt; train = np.array([[0.99, 0.98], [0.97, 0.96], [0.95, 0.94], [0.93, 0.92]])</span>
+<span class="sd">    &gt;&gt;&gt; test = np.array([[0.40, 0.45], [0.55, 0.58], [0.68, 0.70], [0.74, 0.75]])</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_learning_curve(sizes, train, test)</span>
+<span class="sd">    &gt;&gt;&gt; type(figure).__name__</span>
+<span class="sd">    &#39;Figure&#39;</span>
+
+<span class="sd">    Read the *gap*, not the level. A training score far above the</span>
+<span class="sd">    validation score that stays apart as data is added means the model is</span>
+<span class="sd">    memorizing; converging curves mean more data would help.</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    - Perlich, C. (2010). &quot;Learning Curves in Machine Learning.&quot; In</span>
@@ -667,6 +745,31 @@
 <span class="sd">    -------</span>
 <span class="sd">    plotly.graph_objects.Figure</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import plot_feature_importance</span>
+<span class="sd">    &gt;&gt;&gt; names = [&quot;MolWt&quot;, &quot;MolLogP&quot;, &quot;TPSA&quot;, &quot;NumHDonors&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_feature_importance(names, [0.4, 0.3, 0.2, 0.1])</span>
+<span class="sd">    &gt;&gt;&gt; type(figure).__name__</span>
+<span class="sd">    &#39;Figure&#39;</span>
+
+<span class="sd">    Error bars turn a ranking into a claim you can judge. Two features</span>
+<span class="sd">    whose intervals overlap are not distinguishable by this much data:</span>
+
+<span class="sd">    &gt;&gt;&gt; figure = plot_feature_importance(</span>
+<span class="sd">    ...     names, [0.4, 0.3, 0.2, 0.1], errors=[0.05, 0.08, 0.06, 0.03])</span>
+<span class="sd">    &gt;&gt;&gt; len(figure.data)</span>
+<span class="sd">    1</span>
+
+<span class="sd">    ``top_n`` truncates a long list, which is the usual case with</span>
+<span class="sd">    fingerprints:</span>
+
+<span class="sd">    &gt;&gt;&gt; many = [f&quot;bit_{i}&quot; for i in range(500)]</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_feature_importance(many, np.linspace(0, 1, 500), top_n=10)</span>
+<span class="sd">    &gt;&gt;&gt; len(figure.data[0].y)</span>
+<span class="sd">    10</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    - Breiman, L. (2001). &quot;Random Forests.&quot; Mach. Learn., 45, 5-32.</span>
@@ -725,6 +828,458 @@
         <span class="n">figure</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">full_html</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_plotlyjs</span><span class="o">=</span><span class="n">include_plotlyjs</span><span class="p">)</span>
     <span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="plot_calibration_curve">
+<a class="viewcode-back" href="../../../api/reporting.html#qsarkit.reporting.plot_calibration_curve">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_calibration_curve</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_prob</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">strategy</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Calibration (reliability diagram)&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;go.Figure&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reliability diagram: observed frequency against predicted probability.</span>
+
+<span class="sd">    A perfectly calibrated classifier lies on the diagonal. Above it the</span>
+<span class="sd">    model is under-confident, below it over-confident. Bubble size shows</span>
+<span class="sd">    how many compounds each point rests on, because a bin holding three</span>
+<span class="sd">    compounds says very little.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary labels.</span>
+<span class="sd">    y_prob : array-like of shape (n_samples,)</span>
+<span class="sd">        Predicted probability of the positive class.</span>
+<span class="sd">    n_bins : int, default 10</span>
+<span class="sd">        Number of bins.</span>
+<span class="sd">    strategy : {&quot;uniform&quot;, &quot;quantile&quot;}, default &quot;uniform&quot;</span>
+<span class="sd">        Binning strategy; see</span>
+<span class="sd">        :func:`~qsarkit.metrics.calibration_curve`.</span>
+<span class="sd">    title : str, default &quot;Calibration (reliability diagram)&quot;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    plotly.graph_objects.Figure</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import plot_calibration_curve</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; p = rng.uniform(size=500)</span>
+<span class="sd">    &gt;&gt;&gt; y = (rng.uniform(size=500) &lt; p).astype(int)</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_calibration_curve(y, p)</span>
+<span class="sd">    &gt;&gt;&gt; type(figure).__name__</span>
+<span class="sd">    &#39;Figure&#39;</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import figure_to_html, plot_roc_curve</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_roc_curve(np.array([0, 0, 1, 1]), np.array([0.1, 0.2, 0.8, 0.9]))</span>
+<span class="sd">    &gt;&gt;&gt; html = figure_to_html(figure)</span>
+<span class="sd">    &gt;&gt;&gt; &quot;plotly&quot; in html</span>
+<span class="sd">    True</span>
+
+<span class="sd">    Plotly&#39;s JavaScript must be included exactly once per page, so pass</span>
+<span class="sd">    ``include_plotlyjs=False`` for every figure after the first:</span>
+
+<span class="sd">    &gt;&gt;&gt; first = figure_to_html(figure)</span>
+<span class="sd">    &gt;&gt;&gt; rest = figure_to_html(figure, include_plotlyjs=False)</span>
+<span class="sd">    &gt;&gt;&gt; len(first) &gt; len(rest)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Niculescu-Mizil, A. &amp; Caruana, R. (2005). &quot;Predicting Good</span>
+<span class="sd">      Probabilities with Supervised Learning.&quot; ICML 2005, 625-632.</span>
+<span class="sd">      https://doi.org/10.1145/1102351.1102430</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">calibration_curve</span><span class="p">,</span> <span class="n">expected_calibration_error</span>
+
+    <span class="n">curve</span> <span class="o">=</span> <span class="n">calibration_curve</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+    <span class="n">ece</span> <span class="o">=</span> <span class="n">expected_calibration_error</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">curve</span><span class="p">[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span>
+    <span class="c1"># Area-proportional markers, floored so a sparse bin is still visible.</span>
+    <span class="n">sizes</span> <span class="o">=</span> <span class="mf">8.0</span> <span class="o">+</span> <span class="mf">22.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">counts</span> <span class="o">/</span> <span class="n">counts</span><span class="o">.</span><span class="n">max</span><span class="p">())</span> <span class="k">if</span> <span class="n">counts</span><span class="o">.</span><span class="n">size</span> <span class="k">else</span> <span class="n">counts</span>
+
+    <span class="n">figure</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;perfect calibration&quot;</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dash&quot;</span><span class="p">:</span> <span class="s2">&quot;dash&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#9AA5B1&quot;</span><span class="p">},</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">curve</span><span class="p">[</span><span class="s2">&quot;mean_predicted&quot;</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">curve</span><span class="p">[</span><span class="s2">&quot;observed_frequency&quot;</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines+markers&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;model&quot;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">sizes</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#41618F&quot;</span><span class="p">},</span>
+            <span class="n">customdata</span><span class="o">=</span><span class="n">counts</span><span class="p">,</span>
+            <span class="n">hovertemplate</span><span class="o">=</span><span class="p">(</span>
+                <span class="s2">&quot;predicted %</span><span class="si">{x:.3f}</span><span class="s2">&lt;br&gt;observed %</span><span class="si">{y:.3f}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;&lt;br&gt;%</span><span class="si">{customdata:.0f}</span><span class="s2"> compounds&lt;extra&gt;&lt;/extra&gt;&quot;</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2"> — ECE </span><span class="si">{</span><span class="n">ece</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">&quot;mean predicted probability&quot;</span><span class="p">,</span>
+        <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;observed frequency of the positive class&quot;</span><span class="p">,</span>
+        <span class="n">xaxis</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">]},</span>
+        <span class="n">yaxis</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">],</span> <span class="s2">&quot;scaleanchor&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;scaleratio&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">figure</span></div>
+
+
+
+<div class="viewcode-block" id="plot_qq">
+<a class="viewcode-back" href="../../../api/reporting.html#qsarkit.reporting.plot_qq">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_qq</span><span class="p">(</span>
+    <span class="n">residuals</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Normal Q-Q plot of residuals&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;go.Figure&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Normal Q-Q plot, for checking the assumption behind every RMSE.</span>
+
+<span class="sd">    Points on the line mean normal residuals. An S-shape means heavy</span>
+<span class="sd">    tails; a bend at one end means skew, usually from a few badly</span>
+<span class="sd">    mispredicted compounds that :math:`R^2` will not name.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    residuals : array-like of shape (n_samples,)</span>
+<span class="sd">        Observed minus predicted.</span>
+<span class="sd">    title : str, default &quot;Normal Q-Q plot of residuals&quot;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    plotly.graph_objects.Figure</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import plot_qq</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_qq(rng.normal(size=200))</span>
+<span class="sd">    &gt;&gt;&gt; type(figure).__name__</span>
+<span class="sd">    &#39;Figure&#39;</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Wilk, M. B. &amp; Gnanadesikan, R. (1968). &quot;Probability Plotting Methods</span>
+<span class="sd">      for the Analysis of Data.&quot; Biometrika, 55(1), 1-17.</span>
+<span class="sd">      https://doi.org/10.1093/biomet/55.1.1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">qq_data</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">qq_data</span><span class="p">(</span><span class="n">residuals</span><span class="p">)</span>
+    <span class="n">theoretical</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;theoretical_quantiles&quot;</span><span class="p">]</span>
+    <span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;reference_line&quot;</span><span class="p">]</span>
+
+    <span class="n">figure</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">theoretical</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">slope</span> <span class="o">*</span> <span class="n">theoretical</span> <span class="o">+</span> <span class="n">intercept</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;normal reference&quot;</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dash&quot;</span><span class="p">:</span> <span class="s2">&quot;dash&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#9AA5B1&quot;</span><span class="p">},</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">theoretical</span><span class="p">,</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;sample_quantiles&quot;</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;markers&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;residuals&quot;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#41618F&quot;</span><span class="p">},</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+        <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">&quot;theoretical quantile (standard normal)&quot;</span><span class="p">,</span>
+        <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;observed quantile (standardized residual)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">figure</span></div>
+
+
+
+<div class="viewcode-block" id="plot_threshold_sweep">
+<a class="viewcode-back" href="../../../api/reporting.html#qsarkit.reporting.plot_threshold_sweep">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_threshold_sweep</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_score</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">criteria</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Criterion against decision threshold&quot;</span><span class="p">,</span>
+    <span class="n">pos_label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;go.Figure&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;How each selection criterion varies with the decision threshold.</span>
+
+<span class="sd">    Shows what the conventional 0.5 cut costs, and whether the optimum is</span>
+<span class="sd">    a sharp peak or a broad plateau -- a broad one means the exact</span>
+<span class="sd">    threshold hardly matters, which is worth knowing before tuning it.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary labels.</span>
+<span class="sd">    y_score : array-like of shape (n_samples,)</span>
+<span class="sd">        Scores or probabilities.</span>
+<span class="sd">    criteria : sequence of str, optional</span>
+<span class="sd">        Which curves to draw. Defaults to ``(&quot;youden_j&quot;, &quot;mcc&quot;, &quot;f1&quot;,</span>
+<span class="sd">        &quot;balanced_accuracy&quot;)``; any key of</span>
+<span class="sd">        :func:`~qsarkit.metrics.threshold_sweep` is allowed.</span>
+<span class="sd">    title : str, default &quot;Criterion against decision threshold&quot;</span>
+<span class="sd">    pos_label : optional</span>
+<span class="sd">        Which label is the positive class. Required for string labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    plotly.graph_objects.Figure</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If a requested criterion is not produced by the sweep.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import plot_threshold_sweep</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; y = np.zeros(300, dtype=int); y[:30] = 1</span>
+<span class="sd">    &gt;&gt;&gt; scores = rng.beta(2, 8, size=300) + y * 0.3</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_threshold_sweep(y, scores)</span>
+<span class="sd">    &gt;&gt;&gt; type(figure).__name__</span>
+<span class="sd">    &#39;Figure&#39;</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Chicco, D. &amp; Jurman, G. (2020). &quot;The Advantages of the Matthews</span>
+<span class="sd">      Correlation Coefficient (MCC) over F1 Score and Accuracy.&quot;</span>
+<span class="sd">      BMC Genomics, 21, 6. https://doi.org/10.1186/s12864-019-6413-7</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">threshold_sweep</span>
+
+    <span class="n">sweep</span> <span class="o">=</span> <span class="n">threshold_sweep</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="n">pos_label</span><span class="p">)</span>  <span class="c1"># type: ignore[arg-type]</span>
+    <span class="n">wanted</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">criteria</span><span class="p">)</span> <span class="k">if</span> <span class="n">criteria</span> <span class="k">else</span> <span class="p">(</span>
+        <span class="s2">&quot;youden_j&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mcc&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;f1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">unknown</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">wanted</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sweep</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown criteria </span><span class="si">{</span><span class="n">unknown</span><span class="si">}</span><span class="s2">. Available: &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">k</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">sweep</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;thresholds&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">figure</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">wanted</span><span class="p">:</span>
+        <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+            <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+                <span class="n">x</span><span class="o">=</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;thresholds&quot;</span><span class="p">],</span>
+                <span class="n">y</span><span class="o">=</span><span class="n">sweep</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
+                <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_vline</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">line</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dash&quot;</span><span class="p">:</span> <span class="s2">&quot;dot&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#9AA5B1&quot;</span><span class="p">},</span>
+        <span class="n">annotation_text</span><span class="o">=</span><span class="s2">&quot;default 0.5&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+        <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">&quot;decision threshold&quot;</span><span class="p">,</span>
+        <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;criterion value&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">figure</span></div>
+
+
+
+<div class="viewcode-block" id="plot_precision_recall">
+<a class="viewcode-back" href="../../../api/reporting.html#qsarkit.reporting.plot_precision_recall">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_precision_recall</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_score</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Precision-recall curve&quot;</span><span class="p">,</span>
+    <span class="n">pos_label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;go.Figure&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Precision-recall curve, with the base rate as the honest baseline.</span>
+
+<span class="sd">    Preferable to ROC on imbalanced data: ROC&#39;s specificity axis is</span>
+<span class="sd">    dominated by the inactive majority, so a model can look excellent</span>
+<span class="sd">    while its top-ranked compounds are mostly false positives. The</span>
+<span class="sd">    baseline here is the base rate, which is what random ranking achieves.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary labels.</span>
+<span class="sd">    y_score : array-like of shape (n_samples,)</span>
+<span class="sd">        Scores or probabilities.</span>
+<span class="sd">    title : str, default &quot;Precision-recall curve&quot;</span>
+<span class="sd">    pos_label : optional</span>
+<span class="sd">        Which label is the positive class. Required for string labels; see</span>
+<span class="sd">        :func:`~qsarkit.metrics.threshold_sweep`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    plotly.graph_objects.Figure</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import plot_precision_recall</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; y = np.zeros(300, dtype=int); y[:30] = 1</span>
+<span class="sd">    &gt;&gt;&gt; scores = rng.beta(2, 8, size=300) + y * 0.3</span>
+<span class="sd">    &gt;&gt;&gt; figure = plot_precision_recall(y, scores)</span>
+<span class="sd">    &gt;&gt;&gt; type(figure).__name__</span>
+<span class="sd">    &#39;Figure&#39;</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Saito, T. &amp; Rehmsmeier, M. (2015). &quot;The Precision-Recall Plot Is</span>
+<span class="sd">      More Informative than the ROC Plot When Evaluating Binary</span>
+<span class="sd">      Classifiers on Imbalanced Datasets.&quot; PLoS ONE, 10(3), e0118432.</span>
+<span class="sd">      https://doi.org/10.1371/journal.pone.0118432</span>
+<span class="sd">    - Davis, J. &amp; Goadrich, M. (2006). &quot;The Relationship Between</span>
+<span class="sd">      Precision-Recall and ROC Curves.&quot; ICML 2006, 233-240.</span>
+<span class="sd">      https://doi.org/10.1145/1143844.1143874</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">plotly.graph_objects</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">go</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">pr_auc</span><span class="p">,</span> <span class="n">threshold_sweep</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics._thresholds</span><span class="w"> </span><span class="kn">import</span> <span class="n">_check_binary</span>
+
+    <span class="c1"># Resolve the positive class once, and use the 0/1 form everywhere after:</span>
+    <span class="c1"># pr_auc takes integer labels, and re-deriving &quot;which class is positive&quot;</span>
+    <span class="c1"># in two places is how the two ends of a plot come to disagree.</span>
+    <span class="n">labels</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">_check_binary</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="n">pos_label</span><span class="p">)</span>
+    <span class="n">sweep</span> <span class="o">=</span> <span class="n">threshold_sweep</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">scores</span><span class="p">)</span>
+    <span class="n">base_rate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pr_auc</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">scores</span><span class="p">))</span>
+
+    <span class="c1"># Order by recall so the curve is drawn left to right.</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;sensitivity&quot;</span><span class="p">])</span>
+
+    <span class="n">figure</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">base_rate</span><span class="p">,</span> <span class="n">base_rate</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;random (</span><span class="si">{</span><span class="n">base_rate</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;dash&quot;</span><span class="p">:</span> <span class="s2">&quot;dash&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#9AA5B1&quot;</span><span class="p">},</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span>
+        <span class="n">go</span><span class="o">.</span><span class="n">Scatter</span><span class="p">(</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;sensitivity&quot;</span><span class="p">][</span><span class="n">order</span><span class="p">],</span>
+            <span class="n">y</span><span class="o">=</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">][</span><span class="n">order</span><span class="p">],</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;lines&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;model&quot;</span><span class="p">,</span>
+            <span class="n">line</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#41618F&quot;</span><span class="p">},</span>
+            <span class="n">customdata</span><span class="o">=</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;thresholds&quot;</span><span class="p">][</span><span class="n">order</span><span class="p">],</span>
+            <span class="n">hovertemplate</span><span class="o">=</span><span class="p">(</span>
+                <span class="s2">&quot;recall %</span><span class="si">{x:.3f}</span><span class="s2">&lt;br&gt;precision %</span><span class="si">{y:.3f}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;&lt;br&gt;threshold %</span><span class="si">{customdata:.3f}</span><span class="s2">&lt;extra&gt;&lt;/extra&gt;&quot;</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">figure</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2"> — PR-AUC </span><span class="si">{</span><span class="n">area</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">xaxis_title</span><span class="o">=</span><span class="s2">&quot;recall (sensitivity)&quot;</span><span class="p">,</span>
+        <span class="n">yaxis_title</span><span class="o">=</span><span class="s2">&quot;precision&quot;</span><span class="p">,</span>
+        <span class="n">xaxis</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">]},</span>
+        <span class="n">yaxis</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">]},</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">figure</span></div>
+
+
+
+<div class="viewcode-block" id="plot_atom_contributions">
+<a class="viewcode-back" href="../../../api/reporting.html#qsarkit.reporting.plot_atom_contributions">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_atom_contributions</span><span class="p">(</span>
+    <span class="n">mol</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">atom_weights</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Per-atom contributions&quot;</span><span class="p">,</span>
+    <span class="n">size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">450</span><span class="p">,</span> <span class="mi">450</span><span class="p">),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Draw atom-level attributions on the structure, as an RDKit SVG.</span>
+
+<span class="sd">    A thin wrapper over</span>
+<span class="sd">    :func:`~qsarkit.explainability.draw_atom_weights`, provided here so a</span>
+<span class="sd">    report can assemble every figure from one module. Unlike the other</span>
+<span class="sd">    plotting functions this returns SVG text rather than a Plotly figure,</span>
+<span class="sd">    because the depiction is a chemical drawing and RDKit draws those</span>
+<span class="sd">    properly.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mol : Mol</span>
+<span class="sd">        The molecule.</span>
+<span class="sd">    atom_weights : array-like of shape (n_atoms,)</span>
+<span class="sd">        Per-atom attribution, e.g. from</span>
+<span class="sd">        :class:`~qsarkit.explainability.AttributionAtomMapper`.</span>
+<span class="sd">    title : str, default &quot;Per-atom contributions&quot;</span>
+<span class="sd">        Prepended as an SVG ``&lt;title&gt;``, which becomes the tooltip.</span>
+<span class="sd">    size : tuple of int, default (450, 450)</span>
+<span class="sd">        Image size in pixels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        SVG text, ready to embed in an HTML report or display in a</span>
+<span class="sd">        notebook.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from rdkit import Chem</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.reporting import plot_atom_contributions</span>
+<span class="sd">    &gt;&gt;&gt; mol = Chem.MolFromSmiles(&quot;CC(=O)Nc1ccc(Cl)cc1&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; svg = plot_atom_contributions(mol, np.linspace(-1, 1, mol.GetNumAtoms()))</span>
+<span class="sd">    &gt;&gt;&gt; &quot;&lt;svg&quot; in svg</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Riniker, S. &amp; Landrum, G. A. (2013). &quot;Similarity Maps.&quot; J.</span>
+<span class="sd">      Cheminform., 5, 43. https://doi.org/10.1186/1758-2946-5-43</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.explainability</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_atom_weights</span>
+
+    <span class="n">svg</span> <span class="o">=</span> <span class="n">draw_atom_weights</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">atom_weights</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+    <span class="c1"># Insert an accessible title, which RDKit&#39;s drawer does not emit.</span>
+    <span class="n">marker</span> <span class="o">=</span> <span class="s2">&quot;&gt;&quot;</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;&lt;svg&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">close</span> <span class="o">=</span> <span class="n">svg</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">close</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">svg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">svg</span><span class="p">[:</span> <span class="n">close</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;&lt;title&gt;</span><span class="si">{</span><span class="n">title</span><span class="si">}</span><span class="s2">&lt;/title&gt;&quot;</span>
+                <span class="o">+</span> <span class="n">svg</span><span class="p">[</span><span class="n">close</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">svg</span></div>
+
 </pre></div>
         </article>
       </div>
@@ -743,7 +1298,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -758,7 +1313,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../../../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

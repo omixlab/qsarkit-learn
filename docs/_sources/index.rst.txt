@@ -36,6 +36,19 @@ design toolkit, and does not pretend to be.
 
       Validating and reporting a model against the five OECD principles.
 
+   .. grid-item-card:: Saving a model
+      :link: guide/deployment
+      :link-type: doc
+
+      Persisting a model so it still works next year, and so someone else
+      can load it safely.
+
+   .. grid-item-card:: Example notebooks
+      :link: https://github.com/omixlab/qsarkit-learn/tree/main/notebooks
+
+      Five runnable walkthroughs covering every public subpackage,
+      committed with their output.
+
 The workflow
 ------------
 
@@ -67,6 +80,9 @@ The workflow
               |
               v
     Reporting                  qsarkit.reporting
+              |
+              v
+    Persistence                qsarkit.persistence
 
 Design principles
 -----------------
@@ -86,6 +102,12 @@ Design principles
 **Typed and checked.**
    The package is ``mypy --strict`` clean and ships a ``py.typed`` marker.
 
+**Every example is executed.**
+   Every ``>>>`` block in this documentation, in the package's docstrings
+   and in the :doc:`notebooks <guide/index>` runs in the test suite. An
+   example that stops being true fails CI like any other regression, so
+   none of them can rot silently.
+
 **Narrow on purpose.**
    Everything here earns its place in the QSAR workflow. Data
    acquisition, molecular generation and structure-based methods are
@@ -96,22 +118,35 @@ Design principles
 A first example
 ---------------
 
-.. code-block:: python
+Curate a structure — strip the salt, neutralize the charge:
 
-   from rdkit import Chem
-   from qsarkit.chemistry import MolecularStandardizer
-   from qsarkit.sar import activity_cliff_report
+.. doctest::
 
-   # Curate: strip the salt, neutralize the charge
-   standardizer = MolecularStandardizer()
-   mol = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)[O-].[Na+]")
-   Chem.MolToSmiles(standardizer.transform([mol])[0])
-   # 'CC(=O)Oc1ccccc1C(=O)O'
+   >>> from rdkit import Chem
+   >>> from qsarkit.chemistry import MolecularStandardizer
+   >>> standardizer = MolecularStandardizer()
+   >>> mol = Chem.MolFromSmiles("CC(=O)Oc1ccccc1C(=O)[O-].[Na+]")
+   >>> Chem.MolToSmiles(standardizer.transform([mol])[0])
+   'CC(=O)Oc1ccccc1C(=O)O'
 
-   # Diagnose the dataset before modeling it
-   report = activity_cliff_report(mols, pIC50_values)
-   report["cliff_ratio"]           # how much of the SAR is discontinuous
-   report["top_transformations"]   # which R-group swaps cause the cliffs
+Then diagnose the dataset *before* modelling it. Activity cliffs are pairs
+of near-identical structures with very different activity — the places any
+similarity-based model must be wrong:
+
+.. doctest::
+
+   >>> from qsarkit.sar import activity_cliff_report
+   >>> report = activity_cliff_report(demo_mols, DEMO_Y, similarity_threshold=0.5)
+   >>> report["n_cliffs"], round(report["cliff_ratio"], 4)
+   (4, 0.0145)
+   >>> sorted(report["top_transformations"])
+   ['[1*]C>>[1*]Cl', '[1*]Cl>>[1*]Br', '[1*]Cl>>[1*]N']
+
+.. note::
+
+   Examples throughout this documentation use a shared 24-compound demo
+   dataset — ``DEMO_SMILES``, ``DEMO_Y`` and ``demo_mols`` — so they stay
+   short and every number shown is reproducible. See :doc:`guide/index`.
 
 .. toctree::
    :maxdepth: 2

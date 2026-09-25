@@ -83,15 +83,20 @@ The result unpacks straight into ``X, y``.
 Inspecting the pipeline
 -----------------------
 
-.. code-block:: python
+.. doctest::
 
-   ms = molecules(smiles, y) >> desalt() >> drop_invalid()
-
-   ms                 # <MoleculeSet 6 molecules, y shape (6,), 3 steps>
-   ms.history         # ['molecules(n=7)', 'desalt()', 'drop_invalid()']
-   ms.smiles          # canonical SMILES, None where invalid
-   ms.to_frame()      # DataFrame with smiles + y
-   len(ms)
+   >>> from qsarkit.functional import desalt, drop_invalid, molecules
+   >>> ms = molecules(DEMO_SMILES[:6], DEMO_Y[:6]) >> desalt() >> drop_invalid()
+   >>> ms
+   <MoleculeSet 6 molecules, y shape (6,), 3 steps>
+   >>> ms.history
+   ['molecules(n=6)', 'desalt()', 'drop_invalid()']
+   >>> ms.smiles[0]                 # canonical SMILES, None where invalid
+   'O=C(O)c1ccccc1'
+   >>> list(ms.to_frame().columns)  # DataFrame with smiles + y
+   ['smiles', 'y']
+   >>> len(ms)
+   6
 
 ``history`` records every step with its arguments, so a curated dataset
 carries its own provenance — which is what OECD principle 1 asks you to
@@ -103,12 +108,21 @@ Reusable pipelines
 Steps compose with each other, so a curation protocol can be defined once
 and applied to several datasets:
 
-.. code-block:: python
+.. doctest::
 
-   curate = standardize() >> drop_invalid() >> remove_duplicates(max_spread=1.0)
+   >>> from qsarkit.functional import remove_duplicates, standardize
+   >>> curate = standardize() >> drop_invalid() >> remove_duplicates(max_spread=1.0)
+   >>> train = molecules(DEMO_SMILES[:12], DEMO_Y[:12]) >> curate
+   >>> test = molecules(DEMO_SMILES[12:], DEMO_Y[12:]) >> curate
+   >>> len(train), len(test)
+   (12, 12)
 
-   train = molecules(train_smiles, train_y) >> curate
-   test  = molecules(test_smiles,  test_y)  >> curate
+The composed protocol is itself a step, and prints as one:
+
+.. doctest::
+
+   >>> curate
+   <Pipeline standardize() >> drop_invalid() >> remove_duplicates(max_spread=1.0)>
 
 :func:`~qsarkit.functional.pipeline` does the same thing from a list, for
 when the steps are assembled programmatically.
@@ -119,10 +133,15 @@ Dual-mode steps
 Every step works two ways, so the same function serves the pipe API and
 ordinary imperative code:
 
-.. code-block:: python
+.. doctest::
 
-   mols, y = molecules(["CC(=O)[O-].[Na+]"]) >> desalt()   # deferred
-   mols, y = desalt(mol_list, y)                           # immediate
+   >>> from rdkit import Chem
+   >>> mols, y = molecules(["CC(=O)[O-].[Na+]"]) >> desalt()      # deferred
+   >>> Chem.MolToSmiles(mols[0])
+   'CC(=O)[O-]'
+   >>> mols, y = desalt([Chem.MolFromSmiles("CC(=O)[O-].[Na+]")])  # immediate
+   >>> Chem.MolToSmiles(mols[0])
+   'CC(=O)[O-]'
 
 Calling a step with no molecules returns a deferred
 :class:`~qsarkit.functional.Step`; calling it with molecules runs it now.
@@ -170,18 +189,23 @@ Writing your own step
 
 Decorate a function with the ``(X, y=None, **params) -> (X, y)`` signature:
 
-.. code-block:: python
+.. doctest::
 
-   from qsarkit.functional import step
+   >>> from qsarkit.functional import step
+   >>> @step
+   ... def keep_heaviest(X, y=None, n=100):
+   ...     from rdkit.Chem import Descriptors
+   ...     order = sorted(range(len(X)), key=lambda i: -Descriptors.MolWt(X[i]))
+   ...     keep = sorted(order[:n])
+   ...     return [X[i] for i in keep], (None if y is None else y[keep])
+   >>> mols, y = molecules(DEMO_SMILES, DEMO_Y) >> keep_heaviest(n=5)
+   >>> len(mols), len(y)
+   (5, 5)
 
-   @step
-   def keep_heaviest(X, y=None, n=100):
-       from rdkit.Chem import Descriptors
-       order = sorted(range(len(X)), key=lambda i: -Descriptors.MolWt(X[i]))
-       keep = sorted(order[:n])
-       return [X[i] for i in keep], (None if y is None else y[keep])
-
-   mols, y = molecules(smiles, activities) >> keep_heaviest(n=50)
+The decorator gives it both modes and the alignment guarantee for free —
+returning the subset of ``y`` alongside the molecules is the whole
+contract. :func:`~qsarkit.functional.feature_step` does the same for a step
+that operates on a feature matrix.
 
 Relationship to the scikit-learn API
 ------------------------------------

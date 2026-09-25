@@ -1,0 +1,846 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>qsarkit.metrics._thresholds - qsarkit 0.3</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">qsarkit 0.3</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../guide/index.html">User guide</a><input aria-label="Toggle navigation of User guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/quickstart.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/functional.html">The functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/curation.html">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/deployment.html">Saving and sharing a model</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/base.html">Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemistry.html">Chemistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/functional.html">Functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/data_quality.html">Data quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/transform.html">Transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/neighbors.html">Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cluster.html">Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/feature_selection.html">Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_selection.html">Model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/validation.html">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/explainability.html">Explainability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemspace.html">Chemical space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/persistence.html">Persistence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for qsarkit.metrics._thresholds</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Choosing the decision threshold for a QSAR classifier.</span>
+
+<span class="sd">``predict()`` cuts at 0.5. That default is almost never the right choice</span>
+<span class="sd">for QSAR classification, for two reasons.</span>
+
+<span class="sd">The first is class imbalance. On a screening set that is 2% active, a</span>
+<span class="sd">model can reach 98% accuracy by calling everything inactive, and 0.5 will</span>
+<span class="sd">push it most of the way there. The threshold that maximizes a</span>
+<span class="sd">*balanced* criterion sits far lower.</span>
+
+<span class="sd">The second is asymmetric cost. Missing an active and chasing a false</span>
+<span class="sd">positive are not equally expensive, and the ratio differs between a</span>
+<span class="sd">lead-finding campaign and a toxicity screen. That ratio is a property of</span>
+<span class="sd">your project, not of the model, so it belongs in the threshold rather than</span>
+<span class="sd">hidden inside the metric.</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+<span class="sd">- Youden, W. J. (1950). &quot;Index for Rating Diagnostic Tests.&quot; Cancer, 3(1),</span>
+<span class="sd">  32-35. https://doi.org/10.1002/1097-0142(1950)3:1&lt;32::AID-CNCR2820030106&gt;3.0.CO;2-3</span>
+<span class="sd">- Matthews, B. W. (1975). &quot;Comparison of the Predicted and Observed</span>
+<span class="sd">  Secondary Structure of T4 Phage Lysozyme.&quot; Biochim. Biophys. Acta,</span>
+<span class="sd">  405(2), 442-451. https://doi.org/10.1016/0005-2795(75)90109-9</span>
+<span class="sd">- Chicco, D. &amp; Jurman, G. (2020). &quot;The Advantages of the Matthews</span>
+<span class="sd">  Correlation Coefficient (MCC) over F1 Score and Accuracy in Binary</span>
+<span class="sd">  Classification Evaluation.&quot; BMC Genomics, 21, 6.</span>
+<span class="sd">  https://doi.org/10.1186/s12864-019-6413-7</span>
+<span class="sd">- Saito, T. &amp; Rehmsmeier, M. (2015). &quot;The Precision-Recall Plot Is More</span>
+<span class="sd">  Informative than the ROC Plot When Evaluating Binary Classifiers on</span>
+<span class="sd">  Imbalanced Datasets.&quot; PLoS ONE, 10(3), e0118432.</span>
+<span class="sd">  https://doi.org/10.1371/journal.pone.0118432</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;threshold_sweep&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;optimal_threshold&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;threshold_report&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">_Criterion</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;youden&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;mcc&quot;</span><span class="p">,</span> <span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;cost&quot;</span><span class="p">,</span> <span class="s2">&quot;precision&quot;</span><span class="p">,</span> <span class="s2">&quot;recall&quot;</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_binary</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_score</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">pos_label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[np.int_]&quot;</span><span class="p">,</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate a binary label / score pair, dropping non-finite scores.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true, y_score : array-like</span>
+<span class="sd">    pos_label : optional</span>
+<span class="sd">        Which label counts as positive. Required for non-numeric labels:</span>
+<span class="sd">        picking one by sort order would silently make ``&quot;inactive&quot;`` the</span>
+<span class="sd">        positive class in a set labelled ``{&quot;active&quot;, &quot;inactive&quot;}``, which</span>
+<span class="sd">        inverts every metric without any error.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (ndarray of int, ndarray of float)</span>
+<span class="sd">        Labels mapped to 0/1, and the matching finite scores.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_score</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">scores</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;y_true has </span><span class="si">{</span><span class="n">labels</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> entries but y_score has </span><span class="si">{</span><span class="n">scores</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">finite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+    <span class="n">labels</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">finite</span><span class="p">],</span> <span class="n">scores</span><span class="p">[</span><span class="n">finite</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">labels</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No finite scores to threshold.&quot;</span><span class="p">)</span>
+
+    <span class="n">classes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">classes</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Threshold selection needs exactly two classes, got &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">classes</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">classes</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">). For a multiclass model, &quot;</span>
+            <span class="s2">&quot;choose a threshold per class one-vs-rest.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">pos_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pos_label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;pos_label=</span><span class="si">{</span><span class="n">pos_label</span><span class="si">!r}</span><span class="s2"> is not one of the labels present &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;item&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">classes</span><span class="p">]</span><span class="si">}</span><span class="s2">).&quot;</span>
+            <span class="p">)</span>
+        <span class="n">positive</span> <span class="o">=</span> <span class="n">pos_label</span>
+    <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="ow">or</span> <span class="n">labels</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="c1"># For numeric or boolean labels the larger value is the positive</span>
+        <span class="c1"># class by universal convention (1 over 0, True over False).</span>
+        <span class="n">positive</span> <span class="o">=</span> <span class="n">classes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Labels </span><span class="si">{</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">classes</span><span class="p">]</span><span class="si">}</span><span class="s2"> are not numeric, so which one is &quot;</span>
+            <span class="s2">&quot;&#39;positive&#39; cannot be inferred -- taking the later one &quot;</span>
+            <span class="s2">&quot;alphabetically would make &#39;inactive&#39; the positive class in an &quot;</span>
+            <span class="s2">&quot;{&#39;active&#39;, &#39;inactive&#39;} set. Pass pos_label explicitly, or &quot;</span>
+            <span class="s2">&quot;encode the labels as 0/1.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">positive</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span> <span class="n">scores</span>
+
+
+<div class="viewcode-block" id="threshold_sweep">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.threshold_sweep">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">threshold_sweep</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_score</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">n_thresholds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">pos_label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Every operating point of a binary classifier, as arrays.</span>
+
+<span class="sd">    Evaluates the confusion matrix at each candidate threshold, so a</span>
+<span class="sd">    criterion can be maximized or a curve plotted without refitting.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary labels. Numeric or boolean labels need no further</span>
+<span class="sd">        specification -- the larger value is the positive class.</span>
+<span class="sd">    y_score : array-like of shape (n_samples,)</span>
+<span class="sd">        Scores or probabilities. Only their order matters.</span>
+<span class="sd">    n_thresholds : int, optional</span>
+<span class="sd">        Evaluate this many evenly-spaced quantiles of the score instead of</span>
+<span class="sd">        every distinct value. Use it on large sets, where the default</span>
+<span class="sd">        gives one column per unique score.</span>
+<span class="sd">    pos_label : optional</span>
+<span class="sd">        Which label is the positive class. Required for string labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        ``thresholds`` and, aligned with it, ``tp``, ``fp``, ``tn``,</span>
+<span class="sd">        ``fn``, ``sensitivity`` (recall, TPR), ``specificity``,</span>
+<span class="sd">        ``precision``, ``f1``, ``mcc``, ``balanced_accuracy``,</span>
+<span class="sd">        ``youden_j`` and ``accuracy``.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the inputs mismatch, or do not contain exactly two classes.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    A prediction is positive when ``score &gt;= threshold``, so the sweep</span>
+<span class="sd">    includes a threshold above every score (predict nothing) to make the</span>
+<span class="sd">    degenerate end of the curve explicit rather than absent.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import threshold_sweep</span>
+<span class="sd">    &gt;&gt;&gt; y = np.array([0, 0, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; scores = np.array([0.1, 0.4, 0.6, 0.9])</span>
+<span class="sd">    &gt;&gt;&gt; sweep = threshold_sweep(y, scores)</span>
+<span class="sd">    &gt;&gt;&gt; best = int(np.argmax(sweep[&quot;youden_j&quot;]))</span>
+<span class="sd">    &gt;&gt;&gt; float(sweep[&quot;thresholds&quot;][best]), float(sweep[&quot;youden_j&quot;][best])</span>
+<span class="sd">    (0.6, 1.0)</span>
+
+<span class="sd">    Sensitivity falls and specificity rises as the threshold increases:</span>
+
+<span class="sd">    &gt;&gt;&gt; bool(np.all(np.diff(sweep[&quot;sensitivity&quot;]) &lt;= 0))</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; bool(np.all(np.diff(sweep[&quot;specificity&quot;]) &gt;= 0))</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Fawcett, T. (2006). &quot;An Introduction to ROC Analysis.&quot; Pattern</span>
+<span class="sd">      Recognit. Lett., 27(8), 861-874.</span>
+<span class="sd">      https://doi.org/10.1016/j.patrec.2005.10.010</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">labels</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">_check_binary</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="n">pos_label</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n_thresholds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n_thresholds</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;n_thresholds must be at least 2, got </span><span class="si">{</span><span class="n">n_thresholds</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="p">))</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+    <span class="c1"># One threshold above the maximum, so &quot;predict nothing&quot; is on the curve.</span>
+    <span class="n">thresholds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">candidates</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">nextafter</span><span class="p">(</span><span class="n">candidates</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)]])</span>
+
+    <span class="n">positives</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">negatives</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="n">positives</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">positives</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">negatives</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pragma: no cover - guarded above</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Both classes must be present.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Vectorized over thresholds: predicted[i, j] is sample j at threshold i.</span>
+    <span class="n">predicted</span> <span class="o">=</span> <span class="n">scores</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:]</span> <span class="o">&gt;=</span> <span class="n">thresholds</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="n">tp</span> <span class="o">=</span> <span class="p">(</span><span class="n">predicted</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="p">(</span><span class="n">predicted</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">positives</span> <span class="o">-</span> <span class="n">tp</span>
+    <span class="n">tn</span> <span class="o">=</span> <span class="n">negatives</span> <span class="o">-</span> <span class="n">fp</span>
+
+    <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">divide</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">):</span>
+        <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="n">positives</span><span class="p">)</span>
+        <span class="n">specificity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">tn</span><span class="p">,</span> <span class="n">negatives</span><span class="p">)</span>
+        <span class="n">precision</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">tp</span><span class="p">,</span> <span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">tp</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">),</span> <span class="mf">0.0</span>
+        <span class="p">)</span>
+        <span class="n">denominator</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">tn</span> <span class="o">+</span> <span class="n">fn</span><span class="p">))</span>
+        <span class="n">mcc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">denominator</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">tp</span> <span class="o">*</span> <span class="n">tn</span> <span class="o">-</span> <span class="n">fp</span> <span class="o">*</span> <span class="n">fn</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">denominator</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">denominator</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span>
+            <span class="mf">0.0</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;thresholds&quot;</span><span class="p">:</span> <span class="n">thresholds</span><span class="p">,</span>
+        <span class="s2">&quot;tp&quot;</span><span class="p">:</span> <span class="n">tp</span><span class="p">,</span>
+        <span class="s2">&quot;fp&quot;</span><span class="p">:</span> <span class="n">fp</span><span class="p">,</span>
+        <span class="s2">&quot;tn&quot;</span><span class="p">:</span> <span class="n">tn</span><span class="p">,</span>
+        <span class="s2">&quot;fn&quot;</span><span class="p">:</span> <span class="n">fn</span><span class="p">,</span>
+        <span class="s2">&quot;sensitivity&quot;</span><span class="p">:</span> <span class="n">sensitivity</span><span class="p">,</span>
+        <span class="s2">&quot;specificity&quot;</span><span class="p">:</span> <span class="n">specificity</span><span class="p">,</span>
+        <span class="s2">&quot;precision&quot;</span><span class="p">:</span> <span class="n">precision</span><span class="p">,</span>
+        <span class="s2">&quot;f1&quot;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span>
+        <span class="s2">&quot;mcc&quot;</span><span class="p">:</span> <span class="n">mcc</span><span class="p">,</span>
+        <span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">sensitivity</span> <span class="o">+</span> <span class="n">specificity</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+        <span class="s2">&quot;youden_j&quot;</span><span class="p">:</span> <span class="n">sensitivity</span> <span class="o">+</span> <span class="n">specificity</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">tn</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="optimal_threshold">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.optimal_threshold">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">optimal_threshold</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_score</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">criterion</span><span class="p">:</span> <span class="n">_Criterion</span> <span class="o">=</span> <span class="s2">&quot;youden&quot;</span><span class="p">,</span>
+    <span class="n">cost_fn</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">cost_fp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">min_precision</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_recall</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">n_thresholds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">pos_label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Choose the decision threshold that best serves a stated objective.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary labels.</span>
+<span class="sd">    y_score : array-like of shape (n_samples,)</span>
+<span class="sd">        Scores or probabilities.</span>
+<span class="sd">    criterion : str, default &quot;youden&quot;</span>
+<span class="sd">        What &quot;best&quot; means:</span>
+
+<span class="sd">        ``&quot;youden&quot;``</span>
+<span class="sd">            Maximize Youden&#39;s :math:`J = \mathrm{sensitivity} +</span>
+<span class="sd">            \mathrm{specificity} - 1`. Treats both error types as equally</span>
+<span class="sd">            costly and both classes as equally important; the usual</span>
+<span class="sd">            default when you have no cost information.</span>
+<span class="sd">        ``&quot;mcc&quot;``</span>
+<span class="sd">            Maximize the Matthews correlation coefficient. The most</span>
+<span class="sd">            informative single number on imbalanced data, because it uses</span>
+<span class="sd">            all four cells of the confusion matrix.</span>
+<span class="sd">        ``&quot;f1&quot;``</span>
+<span class="sd">            Maximize F1. Ignores true negatives, so it suits screening</span>
+<span class="sd">            where the inactive majority is uninteresting.</span>
+<span class="sd">        ``&quot;balanced_accuracy&quot;``</span>
+<span class="sd">            Maximize the mean of sensitivity and specificity.</span>
+<span class="sd">        ``&quot;cost&quot;``</span>
+<span class="sd">            Minimize ``cost_fn * FN + cost_fp * FP``. The honest choice</span>
+<span class="sd">            when the two errors have different consequences.</span>
+<span class="sd">        ``&quot;precision&quot;`` / ``&quot;recall&quot;``</span>
+<span class="sd">            Maximize the other of the pair subject to ``min_precision`` or</span>
+<span class="sd">            ``min_recall``. For &quot;find me 200 compounds to test, as pure as</span>
+<span class="sd">            possible&quot; and its mirror image.</span>
+<span class="sd">    cost_fn, cost_fp : float, default 1.0</span>
+<span class="sd">        Relative cost of a false negative and a false positive. Used by</span>
+<span class="sd">        ``criterion=&quot;cost&quot;``.</span>
+<span class="sd">    min_precision : float, optional</span>
+<span class="sd">        Required with ``criterion=&quot;precision&quot;``: the floor precision must</span>
+<span class="sd">        clear, among which recall is maximized.</span>
+<span class="sd">    min_recall : float, optional</span>
+<span class="sd">        Required with ``criterion=&quot;recall&quot;``.</span>
+<span class="sd">    n_thresholds : int, optional</span>
+<span class="sd">        Passed to :func:`threshold_sweep`.</span>
+<span class="sd">    pos_label : optional</span>
+<span class="sd">        Which label is the positive class. Required for string labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        ``threshold``, the ``criterion`` used, its ``score``, and the</span>
+<span class="sd">        confusion matrix and derived rates at that threshold.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``criterion`` is unknown, a required constraint is missing, or</span>
+<span class="sd">        no threshold satisfies the constraint.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Select the threshold on validation data, never on the test set.</span>
+<span class="sd">    A threshold tuned on the same data it is scored on is a fitted</span>
+<span class="sd">    parameter, and the resulting performance is optimistic in exactly the</span>
+<span class="sd">    way an untuned 0.5 cut is not.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import optimal_threshold</span>
+<span class="sd">    &gt;&gt;&gt; y = np.array([0, 0, 0, 0, 1, 1])</span>
+<span class="sd">    &gt;&gt;&gt; scores = np.array([0.1, 0.2, 0.3, 0.55, 0.6, 0.8])</span>
+<span class="sd">    &gt;&gt;&gt; best = optimal_threshold(y, scores, criterion=&quot;youden&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; float(best[&quot;threshold&quot;]), round(best[&quot;score&quot;], 3)</span>
+<span class="sd">    (0.6, 1.0)</span>
+
+<span class="sd">    On an imbalanced set the best threshold is nowhere near 0.5:</span>
+
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; y = np.zeros(1000, dtype=int); y[:30] = 1</span>
+<span class="sd">    &gt;&gt;&gt; scores = rng.beta(2, 8, size=1000) + y * 0.25</span>
+<span class="sd">    &gt;&gt;&gt; chosen = optimal_threshold(y, scores, criterion=&quot;mcc&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; bool(chosen[&quot;threshold&quot;] &lt; 0.5)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    Asymmetric costs move it. Making a missed active ten times as</span>
+<span class="sd">    expensive as a false positive lowers the bar:</span>
+
+<span class="sd">    &gt;&gt;&gt; cheap = optimal_threshold(y, scores, criterion=&quot;cost&quot;,</span>
+<span class="sd">    ...                           cost_fn=1.0, cost_fp=1.0)</span>
+<span class="sd">    &gt;&gt;&gt; costly = optimal_threshold(y, scores, criterion=&quot;cost&quot;,</span>
+<span class="sd">    ...                            cost_fn=10.0, cost_fp=1.0)</span>
+<span class="sd">    &gt;&gt;&gt; bool(costly[&quot;threshold&quot;] &lt;= cheap[&quot;threshold&quot;])</span>
+<span class="sd">    True</span>
+
+<span class="sd">    And a hard constraint is respected rather than traded away:</span>
+
+<span class="sd">    &gt;&gt;&gt; pure = optimal_threshold(y, scores, criterion=&quot;precision&quot;,</span>
+<span class="sd">    ...                          min_precision=0.3)</span>
+<span class="sd">    &gt;&gt;&gt; bool(pure[&quot;precision&quot;] &gt;= 0.3)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    An unreachable constraint is reported, with the best actually</span>
+<span class="sd">    available, rather than quietly relaxed:</span>
+
+<span class="sd">    &gt;&gt;&gt; optimal_threshold(y, scores, criterion=&quot;precision&quot;, min_precision=0.9)</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    ValueError: No threshold reaches precision 0.9. The best available is ...</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Youden, W. J. (1950). Cancer, 3(1), 32-35.</span>
+<span class="sd">      https://doi.org/10.1002/1097-0142(1950)3:1&lt;32::AID-CNCR2820030106&gt;3.0.CO;2-3</span>
+<span class="sd">    - Chicco, D. &amp; Jurman, G. (2020). BMC Genomics, 21, 6.</span>
+<span class="sd">      https://doi.org/10.1186/s12864-019-6413-7</span>
+<span class="sd">    - Elkan, C. (2001). &quot;The Foundations of Cost-Sensitive Learning.&quot;</span>
+<span class="sd">      IJCAI 2001, 973-978.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sweep</span> <span class="o">=</span> <span class="n">threshold_sweep</span><span class="p">(</span>
+        <span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="o">=</span><span class="n">n_thresholds</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="n">pos_label</span>
+    <span class="p">)</span>
+
+    <span class="n">direct</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;youden&quot;</span><span class="p">:</span> <span class="s2">&quot;youden_j&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;f1&quot;</span><span class="p">:</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mcc&quot;</span><span class="p">:</span> <span class="s2">&quot;mcc&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">:</span> <span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">criterion</span> <span class="ow">in</span> <span class="n">direct</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">sweep</span><span class="p">[</span><span class="n">direct</span><span class="p">[</span><span class="n">criterion</span><span class="p">]]</span>
+        <span class="c1"># Ties go to the lower threshold, which keeps more actives.</span>
+        <span class="n">best</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">best</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">criterion</span> <span class="o">==</span> <span class="s2">&quot;cost&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">cost_fn</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">cost_fp</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Costs must be non-negative, got cost_fn=</span><span class="si">{</span><span class="n">cost_fn</span><span class="si">}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;cost_fp=</span><span class="si">{</span><span class="n">cost_fp</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">cost_fn</span> <span class="o">*</span> <span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;fn&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">cost_fp</span> <span class="o">*</span> <span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;fp&quot;</span><span class="p">]</span>
+        <span class="n">best</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">total</span><span class="p">))</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">[</span><span class="n">best</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">criterion</span> <span class="o">==</span> <span class="s2">&quot;precision&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">min_precision</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;criterion=&#39;precision&#39; needs min_precision: it maximizes &quot;</span>
+                <span class="s2">&quot;recall subject to precision staying above that floor.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># Precision is only meaningful where something was predicted positive.</span>
+        <span class="n">eligible</span> <span class="o">=</span> <span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_precision</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;tp&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;fp&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">eligible</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No threshold reaches precision </span><span class="si">{</span><span class="n">min_precision</span><span class="si">}</span><span class="s2">. The best &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;available is </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s1">&#39;precision&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">masked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">eligible</span><span class="p">,</span> <span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;sensitivity&quot;</span><span class="p">],</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        <span class="n">best</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">masked</span><span class="p">))</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;sensitivity&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">criterion</span> <span class="o">==</span> <span class="s2">&quot;recall&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">min_recall</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;criterion=&#39;recall&#39; needs min_recall: it maximizes precision &quot;</span>
+                <span class="s2">&quot;subject to recall staying above that floor.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">eligible</span> <span class="o">=</span> <span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;sensitivity&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_recall</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">eligible</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;No threshold reaches recall </span><span class="si">{</span><span class="n">min_recall</span><span class="si">}</span><span class="s2">. The best &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;available is </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s1">&#39;sensitivity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">masked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">eligible</span><span class="p">,</span> <span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">],</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        <span class="n">best</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">masked</span><span class="p">))</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Unknown criterion </span><span class="si">{</span><span class="n">criterion</span><span class="si">!r}</span><span class="s2">. Choose from &#39;youden&#39;, &#39;mcc&#39;, &quot;</span>
+            <span class="s2">&quot;&#39;f1&#39;, &#39;balanced_accuracy&#39;, &#39;cost&#39;, &#39;precision&#39; or &#39;recall&#39;.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;thresholds&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;criterion&quot;</span><span class="p">:</span> <span class="n">criterion</span><span class="p">,</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">score</span><span class="p">,</span>
+        <span class="s2">&quot;tp&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;tp&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;fp&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;fp&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;tn&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;tn&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;fn&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;fn&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;sensitivity&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;sensitivity&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;specificity&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;specificity&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;precision&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;f1&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;mcc&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;mcc&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">][</span><span class="n">best</span><span class="p">]),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="threshold_report">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.threshold_report">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">threshold_report</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_score</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">n_thresholds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">pos_label</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compare what each criterion would choose, against the 0.5 default.</span>
+
+<span class="sd">    The most useful output when you do not yet know which criterion you</span>
+<span class="sd">    want: it shows how much the choice actually matters on your data, and</span>
+<span class="sd">    what the untuned 0.5 cut is costing.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary labels.</span>
+<span class="sd">    y_score : array-like of shape (n_samples,)</span>
+<span class="sd">        Scores or probabilities.</span>
+<span class="sd">    n_thresholds : int, optional</span>
+<span class="sd">        Passed to :func:`threshold_sweep`.</span>
+<span class="sd">    pos_label : optional</span>
+<span class="sd">        Which label is the positive class. Required for string labels.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        One entry per criterion (``youden``, ``mcc``, ``f1``,</span>
+<span class="sd">        ``balanced_accuracy``), plus ``default_0.5`` evaluated at the</span>
+<span class="sd">        conventional cut, ``base_rate``, and ``roc_auc``/``pr_auc`` for</span>
+<span class="sd">        the threshold-free picture.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import threshold_report</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; y = np.zeros(600, dtype=int); y[:30] = 1</span>
+<span class="sd">    &gt;&gt;&gt; scores = rng.beta(2, 8, size=600) + y * 0.3</span>
+<span class="sd">    &gt;&gt;&gt; report = threshold_report(y, scores)</span>
+<span class="sd">    &gt;&gt;&gt; sorted(k for k in report if isinstance(report[k], dict))</span>
+<span class="sd">    [&#39;balanced_accuracy&#39;, &#39;default_0.5&#39;, &#39;f1&#39;, &#39;mcc&#39;, &#39;youden&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; report[&quot;youden&quot;][&quot;mcc&quot;] &gt; report[&quot;default_0.5&quot;][&quot;mcc&quot;]</span>
+<span class="sd">    True</span>
+
+<span class="sd">    The default cut can miss nearly every active on imbalanced data:</span>
+
+<span class="sd">    &gt;&gt;&gt; report[&quot;default_0.5&quot;][&quot;sensitivity&quot;] &lt; report[&quot;youden&quot;][&quot;sensitivity&quot;]</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Saito, T. &amp; Rehmsmeier, M. (2015). PLoS ONE, 10(3), e0118432.</span>
+<span class="sd">      https://doi.org/10.1371/journal.pone.0118432</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics._classification</span><span class="w"> </span><span class="kn">import</span> <span class="n">pr_auc</span><span class="p">,</span> <span class="n">roc_auc</span>
+
+    <span class="n">labels</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">_check_binary</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="n">pos_label</span><span class="p">)</span>
+    <span class="n">report</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;base_rate&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+        <span class="s2">&quot;n_samples&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+        <span class="s2">&quot;roc_auc&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">roc_auc</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">scores</span><span class="p">)),</span>
+        <span class="s2">&quot;pr_auc&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">pr_auc</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">scores</span><span class="p">)),</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">criterion</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;youden&quot;</span><span class="p">,</span> <span class="s2">&quot;mcc&quot;</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">):</span>
+        <span class="n">report</span><span class="p">[</span><span class="n">criterion</span><span class="p">]</span> <span class="o">=</span> <span class="n">optimal_threshold</span><span class="p">(</span>
+            <span class="n">labels</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="n">criterion</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="o">=</span><span class="n">n_thresholds</span>
+        <span class="p">)</span>
+
+    <span class="n">sweep</span> <span class="o">=</span> <span class="n">threshold_sweep</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">n_thresholds</span><span class="o">=</span><span class="n">n_thresholds</span><span class="p">)</span>
+    <span class="n">at_half</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;thresholds&quot;</span><span class="p">],</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">))</span>
+    <span class="n">at_half</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">at_half</span><span class="p">,</span> <span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;thresholds&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">report</span><span class="p">[</span><span class="s2">&quot;default_0.5&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s2">&quot;sensitivity&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;sensitivity&quot;</span><span class="p">][</span><span class="n">at_half</span><span class="p">]),</span>
+        <span class="s2">&quot;specificity&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;specificity&quot;</span><span class="p">][</span><span class="n">at_half</span><span class="p">]),</span>
+        <span class="s2">&quot;precision&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">][</span><span class="n">at_half</span><span class="p">]),</span>
+        <span class="s2">&quot;f1&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">][</span><span class="n">at_half</span><span class="p">]),</span>
+        <span class="s2">&quot;mcc&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;mcc&quot;</span><span class="p">][</span><span class="n">at_half</span><span class="p">]),</span>
+        <span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;balanced_accuracy&quot;</span><span class="p">][</span><span class="n">at_half</span><span class="p">]),</span>
+        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">][</span><span class="n">at_half</span><span class="p">]),</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">report</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Frederico Schmitt Kremer
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-09-25</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=f129cdf0"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

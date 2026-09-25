@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Applicability domain" href="applicability.html"><link rel="prev" title="Representation" href="representation.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Modeling - qsarkit 0.2</title>
+        <title>Modeling - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
 <li class="toctree-l2"><a class="reference internal" href="applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -251,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/blob/main/docs/source/guide/modeling.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/guide/modeling.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/edit/main/docs/source/guide/modeling.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/guide/modeling.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -277,12 +279,34 @@
 <h1>Modeling<a class="headerlink" href="#modeling" title="Link to this heading">¶</a></h1>
 <section id="estimators">
 <h2>Estimators<a class="headerlink" href="#estimators" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARRegressor</span><span class="p">,</span> <span class="n">QSARClassifier</span><span class="p">,</span> <span class="n">ConsensusModel</span>
-
-<span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;gp&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>          <span class="c1"># Tanimoto-kernel Gaussian process</span>
-<span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;pls&quot;</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>   <span class="c1"># with VIP scores</span>
-<span class="n">ConsensusModel</span><span class="p">([</span><span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">),</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;svm&quot;</span><span class="p">)])</span>
+<p><a class="reference internal" href="../api/models.html#qsarkit.models.QSARRegressor" title="qsarkit.models.QSARRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">QSARRegressor</span></code></a> and
+<a class="reference internal" href="../api/models.html#qsarkit.models.QSARClassifier" title="qsarkit.models.QSARClassifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">QSARClassifier</span></code></a> put a broad menu of algorithms
+behind one name, so comparing backends is a one-word change:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARRegressor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">demo_fingerprints</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span> <span class="n">DEMO_Y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.953</span>
+</pre></div>
+</div>
+<p>Backend-specific arguments go through <code class="docutils literal notranslate"><span class="pre">model_params</span></code>, not as keywords —
+the facade’s own signature stays the same whichever algorithm you pick:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pls</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;pls&quot;</span><span class="p">,</span> <span class="n">model_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;n_components&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pls</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24,)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gp</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;gp&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>   <span class="c1"># Tanimoto-kernel GP</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gp</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24,)</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../api/models.html#qsarkit.models.ConsensusModel" title="qsarkit.models.ConsensusModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConsensusModel</span></code></a> takes <code class="docutils literal notranslate"><span class="pre">(name,</span> <span class="pre">estimator)</span></code> pairs,
+like scikit-learn’s own ensembles:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConsensusModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ensemble</span> <span class="o">=</span> <span class="n">ConsensusModel</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;svm&quot;</span><span class="p">,</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;svm&quot;</span><span class="p">)),</span>
+<span class="gp">... </span><span class="p">])</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ensemble</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24,)</span>
 </pre></div>
 </div>
 <p>All follow the scikit-learn API, so they drop into
@@ -290,41 +314,185 @@
 <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html#sklearn.model_selection.GridSearchCV" title="(in scikit-learn v1.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">GridSearchCV</span></code></a> and
 <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.base.clone.html#sklearn.base.clone" title="(in scikit-learn v1.9)"><code class="xref py py-func docutils literal notranslate"><span class="pre">clone()</span></code></a>.</p>
 </section>
+<section id="any-estimator-not-just-the-menu">
+<h2>Any estimator, not just the menu<a class="headerlink" href="#any-estimator-not-just-the-menu" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">name</span></code> also accepts anything following the scikit-learn <code class="docutils literal notranslate"><span class="pre">fit</span></code>/
+<code class="docutils literal notranslate"><span class="pre">predict</span></code> protocol — XGBoost, LightGBM, CatBoost, or your own wrapper —
+as a class or an instance:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ridge</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="n">Ridge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">2.0</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">estimator_</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">estimator_</span><span class="o">.</span><span class="n">alpha</span>
+<span class="go">(&#39;Ridge&#39;, 2.0)</span>
+</pre></div>
+</div>
+<p>The instance you pass is cloned, never mutated, so one configured template
+can seed several models:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="n">Ridge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="n">template</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="s2">&quot;coef_&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">model_args</span></code>/<code class="docutils literal notranslate"><span class="pre">model_params</span></code> go to the constructor; <code class="docutils literal notranslate"><span class="pre">fit_params</span></code>,
+<code class="docutils literal notranslate"><span class="pre">predict_params</span></code> and <code class="docutils literal notranslate"><span class="pre">predict_proba_params</span></code> reach arguments that belong
+to the call rather than the constructor — XGBoost’s <code class="docutils literal notranslate"><span class="pre">eval_set</span></code>,
+LightGBM’s <code class="docutils literal notranslate"><span class="pre">callbacks</span></code>, a <code class="docutils literal notranslate"><span class="pre">sample_weight</span></code> array:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="n">Ridge</span><span class="p">,</span> <span class="n">fit_params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;sample_weight&quot;</span><span class="p">:</span> <span class="n">weights</span><span class="p">})</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24,)</span>
+</pre></div>
+</div>
+</section>
 <section id="splitting">
 <h2>Splitting<a class="headerlink" href="#splitting" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScaffoldSplitter</span><span class="p">,</span> <span class="n">ButinaClusterSplitter</span>
-
-<span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">ScaffoldSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">split_mols</span><span class="p">(</span><span class="n">mols</span><span class="p">))</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScaffoldSplitter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">ScaffoldSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">split_mols</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<span class="go">(18, 6)</span>
+</pre></div>
+</div>
+<p>The guarantee is that no scaffold appears on both sides:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">bemis_murcko_smiles</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_scaffolds</span> <span class="o">=</span> <span class="p">{</span><span class="n">bemis_murcko_smiles</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">train</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_scaffolds</span> <span class="o">=</span> <span class="p">{</span><span class="n">bemis_murcko_smiles</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">test</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_scaffolds</span> <span class="o">&amp;</span> <span class="n">test_scaffolds</span>
+<span class="go">set()</span>
 </pre></div>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>A random split flatters a QSAR model. Public datasets are full of
+<p><strong>A random split flatters a QSAR model.</strong> Public datasets are full of
 near-duplicate analogues, so a random split puts close relatives on both
-sides and measures interpolation, not generalization. Report a scaffold
-or cluster split unless you have a specific reason not to.</p>
+sides and measures interpolation, not generalization.</p>
+<p>On this dataset the difference is not subtle — same data, same model,
+same seed:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">q2_f1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomSplitter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">q2_f1</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">]),</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">score</span><span class="p">(</span><span class="o">*</span><span class="nb">next</span><span class="p">(</span><span class="n">RandomSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)))</span>
+<span class="go">0.81</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">score</span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+<span class="go">-0.89</span>
+</pre></div>
+</div>
+<p>Both numbers are honestly computed. Only the second answers “will this
+work on chemistry I have not seen”. Report a scaffold or cluster split
+unless you have a specific reason not to.</p>
+</div>
+<p><a class="reference internal" href="../api/model_selection.html#qsarkit.model_selection.ButinaClusterSplitter" title="qsarkit.model_selection.ButinaClusterSplitter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ButinaClusterSplitter</span></code></a> splits by
+similarity cluster rather than scaffold, which catches analogue series that
+share no Bemis-Murcko framework:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ButinaClusterSplitter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">btrain</span><span class="p">,</span> <span class="n">btest</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ButinaClusterSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span><span class="o">.</span><span class="n">split_mols</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">btrain</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">btest</span><span class="p">)</span>
+<span class="go">(18, 6)</span>
+</pre></div>
 </div>
 <p><a class="reference internal" href="../api/model_selection.html#qsarkit.model_selection.TimeSplitter" title="qsarkit.model_selection.TimeSplitter"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSplitter</span></code></a> is the most honest of all
-where you have dates: it reproduces the real prospective task.</p>
+where you have dates: it reproduces the real prospective task, and is
+reliably the most pessimistic.</p>
 </section>
 <section id="feature-selection">
 <h2>Feature selection<a class="headerlink" href="#feature-selection" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">BorutaSelector</span><span class="p">,</span> <span class="n">CorrelationFilter</span>
-
-<span class="n">CorrelationFilter</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">BorutaSelector</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">get_support</span><span class="p">()</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">CorrelationFilter</span><span class="p">,</span> <span class="n">VarianceFilter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">VarianceFilter</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 121)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CorrelationFilter</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 59)</span>
 </pre></div>
 </div>
+<p>More than three-quarters of a 512-bit fingerprint never fires on 24
+compounds. The unsupervised filters are safe anywhere because they never
+look at <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+<p><a class="reference internal" href="../api/feature_selection.html#qsarkit.feature_selection.BorutaSelector" title="qsarkit.feature_selection.BorutaSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">BorutaSelector</span></code></a> asks a different
+question — which features carry more signal than random noise — and answers
+with a set of whatever size the data supports:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">BorutaSelector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">boruta</span> <span class="o">=</span> <span class="n">BorutaSelector</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="p">(</span><span class="n">boruta</span><span class="o">.</span><span class="n">get_support</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Select features inside the cross-validation loop.</strong> Choosing columns
+using all the labels and then splitting is selection bias: the choice
+has already seen the test labels, and the held-out score is optimistic
+by an amount you cannot estimate afterwards.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_val_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">MutualInformationSelector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">leaky</span> <span class="o">=</span> <span class="n">MutualInformationSelector</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">honest</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="n">MutualInformationSelector</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">20</span><span class="p">)),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">outside</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">leaky</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inside</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">honest</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">bool</span><span class="p">(</span><span class="n">outside</span> <span class="o">&gt;</span> <span class="n">inside</span><span class="p">)</span>      <span class="c1"># the optimism, measured</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="hyperparameters">
+<h2>Hyperparameters<a class="headerlink" href="#hyperparameters" title="Link to this heading">¶</a></h2>
+<p>Tuning on the same folds you report from leaks the test set into the
+hyperparameter choice. <a class="reference internal" href="../api/model_selection.html#qsarkit.model_selection.NestedCV" title="qsarkit.model_selection.NestedCV"><code class="xref py py-class docutils literal notranslate"><span class="pre">NestedCV</span></code></a> keeps
+selection and assessment apart:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">NestedCV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nested</span> <span class="o">=</span> <span class="n">NestedCV</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;ridge&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;model_params&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="mf">10.0</span><span class="p">}]},</span>
+<span class="gp">... </span>    <span class="n">inner_cv</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">outer_cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">nested</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="go">[&#39;best_params&#39;, &#39;mean_score&#39;, &#39;scores&#39;, &#39;std_score&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;scores&quot;</span><span class="p">])</span>
+<span class="go">5</span>
+</pre></div>
+</div>
+<p>Disagreement between the outer folds about the best value is itself the
+finding: it says the choice is not well determined by this much data, so a
+single “best” hyperparameter reported from one grid search would be noise.</p>
 </section>
 <section id="metrics">
 <h2>Metrics<a class="headerlink" href="#metrics" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">qsar_regression_report</span><span class="p">,</span> <span class="n">q2_f3</span><span class="p">,</span> <span class="n">ccc</span><span class="p">,</span> <span class="n">bedroc</span>
-
-<span class="n">qsar_regression_report</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">qsar_regression_report</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">qsar_regression_report</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+<span class="go">[&#39;average_r2m&#39;, &#39;ccc&#39;, &#39;delta_r2m&#39;, &#39;golbraikh_tropsha&#39;, &#39;mae&#39;, &#39;q2_f2&#39;, &#39;r2&#39;, &#39;rmse&#39;]</span>
 </pre></div>
 </div>
-<p>Prefer Q²F3 to R² on external sets, and BEDROC to ROC-AUC for virtual
-screening, where only the top of the ranked list matters.</p>
+<p>Prefer Q²F1–F3 to R² on external sets: they are scaled by the <em>training</em>
+set variance, so they cannot be inflated by a test set that happens to span
+a wide activity range. For virtual screening prefer BEDROC to ROC-AUC,
+since only the top of the ranked list will ever be tested.</p>
+<p>Every regression metric here assumes roughly normal, homoscedastic errors.
+When that fails they still compute and quietly mean something else — see
+<a class="reference internal" href="oecd.html"><span class="doc">OECD validation</span></a> for the diagnostics, and for the full validation picture.</p>
+</section>
+<section id="the-same-thing-as-a-pipe">
+<h2>The same thing as a pipe<a class="headerlink" href="#the-same-thing-as-a-pipe" title="Link to this heading">¶</a></h2>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional</span><span class="w"> </span><span class="kn">import</span> <span class="n">fingerprint</span><span class="p">,</span> <span class="n">fit</span><span class="p">,</span> <span class="n">molecules</span><span class="p">,</span> <span class="n">split</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train_set</span><span class="p">,</span> <span class="n">test_set</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">fingerprint</span><span class="p">(</span><span class="s2">&quot;morgan&quot;</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="o">&gt;&gt;</span> <span class="n">split</span><span class="p">(</span><span class="s2">&quot;scaffold&quot;</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">train_set</span> <span class="o">&gt;&gt;</span> <span class="n">fit</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_set</span><span class="o">.</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(6,)</span>
+</pre></div>
+</div>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
@@ -336,9 +504,18 @@ screening, where only the top of the ranked list matters.</p>
 <em>Neural Netw.</em>, 18(8), 1093-1110. <a class="extlink-doi reference external" href="https://doi.org/10.1016/j.neunet.2005.07.009">doi:10.1016/j.neunet.2005.07.009</a></p></li>
 <li><p>Wu, Z. et al. (2018). “MoleculeNet: A Benchmark for Molecular Machine
 Learning.” <em>Chem. Sci.</em>, 9, 513-530. <a class="extlink-doi reference external" href="https://doi.org/10.1039/C7SC02664A">doi:10.1039/C7SC02664A</a></p></li>
+<li><p>Sheridan, R. P. (2013). “Time-Split Cross-Validation as a Method for
+Estimating the Goodness of Prospective Prediction.” <em>J. Chem. Inf.
+Model.</em>, 53(4), 783-790. <a class="extlink-doi reference external" href="https://doi.org/10.1021/ci400084k">doi:10.1021/ci400084k</a></p></li>
 <li><p>Truchon, J.-F. &amp; Bayly, C. I. (2007). “Evaluating Virtual Screening
 Methods: Good and Bad Metrics for the ‘Early Recognition’ Problem.”
 <em>J. Chem. Inf. Model.</em>, 47(2), 488-508. <a class="extlink-doi reference external" href="https://doi.org/10.1021/ci600426e">doi:10.1021/ci600426e</a></p></li>
+<li><p>Cawley, G. C. &amp; Talbot, N. L. C. (2010). “On Over-fitting in Model
+Selection and Subsequent Selection Bias in Performance Evaluation.”
+<em>J. Mach. Learn. Res.</em>, 11, 2079-2107.
+<a class="reference external" href="https://jmlr.org/papers/v11/cawley10a.html">https://jmlr.org/papers/v11/cawley10a.html</a></p></li>
+<li><p>Kursa, M. B. &amp; Rudnicki, W. R. (2010). “Feature Selection with the Boruta
+Package.” <em>J. Stat. Softw.</em>, 36(11), 1-13. <a class="extlink-doi reference external" href="https://doi.org/10.18637/jss.v036.i11">doi:10.18637/jss.v036.i11</a></p></li>
 </ul>
 </section>
 </section>
@@ -378,7 +555,7 @@ Methods: Good and Bad Metrics for the ‘Early Recognition’ Problem.”
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-10</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -401,9 +578,12 @@ Methods: Good and Bad Metrics for the ‘Early Recognition’ Problem.”
             <ul>
 <li><a class="reference internal" href="#">Modeling</a><ul>
 <li><a class="reference internal" href="#estimators">Estimators</a></li>
+<li><a class="reference internal" href="#any-estimator-not-just-the-menu">Any estimator, not just the menu</a></li>
 <li><a class="reference internal" href="#splitting">Splitting</a></li>
 <li><a class="reference internal" href="#feature-selection">Feature selection</a></li>
+<li><a class="reference internal" href="#hyperparameters">Hyperparameters</a></li>
 <li><a class="reference internal" href="#metrics">Metrics</a></li>
+<li><a class="reference internal" href="#the-same-thing-as-a-pipe">The same thing as a pipe</a></li>
 <li><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>
@@ -416,7 +596,7 @@ Methods: Good and Bad Metrics for the ‘Early Recognition’ Problem.”
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

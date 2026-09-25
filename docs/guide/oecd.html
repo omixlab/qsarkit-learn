@@ -3,10 +3,10 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="API reference" href="../api/index.html"><link rel="prev" title="SAR interpretation" href="sar.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Saving and sharing a model" href="deployment.html"><link rel="prev" title="SAR interpretation" href="sar.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>OECD validation - qsarkit 0.2</title>
+        <title>OECD validation - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
 <li class="toctree-l2"><a class="reference internal" href="applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sar.html">SAR interpretation</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -251,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/blob/main/docs/source/guide/oecd.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/guide/oecd.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/edit/main/docs/source/guide/oecd.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/guide/oecd.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -435,6 +437,99 @@ you nothing:</p>
 </pre></div>
 </div>
 </section>
+<section id="which-metrics-do-you-actually-need">
+<h2>Which metrics do you actually need?<a class="headerlink" href="#which-metrics-do-you-actually-need" title="Link to this heading">¶</a></h2>
+<p>A short answer to a question this guide is often asked, with what qsarkit
+provides for each.</p>
+<p><strong>Regression</strong></p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Question</p></th>
+<th class="head"><p>Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Does it fit?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">r2_score</span></code>, <code class="docutils literal notranslate"><span class="pre">rmse</span></code>, <code class="docutils literal notranslate"><span class="pre">mae</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Does it predict?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">q2_f1</span></code> / <code class="docutils literal notranslate"><span class="pre">q2_f2</span></code> / <code class="docutils literal notranslate"><span class="pre">q2_f3</span></code>, <code class="docutils literal notranslate"><span class="pre">ccc</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Does it predict <em>honestly</em>?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">golbraikh_tropsha_criteria</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Is the fit real?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">YScrambling</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>How precise is the score?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">BootstrapValidator</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Do the error assumptions hold?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">residual_normality</span></code>, <code class="docutils literal notranslate"><span class="pre">qq_data</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The last row is the one most often skipped. RMSE, <span class="math notranslate nohighlight">\(R^2\)</span> and the
+Golbraikh-Tropsha criteria all assume roughly normal, homoscedastic
+errors; when that fails they still compute and quietly describe something
+else.</p>
+<p><strong>Classification</strong></p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Question</p></th>
+<th class="head"><p>Use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Does it rank actives first?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">roc_auc</span></code>, <code class="docutils literal notranslate"><span class="pre">bedroc</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>…on an imbalanced set?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pr_auc</span></code>, <code class="docutils literal notranslate"><span class="pre">enrichment_factor</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Does it classify?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">matthews_corrcoef</span></code>, <code class="docutils literal notranslate"><span class="pre">balanced_accuracy</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Are the probabilities real?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">calibration_report</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Where should the cutoff be?</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">optimal_threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">threshold_report</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Three traps, in order of how often they are hit:</p>
+<p><strong>Accuracy on an imbalanced set.</strong> A model that calls everything inactive
+scores 92% on an 8%-active deck. Use MCC or balanced accuracy.</p>
+<p><strong>ROC-AUC as a proxy for probability quality.</strong> ROC depends only on the
+<em>ranking</em> of scores, so a model can have excellent AUC and useless
+probabilities. If you will threshold, combine or cost-weight them, check
+<code class="docutils literal notranslate"><span class="pre">calibration_report</span></code> first — and read <code class="docutils literal notranslate"><span class="pre">brier_skill_score</span></code> rather than
+the raw Brier score, which looks excellent on imbalanced data and is often
+worse than predicting the base rate.</p>
+<p><strong>The 0.5 cutoff.</strong> <code class="docutils literal notranslate"><span class="pre">predict()</span></code> cuts at 0.5, which is almost never
+right. On an imbalanced set the Youden-optimal threshold can find every
+active where 0.5 finds under half. Select it on validation data, never on
+the test set: a tuned threshold is a fitted parameter.</p>
+<p><strong>Bootstrap or y-randomization?</strong> Both, for different questions.
+y-randomization asks <em>is the fit real</em> — could the model achieve this
+score on permuted labels? The bootstrap asks <em>how precise is the score</em> —
+what interval does it sit in? A model can pass the first and still have an
+interval too wide to distinguish it from any alternative, which is the
+usual situation on a few dozen compounds.</p>
+</section>
 <section id="reporting">
 <h2>Reporting<a class="headerlink" href="#reporting" title="Link to this heading">¶</a></h2>
 <p><a class="reference internal" href="../api/reporting.html#qsarkit.reporting.OECDReportBuilder" title="qsarkit.reporting.OECDReportBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">OECDReportBuilder</span></code></a> structures all of the above
@@ -531,12 +626,12 @@ Being Earnest.” <em>QSAR Comb. Sci.</em>, 22(1), 69-77.
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../api/index.html">
+          <a class="next-page" href="deployment.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">API reference</div>
+                <div class="title">Saving and sharing a model</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -561,7 +656,7 @@ Being Earnest.” <em>QSAR Comb. Sci.</em>, 22(1), 69-77.
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-10</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -585,6 +680,7 @@ Being Earnest.” <em>QSAR Comb. Sci.</em>, 22(1), 69-77.
 <li><a class="reference internal" href="#">OECD validation</a><ul>
 <li><a class="reference internal" href="#principle-4-in-practice">Principle 4 in practice</a></li>
 <li><a class="reference internal" href="#principle-3-the-applicability-domain">Principle 3: the applicability domain</a></li>
+<li><a class="reference internal" href="#which-metrics-do-you-actually-need">Which metrics do you actually need?</a></li>
 <li><a class="reference internal" href="#reporting">Reporting</a></li>
 <li><a class="reference internal" href="#output-formats">Output formats</a></li>
 <li><a class="reference internal" href="#references">References</a></li>
@@ -599,12 +695,14 @@ Being Earnest.” <em>QSAR Comb. Sci.</em>, 22(1), 69-77.
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>window.MathJax = {"tex": {"packages": {"[+]": ["ams", "boldsymbol"]}, "inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "macros": {"Tanimoto": "T", "Rsq": "R^{2}", "Qsq": ["Q^{2}_{\\mathrm{#1}}", 1], "RMSE": "\\mathrm{RMSE}", "ECE": "\\mathrm{ECE}", "argmax": "\\operatorname*{arg\\,max}", "argmin": "\\operatorname*{arg\\,min}"}}, "options": {"ignoreHtmlClass": "highlight|no-mathjax", "processHtmlClass": "math|tex2jax_process"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     </body>
 </html>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="SAR interpretation" href="sar.html"><link rel="prev" title="Modeling" href="modeling.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Applicability domain - qsarkit 0.2</title>
+        <title>Applicability domain - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -251,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/blob/main/docs/source/guide/applicability.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/guide/applicability.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/edit/main/docs/source/guide/applicability.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/guide/applicability.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -282,13 +284,34 @@ is, formally, not a validated QSAR model.</p>
 <h2>The interface<a class="headerlink" href="#the-interface" title="Link to this heading">¶</a></h2>
 <p>Every domain estimator in <a class="reference internal" href="../api/applicability.html#module-qsarkit.applicability" title="qsarkit.applicability"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qsarkit.applicability</span></code></a> shares one
 interface:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">domain</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>             <span class="c1"># learn the domain</span>
-<span class="n">domain</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>               <span class="c1"># bool array: True = inside</span>
-<span class="n">domain</span><span class="o">.</span><span class="n">score_samples</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>         <span class="c1"># continuous; larger = further outside</span>
-<span class="n">domain</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>     <span class="c1"># signed margin; positive = inside</span>
-<span class="n">domain</span><span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>              <span class="c1"># fraction inside</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.applicability</span><span class="w"> </span><span class="kn">import</span> <span class="n">KNNApplicabilityDomain</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScaffoldSplitter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">demo_fingerprints</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span> <span class="n">DEMO_Y</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">ScaffoldSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span><span class="o">.</span><span class="n">split_mols</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">domain</span> <span class="o">=</span> <span class="n">KNNApplicabilityDomain</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">domain</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">])</span>                   <span class="c1"># bool array: True = inside</span>
+<span class="go">array([ True, False, False, False, False, False])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">domain</span><span class="o">.</span><span class="n">score_samples</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span>       <span class="c1"># larger = further outside</span>
+<span class="go">(6,)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">domain</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span>   <span class="c1"># positive = inside</span>
+<span class="go">(6,)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">]),</span> <span class="mi">3</span><span class="p">)</span>        <span class="c1"># fraction inside</span>
+<span class="go">0.167</span>
 </pre></div>
 </div>
+<p>Five of the six held-out compounds fall outside — which is <em>correct</em> here,
+because the scaffold split held out an entire chemotype. Swap in a random
+split and the same domain on the same data says nearly the opposite:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomSplitter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rtrain</span><span class="p">,</span> <span class="n">rtest</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">RandomSplitter</span><span class="p">(</span><span class="n">test_size</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">KNNApplicabilityDomain</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">rtrain</span><span class="p">])</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">rtest</span><span class="p">])</span>
+<span class="go">array([ True,  True,  True,  True,  True, False])</span>
+</pre></div>
+</div>
+<p>17% in-domain against 83%. Nothing changed but which compounds were held
+out. <strong>If your applicability domain marks nearly everything in-domain,
+suspect the split before congratulating the model.</strong></p>
 </section>
 <section id="choosing-a-definition">
 <h2>Choosing a definition<a class="headerlink" href="#choosing-a-definition" title="Link to this heading">¶</a></h2>
@@ -338,22 +361,90 @@ comparative studies.</p>
 <p>A domain is only useful if excluding what it rejects improves accuracy on
 what it keeps. <a class="reference internal" href="../api/applicability.html#qsarkit.applicability.ADAnalyzer" title="qsarkit.applicability.ADAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ADAnalyzer</span></code></a> measures exactly
 that:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.applicability</span><span class="w"> </span><span class="kn">import</span> <span class="n">ADAnalyzer</span><span class="p">,</span> <span class="n">KNNApplicabilityDomain</span>
-
-<span class="n">analyzer</span> <span class="o">=</span> <span class="n">ADAnalyzer</span><span class="p">(</span><span class="n">KNNApplicabilityDomain</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
-
-<span class="n">analyzer</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-<span class="c1"># {&#39;coverage&#39;: 0.87, &#39;rmse_inside&#39;: 0.42, &#39;rmse_outside&#39;: 1.13,</span>
-<span class="c1">#  &#39;rmse_ratio&#39;: 2.69, ...}</span>
-
-<span class="n">analyzer</span><span class="o">.</span><span class="n">accuracy_vs_coverage</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>   <span class="c1"># DataFrame</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">plot_accuracy_vs_coverage</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">williams_plot</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.applicability</span><span class="w"> </span><span class="kn">import</span> <span class="n">ADAnalyzer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARRegressor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">ADAnalyzer</span><span class="p">(</span><span class="n">KNNApplicabilityDomain</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+<span class="go">[&#39;coverage&#39;, &#39;mae_inside&#39;, &#39;mae_outside&#39;, &#39;n_inside&#39;, &#39;n_outside&#39;, &#39;rmse_inside&#39;, &#39;rmse_outside&#39;, &#39;rmse_ratio&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;n_inside&quot;</span><span class="p">],</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;n_outside&quot;</span><span class="p">]</span>
+<span class="go">(1, 5)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;rmse_ratio&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">1.13</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">rmse_ratio</span></code> above 1 means out-of-domain predictions really are worse — the
-domain is carrying information. A ratio near 1 means it is not, however
-statistically principled it looks.</p>
+<p><code class="docutils literal notranslate"><span class="pre">rmse_ratio</span></code> above 1 means out-of-domain predictions really are worse —
+the domain is carrying information. A ratio near 1 means it is not, however
+statistically principled it looks. 1.13 on one in-domain compound is weak
+evidence either way, which is itself worth knowing: this dataset is too
+small for the domain to be characterised confidently.</p>
+<p>On the random split the same measurement is equally uninformative, for the
+opposite reason — almost nothing is outside to compare against:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">loose</span> <span class="o">=</span> <span class="n">ADAnalyzer</span><span class="p">(</span><span class="n">KNNApplicabilityDomain</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">rtrain</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rmodel</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">rtrain</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">rtrain</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loose_report</span> <span class="o">=</span> <span class="n">loose</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">rtest</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">rtest</span><span class="p">],</span> <span class="n">rmodel</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">rtest</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">loose_report</span><span class="p">[</span><span class="s2">&quot;n_inside&quot;</span><span class="p">],</span> <span class="n">loose_report</span><span class="p">[</span><span class="s2">&quot;n_outside&quot;</span><span class="p">]</span>
+<span class="go">(5, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">loose_report</span><span class="p">[</span><span class="s2">&quot;rmse_ratio&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">1.11</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">rmse_ratio</span></code> is undefined when <em>every</em> test compound lands on one
+side. A domain with 100% coverage has told you nothing, and the report
+returns <code class="docutils literal notranslate"><span class="pre">nan</span></code> rather than a misleading number:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.applicability</span><span class="w"> </span><span class="kn">import</span> <span class="n">TanimotoSimilarityAD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">permissive</span> <span class="o">=</span> <span class="n">ADAnalyzer</span><span class="p">(</span><span class="n">TanimotoSimilarityAD</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mf">0.05</span><span class="p">))</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">rtrain</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wide</span> <span class="o">=</span> <span class="n">permissive</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">rtest</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">rtest</span><span class="p">],</span> <span class="n">rmodel</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">rtest</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wide</span><span class="p">[</span><span class="s2">&quot;coverage&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">wide</span><span class="p">[</span><span class="s2">&quot;rmse_ratio&quot;</span><span class="p">]))</span>
+<span class="go">(1.0, True)</span>
+</pre></div>
+</div>
+</div>
+<p>The accuracy-versus-coverage curve is the more informative view, because it
+shows the whole trade-off rather than one threshold’s worth of it:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">curve</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">accuracy_vs_coverage</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">curve</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="go">[&#39;coverage&#39;, &#39;n_samples&#39;, &#39;rmse&#39;, &#39;mae&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">plot_accuracy_vs_coverage</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">))</span><span class="o">.</span><span class="vm">__name__</span>
+<span class="go">&#39;Figure&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">williams_plot</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">y_pred</span><span class="p">))</span><span class="o">.</span><span class="vm">__name__</span>
+<span class="go">&#39;Figure&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="choosing-the-threshold">
+<h2>Choosing the threshold<a class="headerlink" href="#choosing-the-threshold" title="Link to this heading">¶</a></h2>
+<p>The threshold is a real decision, not a formality — it sets how much of
+your test set you are declining to predict. On fingerprints,
+<a class="reference internal" href="../api/applicability.html#qsarkit.applicability.TanimotoSimilarityAD" title="qsarkit.applicability.TanimotoSimilarityAD"><code class="xref py py-class docutils literal notranslate"><span class="pre">TanimotoSimilarityAD</span></code></a> is the definition that
+matches how a chemist judges novelty:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">threshold</span> <span class="ow">in</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">inside</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">TanimotoSimilarityAD</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">])</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;threshold </span><span class="si">{</span><span class="n">threshold</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">inside</span><span class="si">}</span><span class="s2">/6 in domain&quot;</span><span class="p">)</span>
+<span class="go">threshold 0.2: 6/6 in domain</span>
+<span class="go">threshold 0.3: 3/6 in domain</span>
+<span class="go">threshold 0.45: 0/6 in domain</span>
+</pre></div>
+</div>
+<p>The whole range from “predict everything” to “predict nothing” spans 0.25
+Tanimoto units here, so the choice is consequential and the default will
+not suit every dataset. Pick it from the accuracy-versus-coverage curve on
+validation data, not by whichever value makes the coverage number look
+best.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Those thresholds look low for a similarity cutoff. Morgan fingerprints
+of small molecules score far below intuition, because one substituent
+alters every atom environment within the fingerprint radius. A
+threshold calibrated on drug-sized molecules will reject an entire
+fragment dataset.</p>
+</div>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
@@ -408,7 +499,7 @@ Inf. Comput. Sci.</em>, 44(6), 1912-1928. <a class="extlink-doi reference extern
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-10</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -433,6 +524,7 @@ Inf. Comput. Sci.</em>, 44(6), 1912-1928. <a class="extlink-doi reference extern
 <li><a class="reference internal" href="#the-interface">The interface</a></li>
 <li><a class="reference internal" href="#choosing-a-definition">Choosing a definition</a></li>
 <li><a class="reference internal" href="#does-the-domain-actually-help">Does the domain actually help?</a></li>
+<li><a class="reference internal" href="#choosing-the-threshold">Choosing the threshold</a></li>
 <li><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>
@@ -445,7 +537,7 @@ Inf. Comput. Sci.</em>, 44(6), 1912-1928. <a class="extlink-doi reference extern
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

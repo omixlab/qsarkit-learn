@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="OECD validation" href="oecd.html"><link rel="prev" title="Applicability domain" href="applicability.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>SAR interpretation - qsarkit 0.2</title>
+        <title>SAR interpretation - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
 <li class="toctree-l2"><a class="reference internal" href="applicability.html">Applicability domain</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -251,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/blob/main/docs/source/guide/sar.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/guide/sar.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/edit/main/docs/source/guide/sar.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/guide/sar.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -283,28 +285,54 @@ principle that every regression model relies on: a model that cannot
 reproduce them will systematically mispredict the most interesting
 compounds in your series.</p>
 <p>Run this <strong>before</strong> you tune a model, not after:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">activity_cliff_report</span>
-
-<span class="n">report</span> <span class="o">=</span> <span class="n">activity_cliff_report</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">pIC50</span><span class="p">)</span>
-<span class="n">report</span><span class="p">[</span><span class="s2">&quot;n_cliffs&quot;</span><span class="p">]</span>
-<span class="n">report</span><span class="p">[</span><span class="s2">&quot;cliff_ratio&quot;</span><span class="p">]</span>              <span class="c1"># cliffs / all pairs</span>
-<span class="n">report</span><span class="p">[</span><span class="s2">&quot;cliff_compound_fraction&quot;</span><span class="p">]</span>  <span class="c1"># compounds in at least one cliff</span>
-<span class="n">report</span><span class="p">[</span><span class="s2">&quot;top_transformations&quot;</span><span class="p">]</span>      <span class="c1"># which R-group swaps cause them</span>
-<span class="n">report</span><span class="p">[</span><span class="s2">&quot;top_scaffolds&quot;</span><span class="p">]</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">activity_cliff_report</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">activity_cliff_report</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">,</span> <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;n_cliffs&quot;</span><span class="p">],</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;n_pairs&quot;</span><span class="p">]</span>
+<span class="go">(4, 276)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;cliff_ratio&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>              <span class="c1"># cliffs / all pairs</span>
+<span class="go">0.0145</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;cliff_compound_fraction&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># compounds in &gt;= 1 cliff</span>
+<span class="go">0.2083</span>
 </pre></div>
 </div>
+<p>The two numbers say different things. 1.5% of <em>pairs</em> are cliffs, but they
+involve 21% of the <em>compounds</em> — so a fifth of this series sits on a
+discontinuity a regression model cannot fit.</p>
+<p>What a chemist can act on is which change causes them:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;top_transformations&quot;</span><span class="p">])</span>
+<span class="go">[&#39;[1*]C&gt;&gt;[1*]Cl&#39;, &#39;[1*]Cl&gt;&gt;[1*]Br&#39;, &#39;[1*]Cl&gt;&gt;[1*]N&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;top_scaffolds&quot;</span><span class="p">]</span>
+<span class="go">{&#39;c1ccccc1&#39;: 8}</span>
+</pre></div>
+</div>
+<p>Every cliff here is on the benzene scaffold, and every one involves the
+4-chloro compound. On a real dataset that is the signal to go back to the
+assay records for that compound before fitting anything.</p>
 <p>A high cliff ratio predicts that a regression model will underperform on
 this series no matter how you tune it — and tells you which substituent
 changes are responsible.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">ActivityCliffDetector</span>
-
-<span class="n">detector</span> <span class="o">=</span> <span class="n">ActivityCliffDetector</span><span class="p">(</span>
-    <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>   <span class="c1"># ECFP4 Tanimoto</span>
-    <span class="n">activity_threshold</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>      <span class="c1"># 100-fold potency change</span>
-    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">,</span>        <span class="c1"># or &quot;scaffold&quot;, or &quot;mmp&quot;</span>
-<span class="p">)</span>
-<span class="n">cliffs</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">pIC50</span><span class="p">)</span>   <span class="c1"># sorted by descending SALI</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">ActivityCliffDetector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">detector</span> <span class="o">=</span> <span class="n">ActivityCliffDetector</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>    <span class="c1"># ECFP4 Tanimoto</span>
+<span class="gp">... </span>    <span class="n">activity_threshold</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>      <span class="c1"># 100-fold potency change</span>
+<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;fingerprint&quot;</span><span class="p">,</span>        <span class="c1"># or &quot;scaffold&quot;, or &quot;mmp&quot;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cliffs</span> <span class="o">=</span> <span class="n">detector</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span>   <span class="c1"># descending SALI</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">cliffs</span><span class="p">)</span>
+<span class="go">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">first</span> <span class="o">=</span> <span class="n">cliffs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">first</span><span class="o">.</span><span class="n">index_a</span><span class="p">,</span> <span class="n">first</span><span class="o">.</span><span class="n">index_b</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">first</span><span class="o">.</span><span class="n">delta</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">first</span><span class="o">.</span><span class="n">sali</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">(2, 5, 2.9, 6.38)</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The default <code class="docutils literal notranslate"><span class="pre">similarity_threshold</span></code> is 0.85, the figure usually quoted
+in the cliff literature — and calibrated for drug-sized molecules with a
+large shared core. These are small molecules, where a single-atom change
+alters every atom environment within the fingerprint radius, so
+similarity runs far below intuition and 0.85 finds nothing. <strong>Threshold
+to your data, not to the paper.</strong></p>
 </div>
 </section>
 <section id="sali">
@@ -319,24 +347,60 @@ changes with structure:</p>
 compound pairs by true SALI and asks how many of them the model orders
 correctly — a landscape-aware quality measure that RMSE and R² completely
 miss:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">SALIAnalyzer</span>
-
-<span class="n">analyzer</span> <span class="o">=</span> <span class="n">SALIAnalyzer</span><span class="p">()</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">sali_matrix</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">y_true</span><span class="p">)</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">sali_network</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">percentile</span><span class="o">=</span><span class="mi">95</span><span class="p">)</span>   <span class="c1"># networkx graph</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">sali_auc</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>             <span class="c1"># 1.0 = perfect, 0.5 = chance</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">SALIAnalyzer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">SALIAnalyzer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analyzer</span><span class="o">.</span><span class="n">sali_matrix</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 24)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">network</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">sali_network</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">,</span> <span class="n">percentile</span><span class="o">=</span><span class="mi">95</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">network</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span> <span class="n">network</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+<span class="go">(24, 14)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">sali_auc</span></code> scores how well a model reproduces the <em>landscape</em> rather than
+the individual values — 1.0 means it ranks every cliff pair correctly, 0.5
+is chance:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARRegressor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">demo_fingerprints</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">sali_auc</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.996</span>
+</pre></div>
+</div>
+<p>That 0.996 is on the <em>training</em> predictions, so it measures memorization
+rather than skill. Compute it on held-out or out-of-fold predictions for it
+to mean anything.</p>
+<p><a class="reference internal" href="../api/sar.html#qsarkit.sar.SARIAnalyzer" title="qsarkit.sar.SARIAnalyzer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SARIAnalyzer</span></code></a> condenses the whole landscape into one
+number, separating the part a model can learn from the part it cannot:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">SARIAnalyzer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span> <span class="o">=</span> <span class="n">SARIAnalyzer</span><span class="p">()</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="s2">&quot;sari&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="s2">&quot;discontinuity&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">(0.481, 0.065)</span>
 </pre></div>
 </div>
 </section>
 <section id="matched-molecular-pairs">
 <h2>Matched molecular pairs<a class="headerlink" href="#matched-molecular-pairs" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">MMPAnalyzer</span>
-
-<span class="n">analyzer</span> <span class="o">=</span> <span class="n">MMPAnalyzer</span><span class="p">()</span>
-<span class="n">pairs</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">find_pairs</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">pIC50</span><span class="p">)</span>
-<span class="n">analyzer</span><span class="o">.</span><span class="n">transformation_summary</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
-<span class="c1"># transformation      count  mean_delta  median_delta  std_delta</span>
-<span class="c1"># [1*]C&gt;&gt;[1*]N            1         3.5           3.5        0.0</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">MMPAnalyzer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mmp</span> <span class="o">=</span> <span class="n">MMPAnalyzer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pairs</span> <span class="o">=</span> <span class="n">mmp</span><span class="o">.</span><span class="n">find_pairs</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
+<span class="go">38</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">summary</span> <span class="o">=</span> <span class="n">mmp</span><span class="o">.</span><span class="n">transformation_summary</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="go">[&#39;transformation&#39;, &#39;count&#39;, &#39;mean_delta&#39;, &#39;median_delta&#39;, &#39;std_delta&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">summary</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;transformation&quot;</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;count&quot;</span><span class="p">])</span>
+<span class="go">(&#39;[1*]C&gt;&gt;[1*]Cl&#39;, 4)</span>
+</pre></div>
+</div>
+<p>Because the transformation is recorded as a rule rather than a pair of
+structures, the same change across different cores aggregates — which is
+what turns a list of pairs into a transferable design rule.</p>
+<p>Read <code class="docutils literal notranslate"><span class="pre">std_delta</span></code> beside <code class="docutils literal notranslate"><span class="pre">mean_delta</span></code>. A transformation with a mean of
++0.77 and a standard deviation of 1.12 is not a design rule; it is a change
+whose effect depends entirely on context:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">row</span> <span class="o">=</span> <span class="n">summary</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;mean_delta&quot;</span><span class="p">]),</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;std_delta&quot;</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">(0.77, 1.12)</span>
 </pre></div>
 </div>
 <p>Each pair records the shared core, the transformation as
@@ -348,13 +412,20 @@ does this substituent change usually do to potency?</em></p>
 <h2>The activity landscape<a class="headerlink" href="#the-activity-landscape" title="Link to this heading">¶</a></h2>
 <p>A SAS map plots every pair as (structure similarity, activity similarity)
 and reads the quadrants as SAR regimes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">ActivityLandscapePlotter</span>
-
-<span class="n">plotter</span> <span class="o">=</span> <span class="n">ActivityLandscapePlotter</span><span class="p">()</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">sas_data</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>   <span class="c1"># DataFrame with a `quadrant` column</span>
-<span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>       <span class="c1"># plotly Figure</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">ActivityLandscapePlotter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plotter</span> <span class="o">=</span> <span class="n">ActivityLandscapePlotter</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sas</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">sas_data</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">sas</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="go">[&#39;index_a&#39;, &#39;index_b&#39;, &#39;structure_similarity&#39;, &#39;activity_similarity&#39;, &#39;delta_activity&#39;, &#39;quadrant&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sas</span><span class="p">[</span><span class="s2">&quot;quadrant&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="go">{&#39;scaffold hop&#39;: 158, &#39;nondescript&#39;: 107, &#39;smooth SAR&#39;: 11}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">plotter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">))</span><span class="o">.</span><span class="vm">__name__</span>
+<span class="go">&#39;Figure&#39;</span>
 </pre></div>
 </div>
+<p>No pair lands in the “activity cliff” quadrant here, because the quadrant
+assignment uses a structural-similarity threshold these small molecules do
+not clear — the same caveat as above.</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
 <thead>
@@ -390,13 +461,27 @@ and reads the quadrants as SAR regimes:</p>
 baseline plus an additive contribution per substituent per position. Its
 residuals are themselves informative — large ones mark exactly the
 non-additive SAR that additive models cannot represent.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreeWilsonAnalysis</span>
-
-<span class="n">fw</span> <span class="o">=</span> <span class="n">FreeWilsonAnalysis</span><span class="p">(</span><span class="n">core</span><span class="o">=</span><span class="s2">&quot;O=C(O)c1ccccc1&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">fw</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>   <span class="c1"># contribution of each substituent, ranked</span>
-<span class="n">fw</span><span class="o">.</span><span class="n">residuals</span><span class="p">()</span>      <span class="c1"># largest residual = the most non-additive compound</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreeWilsonAnalysis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">benzoic_acids</span> <span class="o">=</span> <span class="n">demo_mols</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span>               <span class="c1"># one congeneric series</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fw</span> <span class="o">=</span> <span class="n">FreeWilsonAnalysis</span><span class="p">(</span><span class="n">core</span><span class="o">=</span><span class="s2">&quot;O=C(O)c1ccccc1&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">benzoic_acids</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">[:</span><span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">contributions</span> <span class="o">=</span> <span class="n">fw</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">contributions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="go">True</span>
 </pre></div>
 </div>
+<p>The residuals are the informative part. The largest one marks the compound
+the additive model cannot account for — which is the same 4-chloro
+compound the cliff analysis flagged:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">residuals</span> <span class="o">=</span> <span class="n">fw</span><span class="o">.</span><span class="n">residuals</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">worst</span> <span class="o">=</span> <span class="n">residuals</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="p">(</span><span class="n">worst</span><span class="p">[</span><span class="s2">&quot;molecule_index&quot;</span><span class="p">]),</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">worst</span><span class="p">[</span><span class="s2">&quot;residual&quot;</span><span class="p">]),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">(2, 0.2)</span>
+</pre></div>
+</div>
+<p>Free-Wilson assumes substituent effects are additive and independent —
+exactly what an activity cliff violates. A high cliff ratio is a warning
+that this analysis will mislead on that series.</p>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
@@ -456,7 +541,7 @@ Limitations of Molecular Machine Learning with Activity Cliffs.”
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-10</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -495,13 +580,14 @@ Limitations of Molecular Machine Learning with Activity Cliffs.”
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>window.MathJax = {"tex": {"packages": {"[+]": ["ams", "boldsymbol"]}, "inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "macros": {"Tanimoto": "T", "Rsq": "R^{2}", "Qsq": ["Q^{2}_{\\mathrm{#1}}", 1], "RMSE": "\\mathrm{RMSE}", "ECE": "\\mathrm{ECE}", "argmax": "\\operatorname*{arg\\,max}", "argmin": "\\operatorname*{arg\\,min}"}}, "options": {"ignoreHtmlClass": "highlight|no-mathjax", "processHtmlClass": "math|tex2jax_process"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     </body>
 </html>

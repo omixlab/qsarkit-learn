@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Curation" href="curation.html"><link rel="prev" title="Quick start" href="quickstart.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>The functional pipe API - qsarkit 0.2</title>
+        <title>The functional pipe API - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
 <li class="toctree-l2"><a class="reference internal" href="applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -251,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/blob/main/docs/source/guide/functional.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/guide/functional.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/edit/main/docs/source/guide/functional.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/guide/functional.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -344,13 +346,18 @@ explaining this rather than misbehaving quietly.</p>
 </div>
 <section id="inspecting-the-pipeline">
 <h2>Inspecting the pipeline<a class="headerlink" href="#inspecting-the-pipeline" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ms</span> <span class="o">=</span> <span class="n">molecules</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">desalt</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">drop_invalid</span><span class="p">()</span>
-
-<span class="n">ms</span>                 <span class="c1"># &lt;MoleculeSet 6 molecules, y shape (6,), 3 steps&gt;</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">history</span>         <span class="c1"># [&#39;molecules(n=7)&#39;, &#39;desalt()&#39;, &#39;drop_invalid()&#39;]</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">smiles</span>          <span class="c1"># canonical SMILES, None where invalid</span>
-<span class="n">ms</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span>      <span class="c1"># DataFrame with smiles + y</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional</span><span class="w"> </span><span class="kn">import</span> <span class="n">desalt</span><span class="p">,</span> <span class="n">drop_invalid</span><span class="p">,</span> <span class="n">molecules</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ms</span> <span class="o">=</span> <span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">[:</span><span class="mi">6</span><span class="p">],</span> <span class="n">DEMO_Y</span><span class="p">[:</span><span class="mi">6</span><span class="p">])</span> <span class="o">&gt;&gt;</span> <span class="n">desalt</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">drop_invalid</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ms</span>
+<span class="go">&lt;MoleculeSet 6 molecules, y shape (6,), 3 steps&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ms</span><span class="o">.</span><span class="n">history</span>
+<span class="go">[&#39;molecules(n=6)&#39;, &#39;desalt()&#39;, &#39;drop_invalid()&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ms</span><span class="o">.</span><span class="n">smiles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                 <span class="c1"># canonical SMILES, None where invalid</span>
+<span class="go">&#39;O=C(O)c1ccccc1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">to_frame</span><span class="p">()</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>  <span class="c1"># DataFrame with smiles + y</span>
+<span class="go">[&#39;smiles&#39;, &#39;y&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+<span class="go">6</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">history</span></code> records every step with its arguments, so a curated dataset
@@ -361,10 +368,17 @@ document.</p>
 <h2>Reusable pipelines<a class="headerlink" href="#reusable-pipelines" title="Link to this heading">¶</a></h2>
 <p>Steps compose with each other, so a curation protocol can be defined once
 and applied to several datasets:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">curate</span> <span class="o">=</span> <span class="n">standardize</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">drop_invalid</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">remove_duplicates</span><span class="p">(</span><span class="n">max_spread</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-
-<span class="n">train</span> <span class="o">=</span> <span class="n">molecules</span><span class="p">(</span><span class="n">train_smiles</span><span class="p">,</span> <span class="n">train_y</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">curate</span>
-<span class="n">test</span>  <span class="o">=</span> <span class="n">molecules</span><span class="p">(</span><span class="n">test_smiles</span><span class="p">,</span>  <span class="n">test_y</span><span class="p">)</span>  <span class="o">&gt;&gt;</span> <span class="n">curate</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional</span><span class="w"> </span><span class="kn">import</span> <span class="n">remove_duplicates</span><span class="p">,</span> <span class="n">standardize</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">curate</span> <span class="o">=</span> <span class="n">standardize</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">drop_invalid</span><span class="p">()</span> <span class="o">&gt;&gt;</span> <span class="n">remove_duplicates</span><span class="p">(</span><span class="n">max_spread</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">train</span> <span class="o">=</span> <span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">[:</span><span class="mi">12</span><span class="p">],</span> <span class="n">DEMO_Y</span><span class="p">[:</span><span class="mi">12</span><span class="p">])</span> <span class="o">&gt;&gt;</span> <span class="n">curate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test</span> <span class="o">=</span> <span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">[</span><span class="mi">12</span><span class="p">:],</span> <span class="n">DEMO_Y</span><span class="p">[</span><span class="mi">12</span><span class="p">:])</span> <span class="o">&gt;&gt;</span> <span class="n">curate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<span class="go">(12, 12)</span>
+</pre></div>
+</div>
+<p>The composed protocol is itself a step, and prints as one:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">curate</span>
+<span class="go">&lt;Pipeline standardize() &gt;&gt; drop_invalid() &gt;&gt; remove_duplicates(max_spread=1.0)&gt;</span>
 </pre></div>
 </div>
 <p><a class="reference internal" href="../api/functional.html#qsarkit.functional.pipeline" title="qsarkit.functional.pipeline"><code class="xref py py-func docutils literal notranslate"><span class="pre">pipeline()</span></code></a> does the same thing from a list, for
@@ -374,8 +388,13 @@ when the steps are assembled programmatically.</p>
 <h2>Dual-mode steps<a class="headerlink" href="#dual-mode-steps" title="Link to this heading">¶</a></h2>
 <p>Every step works two ways, so the same function serves the pipe API and
 ordinary imperative code:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mols</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">molecules</span><span class="p">([</span><span class="s2">&quot;CC(=O)[O-].[Na+]&quot;</span><span class="p">])</span> <span class="o">&gt;&gt;</span> <span class="n">desalt</span><span class="p">()</span>   <span class="c1"># deferred</span>
-<span class="n">mols</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">desalt</span><span class="p">(</span><span class="n">mol_list</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>                           <span class="c1"># immediate</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">molecules</span><span class="p">([</span><span class="s2">&quot;CC(=O)[O-].[Na+]&quot;</span><span class="p">])</span> <span class="o">&gt;&gt;</span> <span class="n">desalt</span><span class="p">()</span>      <span class="c1"># deferred</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(=O)[O-]&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">desalt</span><span class="p">([</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)[O-].[Na+]&quot;</span><span class="p">)])</span>  <span class="c1"># immediate</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">mols</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(=O)[O-]&#39;</span>
 </pre></div>
 </div>
 <p>Calling a step with no molecules returns a deferred
@@ -444,18 +463,22 @@ ordinary imperative code:</p>
 <section id="writing-your-own-step">
 <h2>Writing your own step<a class="headerlink" href="#writing-your-own-step" title="Link to this heading">¶</a></h2>
 <p>Decorate a function with the <code class="docutils literal notranslate"><span class="pre">(X,</span> <span class="pre">y=None,</span> <span class="pre">**params)</span> <span class="pre">-&gt;</span> <span class="pre">(X,</span> <span class="pre">y)</span></code> signature:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional</span><span class="w"> </span><span class="kn">import</span> <span class="n">step</span>
-
-<span class="nd">@step</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">keep_heaviest</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Descriptors</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="o">-</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">MolWt</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-    <span class="n">keep</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">order</span><span class="p">[:</span><span class="n">n</span><span class="p">])</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">keep</span><span class="p">],</span> <span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">y</span><span class="p">[</span><span class="n">keep</span><span class="p">])</span>
-
-<span class="n">mols</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">molecules</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">activities</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">keep_heaviest</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional</span><span class="w"> </span><span class="kn">import</span> <span class="n">step</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@step</span>
+<span class="gp">... </span><span class="k">def</span><span class="w"> </span><span class="nf">keep_heaviest</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Descriptors</span>
+<span class="gp">... </span>    <span class="n">order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="o">-</span><span class="n">Descriptors</span><span class="o">.</span><span class="n">MolWt</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+<span class="gp">... </span>    <span class="n">keep</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">order</span><span class="p">[:</span><span class="n">n</span><span class="p">])</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="p">[</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">keep</span><span class="p">],</span> <span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">y</span><span class="p">[</span><span class="n">keep</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">keep_heaviest</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">mols</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">(5, 5)</span>
 </pre></div>
 </div>
+<p>The decorator gives it both modes and the alignment guarantee for free —
+returning the subset of <code class="docutils literal notranslate"><span class="pre">y</span></code> alongside the molecules is the whole
+contract. <a class="reference internal" href="../api/functional.html#qsarkit.functional.feature_step" title="qsarkit.functional.feature_step"><code class="xref py py-func docutils literal notranslate"><span class="pre">feature_step()</span></code></a> does the same for a step
+that operates on a feature matrix.</p>
 </section>
 <section id="relationship-to-the-scikit-learn-api">
 <h2>Relationship to the scikit-learn API<a class="headerlink" href="#relationship-to-the-scikit-learn-api" title="Link to this heading">¶</a></h2>
@@ -512,7 +535,7 @@ for R.” <a class="reference external" href="https://CRAN.R-project.org/package
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-10</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -552,7 +575,7 @@ for R.” <a class="reference external" href="https://CRAN.R-project.org/package
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

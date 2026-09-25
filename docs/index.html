@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="User guide" href="guide/index.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit 0.2</title>
+        <title>qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">qsarkit 0.2</div></a>
+      <a href="#"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
 <li class="toctree-l2"><a class="reference internal" href="guide/applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -251,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/blob/main/docs/source/index.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/index.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/edit/main/docs/source/index.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/index.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -319,6 +321,26 @@ OECD validation</div>
 </div>
 <a class="sd-stretched-link sd-hide-link-text reference internal" href="guide/oecd.html"><span class="doc">OECD validation</span></a></div>
 </div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+Saving a model</div>
+<p class="sd-card-text">Persisting a model so it still works next year, and so someone else
+can load it safely.</p>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="guide/deployment.html"><span class="doc">Saving and sharing a model</span></a></div>
+</div>
+<div class="sd-col sd-d-flex-row docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+Example notebooks</div>
+<p class="sd-card-text">Five runnable walkthroughs covering every public subpackage,
+committed with their output.</p>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference external" href="https://github.com/omixlab/qsarkit-learn/tree/main/notebooks"><span>https://github.com/omixlab/qsarkit-learn/tree/main/notebooks</span></a></div>
+</div>
 </div>
 </div>
 <section id="the-workflow">
@@ -349,6 +371,9 @@ Interpretation             qsarkit.sar, qsarkit.explainability
           |
           v
 Reporting                  qsarkit.reporting
+          |
+          v
+Persistence                qsarkit.persistence
 </pre></div>
 </div>
 </section>
@@ -367,6 +392,11 @@ undocumented algorithms in this package.</p>
 </dd>
 <dt><strong>Typed and checked.</strong></dt><dd><p>The package is <code class="docutils literal notranslate"><span class="pre">mypy</span> <span class="pre">--strict</span></code> clean and ships a <code class="docutils literal notranslate"><span class="pre">py.typed</span></code> marker.</p>
 </dd>
+<dt><strong>Every example is executed.</strong></dt><dd><p>Every <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> block in this documentation, in the package’s docstrings
+and in the <a class="reference internal" href="guide/index.html"><span class="doc">notebooks</span></a> runs in the test suite. An
+example that stops being true fails CI like any other regression, so
+none of them can rot silently.</p>
+</dd>
 <dt><strong>Narrow on purpose.</strong></dt><dd><p>Everything here earns its place in the QSAR workflow. Data
 acquisition, molecular generation and structure-based methods are
 deliberately out of scope — they are different disciplines with
@@ -377,21 +407,31 @@ broad rather than trustworthy.</p>
 </section>
 <section id="a-first-example">
 <h2>A first example<a class="headerlink" href="#a-first-example" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularStandardizer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">activity_cliff_report</span>
-
-<span class="c1"># Curate: strip the salt, neutralize the charge</span>
-<span class="n">standardizer</span> <span class="o">=</span> <span class="n">MolecularStandardizer</span><span class="p">()</span>
-<span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)[O-].[Na+]&quot;</span><span class="p">)</span>
-<span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">standardizer</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">mol</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1"># &#39;CC(=O)Oc1ccccc1C(=O)O&#39;</span>
-
-<span class="c1"># Diagnose the dataset before modeling it</span>
-<span class="n">report</span> <span class="o">=</span> <span class="n">activity_cliff_report</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">pIC50_values</span><span class="p">)</span>
-<span class="n">report</span><span class="p">[</span><span class="s2">&quot;cliff_ratio&quot;</span><span class="p">]</span>           <span class="c1"># how much of the SAR is discontinuous</span>
-<span class="n">report</span><span class="p">[</span><span class="s2">&quot;top_transformations&quot;</span><span class="p">]</span>   <span class="c1"># which R-group swaps cause the cliffs</span>
+<p>Curate a structure — strip the salt, neutralize the charge:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemistry</span><span class="w"> </span><span class="kn">import</span> <span class="n">MolecularStandardizer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">standardizer</span> <span class="o">=</span> <span class="n">MolecularStandardizer</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;CC(=O)Oc1ccccc1C(=O)[O-].[Na+]&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">standardizer</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">mol</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">&#39;CC(=O)Oc1ccccc1C(=O)O&#39;</span>
 </pre></div>
+</div>
+<p>Then diagnose the dataset <em>before</em> modelling it. Activity cliffs are pairs
+of near-identical structures with very different activity — the places any
+similarity-based model must be wrong:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">activity_cliff_report</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">activity_cliff_report</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">,</span> <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;n_cliffs&quot;</span><span class="p">],</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;cliff_ratio&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+<span class="go">(4, 0.0145)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;top_transformations&quot;</span><span class="p">])</span>
+<span class="go">[&#39;[1*]C&gt;&gt;[1*]Cl&#39;, &#39;[1*]Cl&gt;&gt;[1*]Br&#39;, &#39;[1*]Cl&gt;&gt;[1*]N&#39;]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Examples throughout this documentation use a shared 24-compound demo
+dataset — <code class="docutils literal notranslate"><span class="pre">DEMO_SMILES</span></code>, <code class="docutils literal notranslate"><span class="pre">DEMO_Y</span></code> and <code class="docutils literal notranslate"><span class="pre">demo_mols</span></code> — so they stay
+short and every number shown is reproducible. See <a class="reference internal" href="guide/index.html"><span class="doc">User guide</span></a>.</p>
 </div>
 <div class="toctree-wrapper compound">
 </div>
@@ -437,7 +477,7 @@ docstring names it.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-10</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -475,7 +515,7 @@ docstring names it.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="_static/documentation_options.js?v=f129cdf0"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

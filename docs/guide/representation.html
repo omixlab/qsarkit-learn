@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Modeling" href="modeling.html"><link rel="prev" title="Curation" href="curation.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Representation - qsarkit 0.2</title>
+        <title>Representation - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
 <li class="toctree-l2"><a class="reference internal" href="applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -251,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/blob/main/docs/source/guide/representation.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/guide/representation.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/edit/main/docs/source/guide/representation.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/guide/representation.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -277,47 +279,119 @@
 <h1>Representation<a class="headerlink" href="#representation" title="Link to this heading">¶</a></h1>
 <p>Every representation is a scikit-learn transformer taking
 <code class="docutils literal notranslate"><span class="pre">Iterable[rdkit.Chem.Mol]</span></code> and returning a NumPy array, with
-<code class="docutils literal notranslate"><span class="pre">get_feature_names_out()</span></code> for traceability.</p>
+<code class="docutils literal notranslate"><span class="pre">get_feature_names_out()</span></code> for traceability where the features have names.</p>
+<p>Choosing a representation matters more than choosing a model. A random
+forest on good features beats a tuned network on bad ones, and no amount of
+hyperparameter search recovers information the representation discarded.</p>
 <section id="fingerprints">
 <h2>Fingerprints<a class="headerlink" href="#fingerprints" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation.fingerprints</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">MorganFingerprint</span><span class="p">,</span> <span class="n">MACCSKeysFingerprint</span><span class="p">,</span> <span class="n">FingerprintCombiner</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>   <span class="c1"># ECFP4</span>
-<span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">use_features</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>             <span class="c1"># FCFP4</span>
-<span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">use_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>               <span class="c1"># count vector</span>
-<span class="n">FingerprintCombiner</span><span class="p">([</span><span class="n">MorganFingerprint</span><span class="p">(),</span> <span class="n">MACCSKeysFingerprint</span><span class="p">()])</span>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorganFingerprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 2048)</span>
 </pre></div>
 </div>
-<p>ECFP4 (<code class="docutils literal notranslate"><span class="pre">radius=2</span></code>) is the default worth reaching for first. Use counts
-when substructure <em>frequency</em> matters; binary otherwise.</p>
+<p>ECFP4 (<code class="docutils literal notranslate"><span class="pre">radius=2</span></code>) is the default worth reaching for first. The radius is
+the substantive choice: 2 captures functional groups, 3 captures larger
+motifs at the cost of sparsity.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ecfp6</span> <span class="o">=</span> <span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fcfp4</span> <span class="o">=</span> <span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">use_features</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">use_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ecfp6</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">fcfp4</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">counts</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">((24, 2048), (24, 2048), (24, 2048))</span>
+</pre></div>
+</div>
+<p>Use counts when substructure <em>frequency</em> matters; binary otherwise. A count
+vector holds values above 1 where a binary one saturates:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">binary</span> <span class="o">=</span> <span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">float</span><span class="p">(</span><span class="n">binary</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span> <span class="nb">bool</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">(1.0, True)</span>
+</pre></div>
+</div>
+<p>Fingerprints are sparse. Most bits never fire on a small dataset — that is
+what makes the representation general, but it does mean a variance filter
+is nearly free:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="p">((</span><span class="n">binary</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="go">138</span>
+</pre></div>
+</div>
+<p>The other families answer different questions:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">AtomPairFingerprint</span><span class="p">,</span> <span class="n">MACCSKeysFingerprint</span><span class="p">,</span> <span class="n">RDKitFingerprint</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">TopologicalTorsionFingerprint</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">MACCSKeysFingerprint</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 167)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RDKitFingerprint</span><span class="p">(</span><span class="n">n_bits</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 512)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">AtomPairFingerprint</span><span class="p">(</span><span class="n">n_bits</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 512)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">TopologicalTorsionFingerprint</span><span class="p">(</span><span class="n">n_bits</span><span class="o">=</span><span class="mi">512</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 512)</span>
+</pre></div>
+</div>
+<p>MACCS keys are 166 hand-curated substructure questions: interpretable and
+fixed-length, but far less expressive than a hashed fingerprint. Atom pairs
+and topological torsions are <em>count</em> vectors by design.</p>
+<p>Combining fingerprints takes <code class="docutils literal notranslate"><span class="pre">(name,</span> <span class="pre">transformer)</span></code> pairs, so each block
+stays identifiable in the output:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation</span><span class="w"> </span><span class="kn">import</span> <span class="n">FingerprintCombiner</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">combined</span> <span class="o">=</span> <span class="n">FingerprintCombiner</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;morgan&quot;</span><span class="p">,</span> <span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">n_bits</span><span class="o">=</span><span class="mi">256</span><span class="p">)),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;maccs&quot;</span><span class="p">,</span> <span class="n">MACCSKeysFingerprint</span><span class="p">()),</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">combined</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 423)</span>
+</pre></div>
+</div>
 </section>
 <section id="descriptors">
 <h2>Descriptors<a class="headerlink" href="#descriptors" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation.descriptors</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">RDKitDescriptors</span><span class="p">,</span> <span class="n">PhysicochemicalDescriptors</span><span class="p">,</span> <span class="n">Descriptors3D</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="n">RDKitDescriptors</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>              <span class="c1"># all ~210, NaN-safe</span>
-<span class="n">PhysicochemicalDescriptors</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>    <span class="c1"># MW, logP, TPSA, QED, ...</span>
-<span class="n">Descriptors3D</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>                 <span class="c1"># embeds conformers first</span>
+<p>Where fingerprints answer “what substructures are present”, descriptors
+answer “what is this molecule like”.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">Descriptors3D</span><span class="p">,</span> <span class="n">PhysicochemicalDescriptors</span><span class="p">,</span> <span class="n">RDKitDescriptors</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">RDKitDescriptors</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>        <span class="c1"># all of them, NaN-safe</span>
+<span class="go">(24, 217)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">block</span> <span class="o">=</span> <span class="n">PhysicochemicalDescriptors</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()[:</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">[&#39;MolWt&#39;, &#39;MolLogP&#39;, &#39;TPSA&#39;, &#39;NumHDonors&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Descriptors3D</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span>       <span class="c1"># embeds conformers first</span>
+<span class="go">(2, 10)</span>
 </pre></div>
 </div>
 <p>Descriptors are interpretable in a way fingerprints are not — which matters
-for OECD principle 5. They also need scaling; see
-<a class="reference internal" href="../api/transform.html#qsarkit.transform.DescriptorScaler" title="qsarkit.transform.DescriptorScaler"><code class="xref py py-class docutils literal notranslate"><span class="pre">DescriptorScaler</span></code></a>.</p>
+for OECD principle 5.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>They are also on wildly different scales. Molecular weight is in the
+hundreds and logP in single digits, so any distance-based or regularized
+model needs them scaled:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">features</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">features</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>        <span class="c1"># MolWt, MolLogP, TPSA</span>
+<span class="go">array([17.3,  0.6, 12.8])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">DescriptorScaler</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scaled</span> <span class="o">=</span> <span class="n">DescriptorScaler</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">bool</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">scaled</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mf">1e-9</span><span class="p">),</span> <span class="n">scaled</span><span class="o">.</span><span class="n">std</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">(True, np.float64(1.0))</span>
+</pre></div>
+</div>
+<p>Fingerprints, being binary and already on one scale, do not.</p>
+</div>
 </section>
 <section id="learned-embeddings">
 <h2>Learned embeddings<a class="headerlink" href="#learned-embeddings" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation.embeddings</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChemBERTaTransformer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation.mol2vec</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mol2VecTransformer</span>
+<p><a class="reference internal" href="../api/representation.html#qsarkit.representation.Mol2VecTransformer" title="qsarkit.representation.Mol2VecTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mol2VecTransformer</span></code></a> and
+<a class="reference internal" href="../api/representation.html#qsarkit.representation.ChemBERTaTransformer" title="qsarkit.representation.ChemBERTaTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChemBERTaTransformer</span></code></a> need the
+<code class="docutils literal notranslate"><span class="pre">embeddings</span></code> and <code class="docutils literal notranslate"><span class="pre">nlp</span></code> extras respectively. They are lazily imported,
+so <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">qsarkit</span></code> stays cheap:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChemBERTaTransformer</span><span class="p">,</span> <span class="n">Mol2VecTransformer</span>
 
-<span class="n">Mol2VecTransformer</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">corpus_mols</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
-<span class="n">ChemBERTaTransformer</span><span class="p">(</span><span class="n">pooling</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
+<span class="n">Mol2VecTransformer</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">corpus_mols</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>   <span class="c1"># needs [embeddings]</span>
+<span class="n">ChemBERTaTransformer</span><span class="p">(</span><span class="n">pooling</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>    <span class="c1"># needs [nlp]</span>
 </pre></div>
 </div>
-<p>Requires the <code class="docutils literal notranslate"><span class="pre">embeddings</span></code> and <code class="docutils literal notranslate"><span class="pre">nlp</span></code> extras respectively.</p>
+<p>A missing extra raises an error naming it rather than an <code class="docutils literal notranslate"><span class="pre">ImportError</span></code> you
+have to interpret.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Graph neural network representations (MPNN, D-MPNN, GCN, GAT, SchNet)
@@ -332,16 +406,60 @@ takes an array.</p>
 </section>
 <section id="composing">
 <h2>Composing<a class="headerlink" href="#composing" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">MoleculeFeatureUnion</span>
-
-<span class="n">Pipeline</span><span class="p">([</span>
-    <span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="n">MoleculeFeatureUnion</span><span class="p">([</span>
-        <span class="n">MorganFingerprint</span><span class="p">(),</span>
-        <span class="n">PhysicochemicalDescriptors</span><span class="p">(),</span>
-    <span class="p">])),</span>
-    <span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">)),</span>
-<span class="p">])</span>
+<p><a class="reference internal" href="../api/transform.html#qsarkit.transform.MoleculeFeatureUnion" title="qsarkit.transform.MoleculeFeatureUnion"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoleculeFeatureUnion</span></code></a> concatenates blocks of
+different kinds — a fingerprint beside a descriptor set:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">MoleculeFeatureUnion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">union</span> <span class="o">=</span> <span class="n">MoleculeFeatureUnion</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;maccs&quot;</span><span class="p">,</span> <span class="n">MACCSKeysFingerprint</span><span class="p">()),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;physchem&quot;</span><span class="p">,</span> <span class="n">PhysicochemicalDescriptors</span><span class="p">()),</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">union</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 176)</span>
+</pre></div>
+</div>
+<p>Unlike the individual transformers it requires <code class="docutils literal notranslate"><span class="pre">fit</span></code> before
+<code class="docutils literal notranslate"><span class="pre">transform</span></code>, because it has to learn each branch’s width to know where
+the blocks join.</p>
+<p>The whole thing composes into an ordinary pipeline:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARRegressor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">NaNHandler</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="n">union</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">,</span> <span class="n">NaNHandler</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;median&quot;</span><span class="p">)),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24,)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">NaNHandler</span></code> belongs before any estimator in a descriptor pipeline: RDKit
+emits NaN for undefined quantities — a 3D descriptor with no conformer, a
+ratio with a zero denominator — and most estimators refuse to fit on them.</p>
+<p><a class="reference internal" href="../api/transform.html#qsarkit.transform.make_qsar_pipeline" title="qsarkit.transform.make_qsar_pipeline"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_qsar_pipeline()</span></code></a> assembles the common case,
+and can take SMILES directly so structure parsing happens <em>inside</em> the
+cross-validation fold:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.transform</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_qsar_pipeline</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span> <span class="o">=</span> <span class="n">make_qsar_pipeline</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">n_bits</span><span class="o">=</span><span class="mi">512</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">from_smiles</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">steps</span><span class="p">]</span>
+<span class="go">[&#39;smiles_to_mol&#39;, &#39;representation&#39;, &#39;nan&#39;, &#39;model&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">,</span> <span class="n">DEMO_Y</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(3,)</span>
+</pre></div>
+</div>
+<p>Or in the pipe notation, where <a class="reference internal" href="../api/functional.html#qsarkit.functional.featurize" title="qsarkit.functional.featurize"><code class="xref py py-func docutils literal notranslate"><span class="pre">featurize()</span></code></a> accepts
+any of the transformers above:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional</span><span class="w"> </span><span class="kn">import</span> <span class="n">describe</span><span class="p">,</span> <span class="n">featurize</span><span class="p">,</span> <span class="n">fingerprint</span><span class="p">,</span> <span class="n">molecules</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">fingerprint</span><span class="p">(</span><span class="s2">&quot;morgan&quot;</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">512</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 512)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">describe</span><span class="p">(</span><span class="s2">&quot;lipinski&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 9)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">molecules</span><span class="p">(</span><span class="n">DEMO_SMILES</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">featurize</span><span class="p">(</span><span class="n">union</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(24, 176)</span>
 </pre></div>
 </div>
 </section>
@@ -350,6 +468,11 @@ takes an array.</p>
 <ul class="simple">
 <li><p>Rogers, D. &amp; Hahn, M. (2010). “Extended-Connectivity Fingerprints.”
 <em>J. Chem. Inf. Model.</em>, 50(5), 742-754. <a class="extlink-doi reference external" href="https://doi.org/10.1021/ci100050t">doi:10.1021/ci100050t</a></p></li>
+<li><p>Durant, J. L. et al. (2002). “Reoptimization of MDL Keys for Use in Drug
+Discovery.” <em>J. Chem. Inf. Comput. Sci.</em>, 42(6), 1273-1280.
+<a class="extlink-doi reference external" href="https://doi.org/10.1021/ci010132r">doi:10.1021/ci010132r</a></p></li>
+<li><p>Todeschini, R. &amp; Consonni, V. (2009). <em>Molecular Descriptors for
+Chemoinformatics.</em> Wiley. <a class="extlink-doi reference external" href="https://doi.org/10.1002/9783527628766">doi:10.1002/9783527628766</a></p></li>
 <li><p>Jaeger, S., Fulle, S. &amp; Turk, S. (2018). “Mol2vec.” <em>J. Chem. Inf.
 Model.</em>, 58(1), 27-35. <a class="extlink-doi reference external" href="https://doi.org/10.1021/acs.jcim.7b00616">doi:10.1021/acs.jcim.7b00616</a></p></li>
 <li><p>Chithrananda, S., Grand, G. &amp; Ramsundar, B. (2020). “ChemBERTa.”
@@ -398,7 +521,7 @@ Property Prediction.” <em>J. Chem. Inf. Model.</em>, 59(8), 3370-3388.
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-10</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -436,7 +559,7 @@ Property Prediction.” <em>J. Chem. Inf. Model.</em>, 59(8), 3370-3388.
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

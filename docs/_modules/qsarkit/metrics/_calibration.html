@@ -1,0 +1,932 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>qsarkit.metrics._calibration - qsarkit 0.3</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">qsarkit 0.3</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../guide/index.html">User guide</a><input aria-label="Toggle navigation of User guide" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/quickstart.html">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/functional.html">The functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/curation.html">Curation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/modeling.html">Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/deployment.html">Saving and sharing a model</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/base.html">Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemistry.html">Chemistry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/functional.html">Functional pipe API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/data_quality.html">Data quality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/representation.html">Representation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/transform.html">Transform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/neighbors.html">Neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/cluster.html">Clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/feature_selection.html">Feature selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/model_selection.html">Model selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/metrics.html">Metrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/validation.html">Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/applicability.html">Applicability domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/uncertainty.html">Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/sar.html">SAR interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/explainability.html">Explainability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/chemspace.html">Chemical space</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/persistence.html">Persistence</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for qsarkit.metrics._calibration</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Probability calibration and residual-distribution diagnostics.</span>
+
+<span class="sd">A classifier that reports 0.9 should be right about 90% of the time. Most</span>
+<span class="sd">are not: random forests are systematically under-confident at the extremes</span>
+<span class="sd">and SVMs with Platt scaling can be badly miscalibrated on the imbalanced</span>
+<span class="sd">datasets typical of virtual screening. ROC-AUC does not notice, because it</span>
+<span class="sd">depends only on the *ranking* of the scores, not on their values -- a model</span>
+<span class="sd">can have perfect AUC and useless probabilities.</span>
+
+<span class="sd">That distinction matters whenever a probability is used as a number rather</span>
+<span class="sd">than as a rank: to set a screening cutoff, to combine models, or to feed a</span>
+<span class="sd">cost calculation.</span>
+
+<span class="sd">The regression counterpart here is the Q-Q plot. Every regression metric in</span>
+<span class="sd">:mod:`qsarkit.metrics` -- RMSE, :math:`R^2`, the Golbraikh-Tropsha</span>
+<span class="sd">criteria -- assumes roughly normal, homoscedastic errors. When that fails,</span>
+<span class="sd">the numbers still compute and quietly mean something else.</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+<span class="sd">- Niculescu-Mizil, A. &amp; Caruana, R. (2005). &quot;Predicting Good Probabilities</span>
+<span class="sd">  with Supervised Learning.&quot; ICML 2005, 625-632.</span>
+<span class="sd">  https://doi.org/10.1145/1102351.1102430</span>
+<span class="sd">- Guo, C. et al. (2017). &quot;On Calibration of Modern Neural Networks.&quot;</span>
+<span class="sd">  ICML 2017, 1321-1330. https://proceedings.mlr.press/v70/guo17a.html</span>
+<span class="sd">- Naeini, M. P., Cooper, G. F. &amp; Hauskrecht, M. (2015). &quot;Obtaining Well</span>
+<span class="sd">  Calibrated Probabilities Using Bayesian Binning.&quot; AAAI 2015, 2901-2907.</span>
+<span class="sd">  https://doi.org/10.1609/aaai.v29i1.9602</span>
+<span class="sd">- Brier, G. W. (1950). &quot;Verification of Forecasts Expressed in Terms of</span>
+<span class="sd">  Probability.&quot; Mon. Weather Rev., 78(1), 1-3.</span>
+<span class="sd">  https://doi.org/10.1175/1520-0493(1950)078&lt;0001:VOFEIT&gt;2.0.CO;2</span>
+<span class="sd">- Wilk, M. B. &amp; Gnanadesikan, R. (1968). &quot;Probability Plotting Methods for</span>
+<span class="sd">  the Analysis of Data.&quot; Biometrika, 55(1), 1-17.</span>
+<span class="sd">  https://doi.org/10.1093/biomet/55.1.1</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;calibration_curve&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;expected_calibration_error&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;maximum_calibration_error&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;calibration_report&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;qq_data&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;residual_normality&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_check_probabilities</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">,</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate a binary label / probability pair.&quot;&quot;&quot;</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">probabilities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_prob</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;y_true has </span><span class="si">{</span><span class="n">labels</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> entries but y_prob has &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">probabilities</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">labels</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot assess calibration of an empty set.&quot;</span><span class="p">)</span>
+
+    <span class="n">unique</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">labels</span><span class="p">)])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">unique</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;y_true must be binary 0/1 labels, got values </span><span class="si">{</span><span class="n">unique</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="s2">&quot;For a multiclass problem, assess each class one-vs-rest.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">((</span><span class="n">probabilities</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">probabilities</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;y_prob must lie in [0, 1]. These look like decision-function &quot;</span>
+            <span class="s2">&quot;scores rather than probabilities; convert them first (e.g. with &quot;</span>
+            <span class="s2">&quot;predict_proba, or a sigmoid) -- calibration is a statement &quot;</span>
+            <span class="s2">&quot;about probabilities and is meaningless for arbitrary scores.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">labels</span><span class="p">,</span> <span class="n">probabilities</span>
+
+
+<div class="viewcode-block" id="calibration_curve">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.calibration_curve">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calibration_curve</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_prob</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">strategy</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;quantile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Observed frequency against predicted probability, per bin.</span>
+
+<span class="sd">    The data behind a reliability diagram. A perfectly calibrated model</span>
+<span class="sd">    lies on the diagonal: among the compounds it scored 0.7, 70% are</span>
+<span class="sd">    active.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary labels, 0 or 1.</span>
+<span class="sd">    y_prob : array-like of shape (n_samples,)</span>
+<span class="sd">        Predicted probability of the positive class.</span>
+<span class="sd">    n_bins : int, default 10</span>
+<span class="sd">        Number of bins.</span>
+<span class="sd">    strategy : {&quot;uniform&quot;, &quot;quantile&quot;}, default &quot;uniform&quot;</span>
+<span class="sd">        ``&quot;uniform&quot;`` splits [0, 1] into equal-width bins, which shows</span>
+<span class="sd">        where on the probability scale the model is wrong. ``&quot;quantile&quot;``</span>
+<span class="sd">        puts an equal number of samples in each bin, which gives every</span>
+<span class="sd">        point a comparable error bar -- the better choice when predictions</span>
+<span class="sd">        cluster near 0, as they do in virtual screening.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        ``mean_predicted`` and ``observed_frequency`` (one entry per</span>
+<span class="sd">        non-empty bin), ``counts``, and ``bin_edges``.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the inputs are not a matching pair of binary labels and</span>
+<span class="sd">        probabilities, or ``n_bins`` is below 2.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    A perfectly calibrated set of predictions lies on the diagonal:</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import calibration_curve</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; p = rng.uniform(size=4000)</span>
+<span class="sd">    &gt;&gt;&gt; y = (rng.uniform(size=4000) &lt; p).astype(int)</span>
+<span class="sd">    &gt;&gt;&gt; curve = calibration_curve(y, p, n_bins=5)</span>
+<span class="sd">    &gt;&gt;&gt; bool(np.allclose(curve[&quot;mean_predicted&quot;], curve[&quot;observed_frequency&quot;],</span>
+<span class="sd">    ...                  atol=0.05))</span>
+<span class="sd">    True</span>
+
+<span class="sd">    An over-confident model bends away from it:</span>
+
+<span class="sd">    &gt;&gt;&gt; squashed = np.clip(p * 1.6 - 0.3, 0, 1)</span>
+<span class="sd">    &gt;&gt;&gt; curve = calibration_curve(y, squashed, n_bins=5)</span>
+<span class="sd">    &gt;&gt;&gt; bool((curve[&quot;observed_frequency&quot;][0] &gt; curve[&quot;mean_predicted&quot;][0]))</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Niculescu-Mizil, A. &amp; Caruana, R. (2005). &quot;Predicting Good</span>
+<span class="sd">      Probabilities with Supervised Learning.&quot; ICML 2005, 625-632.</span>
+<span class="sd">      https://doi.org/10.1145/1102351.1102430</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">labels</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">_check_probabilities</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_bins</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;n_bins must be at least 2, got </span><span class="si">{</span><span class="n">n_bins</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">strategy</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;quantile&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;strategy must be &#39;uniform&#39; or &#39;quantile&#39;, got </span><span class="si">{</span><span class="n">strategy</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">n_bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">n_bins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">edges</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># every prediction identical</span>
+            <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+    <span class="c1"># `right=True` with a lowered first edge puts a prediction of exactly 0</span>
+    <span class="c1"># in the first bin rather than in a phantom bin 0.</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">right</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">mean_predicted</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">observed</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">indices</span> <span class="o">==</span> <span class="n">b</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">continue</span>
+        <span class="n">mean_predicted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
+        <span class="n">observed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()))</span>
+        <span class="n">counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;mean_predicted&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mean_predicted</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+        <span class="s2">&quot;observed_frequency&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">observed</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+        <span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+        <span class="s2">&quot;bin_edges&quot;</span><span class="p">:</span> <span class="n">edges</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="expected_calibration_error">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.expected_calibration_error">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">expected_calibration_error</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_prob</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">strategy</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;quantile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sample-weighted mean gap between confidence and accuracy.</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \mathrm{ECE} = \sum_{b=1}^{B} \frac{n_b}{N}</span>
+<span class="sd">                       \bigl| \bar{p}_b - \bar{y}_b \bigr|</span>
+
+<span class="sd">    where :math:`\bar{p}_b` is the mean predicted probability in bin</span>
+<span class="sd">    :math:`b`, :math:`\bar{y}_b` the observed frequency, and :math:`n_b`</span>
+<span class="sd">    the bin&#39;s size. 0 is perfect.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary labels.</span>
+<span class="sd">    y_prob : array-like of shape (n_samples,)</span>
+<span class="sd">        Predicted probabilities.</span>
+<span class="sd">    n_bins : int, default 10</span>
+<span class="sd">    strategy : {&quot;uniform&quot;, &quot;quantile&quot;}, default &quot;uniform&quot;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        In [0, 1].</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    ECE depends on the binning, and a model can lower it by concentrating</span>
+<span class="sd">    its predictions rather than by improving. Read it beside the curve</span>
+<span class="sd">    from :func:`calibration_curve`, not on its own.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import expected_calibration_error</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; p = rng.uniform(size=4000)</span>
+<span class="sd">    &gt;&gt;&gt; y = (rng.uniform(size=4000) &lt; p).astype(int)</span>
+<span class="sd">    &gt;&gt;&gt; round(expected_calibration_error(y, p, n_bins=10), 2) &lt; 0.05</span>
+<span class="sd">    True</span>
+
+<span class="sd">    A model whose probabilities are all shifted upward scores worse:</span>
+
+<span class="sd">    &gt;&gt;&gt; shifted = np.clip(p + 0.25, 0, 1)</span>
+<span class="sd">    &gt;&gt;&gt; expected_calibration_error(y, shifted) &gt; expected_calibration_error(y, p)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Naeini, M. P., Cooper, G. F. &amp; Hauskrecht, M. (2015). &quot;Obtaining</span>
+<span class="sd">      Well Calibrated Probabilities Using Bayesian Binning.&quot; AAAI 2015,</span>
+<span class="sd">      2901-2907. https://doi.org/10.1609/aaai.v29i1.9602</span>
+<span class="sd">    - Guo, C. et al. (2017). &quot;On Calibration of Modern Neural Networks.&quot;</span>
+<span class="sd">      ICML 2017, 1321-1330.</span>
+<span class="sd">      https://proceedings.mlr.press/v70/guo17a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">curve</span> <span class="o">=</span> <span class="n">calibration_curve</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span><span class="p">)</span>
+    <span class="n">gaps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">curve</span><span class="p">[</span><span class="s2">&quot;mean_predicted&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">curve</span><span class="p">[</span><span class="s2">&quot;observed_frequency&quot;</span><span class="p">])</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">curve</span><span class="p">[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">curve</span><span class="p">[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span> <span class="o">*</span> <span class="n">gaps</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="maximum_calibration_error">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.maximum_calibration_error">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">maximum_calibration_error</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_prob</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">strategy</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;quantile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+    <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Largest single-bin gap between confidence and accuracy.</span>
+
+<span class="sd">    The worst case rather than the average. Useful when a decision will be</span>
+<span class="sd">    made at one particular probability: an ECE of 0.02 is no comfort if</span>
+<span class="sd">    the bin you actually threshold on is off by 0.3.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary labels.</span>
+<span class="sd">    y_prob : array-like of shape (n_samples,)</span>
+<span class="sd">        Predicted probabilities.</span>
+<span class="sd">    n_bins : int, default 10</span>
+<span class="sd">    strategy : {&quot;uniform&quot;, &quot;quantile&quot;}, default &quot;uniform&quot;</span>
+<span class="sd">    min_count : int, default 1</span>
+<span class="sd">        Ignore bins with fewer samples than this. A bin holding two</span>
+<span class="sd">        compounds can only report frequencies of 0, 0.5 or 1, so it</span>
+<span class="sd">        produces a large gap by arithmetic rather than by miscalibration;</span>
+<span class="sd">        raising this suppresses that artefact.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float</span>
+<span class="sd">        In [0, 1]. ``0.0`` when no bin meets ``min_count``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import (</span>
+<span class="sd">    ...     expected_calibration_error, maximum_calibration_error)</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; p = rng.uniform(size=4000)</span>
+<span class="sd">    &gt;&gt;&gt; y = (rng.uniform(size=4000) &lt; p).astype(int)</span>
+<span class="sd">    &gt;&gt;&gt; mce = maximum_calibration_error(y, p, n_bins=10, min_count=20)</span>
+<span class="sd">    &gt;&gt;&gt; ece = expected_calibration_error(y, p, n_bins=10)</span>
+<span class="sd">    &gt;&gt;&gt; mce &gt;= ece        # the worst bin is at least as bad as the average</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Naeini, M. P., Cooper, G. F. &amp; Hauskrecht, M. (2015). AAAI 2015,</span>
+<span class="sd">      2901-2907. https://doi.org/10.1609/aaai.v29i1.9602</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">min_count</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;min_count must be at least 1, got </span><span class="si">{</span><span class="n">min_count</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="n">curve</span> <span class="o">=</span> <span class="n">calibration_curve</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span><span class="p">)</span>
+    <span class="n">keep</span> <span class="o">=</span> <span class="n">curve</span><span class="p">[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_count</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">keep</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="n">gaps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
+        <span class="n">curve</span><span class="p">[</span><span class="s2">&quot;mean_predicted&quot;</span><span class="p">][</span><span class="n">keep</span><span class="p">]</span> <span class="o">-</span> <span class="n">curve</span><span class="p">[</span><span class="s2">&quot;observed_frequency&quot;</span><span class="p">][</span><span class="n">keep</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">gaps</span><span class="o">.</span><span class="n">max</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="calibration_report">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.calibration_report">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calibration_report</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">y_prob</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span>
+    <span class="n">n_bins</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">strategy</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;quantile&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Everything needed to judge whether probabilities can be believed.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">        Binary labels.</span>
+<span class="sd">    y_prob : array-like of shape (n_samples,)</span>
+<span class="sd">        Predicted probabilities.</span>
+<span class="sd">    n_bins : int, default 10</span>
+<span class="sd">    strategy : {&quot;uniform&quot;, &quot;quantile&quot;}, default &quot;uniform&quot;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        ``ece``, ``mce``, ``brier``, ``brier_skill_score``,</span>
+<span class="sd">        ``mean_predicted``, ``observed_frequency``, ``base_rate``,</span>
+<span class="sd">        ``n_samples`` and ``n_bins_used``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    ``brier_skill_score`` compares the Brier score against always</span>
+<span class="sd">    predicting the base rate: positive means the model beats that</span>
+<span class="sd">    baseline, 0 or below means it does not. On an imbalanced screening</span>
+<span class="sd">    set a raw Brier score near 0.05 looks excellent and is often worse</span>
+<span class="sd">    than the constant prediction -- the skill score is what exposes that.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import calibration_report</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; p = rng.uniform(size=2000)</span>
+<span class="sd">    &gt;&gt;&gt; y = (rng.uniform(size=2000) &lt; p).astype(int)</span>
+<span class="sd">    &gt;&gt;&gt; report = calibration_report(y, p, n_bins=10)</span>
+<span class="sd">    &gt;&gt;&gt; report[&quot;ece&quot;] &lt; 0.05</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; report[&quot;brier_skill_score&quot;] &gt; 0</span>
+<span class="sd">    True</span>
+
+<span class="sd">    A constant prediction at the base rate has no skill at all:</span>
+
+<span class="sd">    &gt;&gt;&gt; flat = np.full(2000, y.mean())</span>
+<span class="sd">    &gt;&gt;&gt; round(calibration_report(y, flat)[&quot;brier_skill_score&quot;], 6)</span>
+<span class="sd">    0.0</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Brier, G. W. (1950). Mon. Weather Rev., 78(1), 1-3.</span>
+<span class="sd">      https://doi.org/10.1175/1520-0493(1950)078&lt;0001:VOFEIT&gt;2.0.CO;2</span>
+<span class="sd">    - Guo, C. et al. (2017). ICML 2017, 1321-1330.</span>
+<span class="sd">      https://proceedings.mlr.press/v70/guo17a.html</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">labels</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">_check_probabilities</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_prob</span><span class="p">)</span>
+    <span class="n">curve</span> <span class="o">=</span> <span class="n">calibration_curve</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span><span class="p">)</span>
+
+    <span class="n">brier</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">probabilities</span> <span class="o">-</span> <span class="n">labels</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">base_rate</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+    <span class="n">reference</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">base_rate</span> <span class="o">-</span> <span class="n">labels</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">skill</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">brier</span> <span class="o">/</span> <span class="n">reference</span><span class="p">)</span> <span class="k">if</span> <span class="n">reference</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;ece&quot;</span><span class="p">:</span> <span class="n">expected_calibration_error</span><span class="p">(</span>
+            <span class="n">labels</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;mce&quot;</span><span class="p">:</span> <span class="n">maximum_calibration_error</span><span class="p">(</span>
+            <span class="n">labels</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">n_bins</span><span class="o">=</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;brier&quot;</span><span class="p">:</span> <span class="n">brier</span><span class="p">,</span>
+        <span class="s2">&quot;brier_skill_score&quot;</span><span class="p">:</span> <span class="n">skill</span><span class="p">,</span>
+        <span class="s2">&quot;base_rate&quot;</span><span class="p">:</span> <span class="n">base_rate</span><span class="p">,</span>
+        <span class="s2">&quot;mean_predicted&quot;</span><span class="p">:</span> <span class="n">curve</span><span class="p">[</span><span class="s2">&quot;mean_predicted&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;observed_frequency&quot;</span><span class="p">:</span> <span class="n">curve</span><span class="p">[</span><span class="s2">&quot;observed_frequency&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;n_samples&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+        <span class="s2">&quot;n_bins_used&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">curve</span><span class="p">[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="qq_data">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.qq_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">qq_data</span><span class="p">(</span>
+    <span class="n">residuals</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">standardize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Theoretical against observed quantiles, for a normal Q-Q plot.</span>
+
+<span class="sd">    Every regression metric here -- RMSE, :math:`R^2`, the</span>
+<span class="sd">    Golbraikh-Tropsha criteria -- assumes roughly normal, homoscedastic</span>
+<span class="sd">    errors. A Q-Q plot is the quickest check. Points on the diagonal mean</span>
+<span class="sd">    normal residuals; an S-shape means heavy tails; a curve at one end</span>
+<span class="sd">    means skew, usually from a handful of badly mispredicted compounds</span>
+<span class="sd">    that RMSE alone will not name.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    residuals : array-like of shape (n_samples,)</span>
+<span class="sd">        Observed minus predicted. Non-finite entries are dropped.</span>
+<span class="sd">    standardize : bool, default True</span>
+<span class="sd">        Divide by the standard deviation, so the reference line is</span>
+<span class="sd">        :math:`y = x` regardless of the residuals&#39; scale.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        ``theoretical_quantiles``, ``sample_quantiles`` (both sorted</span>
+<span class="sd">        ascending) and ``reference_line`` as ``(slope, intercept)``.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If fewer than three finite residuals remain.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import qq_data</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; data = qq_data(rng.normal(size=500))</span>
+<span class="sd">    &gt;&gt;&gt; corr = np.corrcoef(data[&quot;theoretical_quantiles&quot;],</span>
+<span class="sd">    ...                    data[&quot;sample_quantiles&quot;])[0, 1]</span>
+<span class="sd">    &gt;&gt;&gt; bool(corr &gt; 0.99)            # normal residuals track the diagonal</span>
+<span class="sd">    True</span>
+
+<span class="sd">    Heavy-tailed residuals do not:</span>
+
+<span class="sd">    &gt;&gt;&gt; heavy = qq_data(rng.standard_t(df=2, size=500))</span>
+<span class="sd">    &gt;&gt;&gt; bool(np.corrcoef(heavy[&quot;theoretical_quantiles&quot;],</span>
+<span class="sd">    ...                  heavy[&quot;sample_quantiles&quot;])[0, 1] &lt; corr)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Wilk, M. B. &amp; Gnanadesikan, R. (1968). &quot;Probability Plotting Methods</span>
+<span class="sd">      for the Analysis of Data.&quot; Biometrika, 55(1), 1-17.</span>
+<span class="sd">      https://doi.org/10.1093/biomet/55.1.1</span>
+<span class="sd">    - Blom, G. (1958). &quot;Statistical Estimates and Transformed</span>
+<span class="sd">      Beta-Variables.&quot; Wiley.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+
+    <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">values</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Need at least 3 finite residuals for a Q-Q plot, got &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">standardize</span><span class="p">:</span>
+        <span class="n">spread</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">(</span><span class="n">values</span> <span class="o">-</span> <span class="n">values</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="n">spread</span> <span class="k">if</span> <span class="n">spread</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">values</span> <span class="o">-</span> <span class="n">values</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+    <span class="n">ordered</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">ordered</span><span class="o">.</span><span class="n">size</span>
+    <span class="c1"># Blom&#39;s plotting positions: (i - 3/8) / (n + 1/4), the standard choice</span>
+    <span class="c1"># for a normal Q-Q plot and near-unbiased for the expected order</span>
+    <span class="c1"># statistics.</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.375</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mf">0.25</span><span class="p">)</span>
+    <span class="n">theoretical</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">ppf</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+
+    <span class="c1"># Reference line through the first and third quartiles, which is robust</span>
+    <span class="c1"># to the outliers a Q-Q plot exists to reveal.</span>
+    <span class="n">q1_t</span><span class="p">,</span> <span class="n">q3_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">theoretical</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])</span>
+    <span class="n">q1_s</span><span class="p">,</span> <span class="n">q3_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">ordered</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])</span>
+    <span class="n">slope</span> <span class="o">=</span> <span class="p">(</span><span class="n">q3_s</span> <span class="o">-</span> <span class="n">q1_s</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">q3_t</span> <span class="o">-</span> <span class="n">q1_t</span><span class="p">)</span> <span class="k">if</span> <span class="n">q3_t</span> <span class="o">!=</span> <span class="n">q1_t</span> <span class="k">else</span> <span class="mf">1.0</span>
+    <span class="n">intercept</span> <span class="o">=</span> <span class="n">q1_s</span> <span class="o">-</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">q1_t</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;theoretical_quantiles&quot;</span><span class="p">:</span> <span class="n">theoretical</span><span class="p">,</span>
+        <span class="s2">&quot;sample_quantiles&quot;</span><span class="p">:</span> <span class="n">ordered</span><span class="p">,</span>
+        <span class="s2">&quot;reference_line&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="residual_normality">
+<a class="viewcode-back" href="../../../api/metrics.html#qsarkit.metrics.residual_normality">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">residual_normality</span><span class="p">(</span>
+    <span class="n">y_true</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test whether regression residuals are normal and homoscedastic.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    y_true : array-like of shape (n_samples,)</span>
+<span class="sd">    y_pred : array-like of shape (n_samples,)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        ``shapiro_statistic`` and ``shapiro_p`` (normality; p below 0.05</span>
+<span class="sd">        argues against it), ``skew``, ``excess_kurtosis``,</span>
+<span class="sd">        ``heteroscedasticity_r`` (Spearman correlation between the fitted</span>
+<span class="sd">        value and the absolute residual -- non-zero means error size</span>
+<span class="sd">        depends on the prediction), and ``n``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Shapiro-Wilk cuts both ways at QSAR sample sizes, and neither</span>
+<span class="sd">    direction should be read as a verdict:</span>
+
+<span class="sd">    * On a few dozen compounds it has little power, so ``shapiro_p &gt; 0.05``</span>
+<span class="sd">      is weak evidence of normality rather than a clearance.</span>
+<span class="sd">    * On a few hundred it starts rejecting samples that *are* normal, for</span>
+<span class="sd">      departures far too small to affect an RMSE.</span>
+
+<span class="sd">    The skew, kurtosis and heteroscedasticity terms describe the shape</span>
+<span class="sd">    rather than testing a hypothesis, which is more useful here -- and the</span>
+<span class="sd">    Q-Q plot from :func:`qq_data` more useful still, because it shows</span>
+<span class="sd">    *where* the departure is.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qsarkit.metrics import residual_normality</span>
+<span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng(0)</span>
+<span class="sd">    &gt;&gt;&gt; truth = rng.normal(size=500)</span>
+<span class="sd">    &gt;&gt;&gt; report = residual_normality(truth, truth + rng.normal(scale=0.1, size=500))</span>
+<span class="sd">    &gt;&gt;&gt; report[&quot;shapiro_p&quot;] &gt; 0.05         # residuals are normal</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; abs(report[&quot;skew&quot;]) &lt; 0.2</span>
+<span class="sd">    True</span>
+
+<span class="sd">    A badly skewed residual distribution is caught by every term at once:</span>
+
+<span class="sd">    &gt;&gt;&gt; skewed = residual_normality(np.zeros(300), -rng.exponential(size=300))</span>
+<span class="sd">    &gt;&gt;&gt; skewed[&quot;shapiro_p&quot;] &lt; 0.001, abs(skewed[&quot;skew&quot;]) &gt; 1</span>
+<span class="sd">    (True, True)</span>
+
+<span class="sd">    Errors that grow with the prediction show up as heteroscedasticity:</span>
+
+<span class="sd">    &gt;&gt;&gt; fitted = np.linspace(1, 10, 300)</span>
+<span class="sd">    &gt;&gt;&gt; noisy = fitted + rng.normal(scale=fitted * 0.3)</span>
+<span class="sd">    &gt;&gt;&gt; abs(residual_normality(noisy, fitted)[&quot;heteroscedasticity_r&quot;]) &gt; 0.2</span>
+<span class="sd">    True</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    - Shapiro, S. S. &amp; Wilk, M. B. (1965). &quot;An Analysis of Variance Test</span>
+<span class="sd">      for Normality.&quot; Biometrika, 52(3-4), 591-611.</span>
+<span class="sd">      https://doi.org/10.1093/biomet/52.3-4.591</span>
+<span class="sd">    - Breusch, T. S. &amp; Pagan, A. R. (1979). &quot;A Simple Test for</span>
+<span class="sd">      Heteroscedasticity and Random Coefficient Variation.&quot;</span>
+<span class="sd">      Econometrica, 47(5), 1287-1294. https://doi.org/10.2307/1911963</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+
+    <span class="n">truth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="n">predicted</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">truth</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">predicted</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;y_true has </span><span class="si">{</span><span class="n">truth</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> entries but y_pred has </span><span class="si">{</span><span class="n">predicted</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">finite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">predicted</span><span class="p">)</span>
+    <span class="n">truth</span><span class="p">,</span> <span class="n">predicted</span> <span class="o">=</span> <span class="n">truth</span><span class="p">[</span><span class="n">finite</span><span class="p">],</span> <span class="n">predicted</span><span class="p">[</span><span class="n">finite</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">truth</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Need at least 3 finite pairs, got </span><span class="si">{</span><span class="n">truth</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">residuals</span> <span class="o">=</span> <span class="n">truth</span> <span class="o">-</span> <span class="n">predicted</span>
+
+    <span class="c1"># Shapiro-Wilk is undefined below 3 points and unreliable above ~5000;</span>
+    <span class="c1"># scipy warns rather than failing, so cap the sample it sees.</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">residuals</span>
+    <span class="k">if</span> <span class="n">sample</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">5000</span><span class="p">:</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">sample</span><span class="p">))</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">shapiro_statistic</span><span class="p">,</span> <span class="n">shapiro_p</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">shapiro</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
+        <span class="n">shapiro_statistic</span><span class="p">,</span> <span class="n">shapiro_p</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">statistic</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">pvalue</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">predicted</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">residuals</span><span class="p">))</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">hetero</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">hetero</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">spearmanr</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">residuals</span><span class="p">))</span><span class="o">.</span><span class="n">statistic</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;shapiro_statistic&quot;</span><span class="p">:</span> <span class="n">shapiro_statistic</span><span class="p">,</span>
+        <span class="s2">&quot;shapiro_p&quot;</span><span class="p">:</span> <span class="n">shapiro_p</span><span class="p">,</span>
+        <span class="s2">&quot;skew&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">residuals</span><span class="p">)),</span>
+        <span class="s2">&quot;excess_kurtosis&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">kurtosis</span><span class="p">(</span><span class="n">residuals</span><span class="p">)),</span>
+        <span class="s2">&quot;heteroscedasticity_r&quot;</span><span class="p">:</span> <span class="n">hetero</span><span class="p">,</span>
+        <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">residuals</span><span class="o">.</span><span class="n">size</span><span class="p">),</span>
+    <span class="p">}</span></div>
+
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, Frederico Schmitt Kremer
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-09-25</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=f129cdf0"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>

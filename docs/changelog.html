@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="References" href="references.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Changelog - qsarkit 0.2</title>
+        <title>Changelog - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
 <li class="toctree-l2"><a class="reference internal" href="guide/applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guide/oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guide/deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -226,6 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -251,12 +253,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/blob/main/docs/source/changelog.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/blob/main/docs/source/changelog.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/fredericokremer/qsarkit-learn/edit/main/docs/source/changelog.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/omixlab/qsarkit-learn/edit/main/docs/source/changelog.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -275,15 +277,112 @@
         <article role="main" id="furo-main-content">
           <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
-<section id="id1">
-<h2>0.2.0<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
-<p>Expanded qsarkit from a QSAR modeling library into a full cheminformatics
-platform covering the discovery workflow end to end.</p>
+<section id="unreleased">
+<span id="changelog-0-3-0"></span><h2>0.3.0 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
+<p>Narrowed the package back to the QSAR workflow proper, and filled the gaps
+that narrowing exposed.</p>
+<p><strong>Scope</strong></p>
+<p>qsarkit is now a focused QSAR library rather than a general
+cheminformatics platform. Literature mining, database retrieval, docking,
+de-novo design, ADMET filtering, active learning, experiment design and
+benchmarking were removed: they are separate disciplines with separate
+failure modes, and covering them made the package broad rather than
+trustworthy. 29 subpackages became 21.</p>
+<p><strong>New modules</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">persistence</span></code> — pickle-free model saving. A directory bundle holding
+JSON metadata beside a <a class="reference external" href="https://skops.readthedocs.io">skops</a>
+representation of the estimator, so a saved model survives a
+scikit-learn upgrade and can be inspected before it is loaded. Carries
+the provenance OECD principle 2 asks for.</p></li>
+</ul>
+<p><strong>New functionality</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">validation</span></code> gained <code class="docutils literal notranslate"><span class="pre">YScrambling</span></code> (y-randomization, required
+evidence under OECD principle 4), <code class="docutils literal notranslate"><span class="pre">BootstrapValidator</span></code> (out-of-bag
+score with a confidence interval) and <code class="docutils literal notranslate"><span class="pre">ExternalValidator</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metrics</span></code> gained probability calibration (<code class="docutils literal notranslate"><span class="pre">calibration_curve</span></code>,
+<code class="docutils literal notranslate"><span class="pre">expected_calibration_error</span></code>, <code class="docutils literal notranslate"><span class="pre">maximum_calibration_error</span></code>,
+<code class="docutils literal notranslate"><span class="pre">calibration_report</span></code>), residual diagnostics (<code class="docutils literal notranslate"><span class="pre">qq_data</span></code>,
+<code class="docutils literal notranslate"><span class="pre">residual_normality</span></code>) and decision-threshold selection
+(<code class="docutils literal notranslate"><span class="pre">threshold_sweep</span></code>, <code class="docutils literal notranslate"><span class="pre">optimal_threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">threshold_report</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">explainability</span></code> gained <code class="docutils literal notranslate"><span class="pre">AttributionAtomMapper</span></code>, which projects
+SHAP or LIME per-bit attributions back onto atoms through the
+fingerprint’s bit-provenance map, and <code class="docutils literal notranslate"><span class="pre">draw_atom_weights</span></code>, which
+renders them as an RDKit similarity map.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QSARRegressor</span></code> and <code class="docutils literal notranslate"><span class="pre">QSARClassifier</span></code> now accept any
+scikit-learn-compatible estimator — XGBoost, LightGBM, CatBoost or your
+own — as a class or an instance, with <code class="docutils literal notranslate"><span class="pre">model_args</span></code>, <code class="docutils literal notranslate"><span class="pre">model_params</span></code>,
+<code class="docutils literal notranslate"><span class="pre">fit_params</span></code>, <code class="docutils literal notranslate"><span class="pre">predict_params</span></code> and <code class="docutils literal notranslate"><span class="pre">predict_proba_params</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">functional.molecules</span></code> accepts InChI as well as SMILES and RDKit
+molecules, auto-detected per entry.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">functional.balance</span></code> accepts an imbalanced-learn sampler. Samplers
+that synthesize feature vectors (SMOTE and relatives) are rejected at
+the molecule stage with an explanation, since no molecule corresponds
+to an interpolated vector.</p></li>
+<li><p>The functional pipe reaches the whole workflow: <code class="docutils literal notranslate"><span class="pre">featurize</span></code>,
+<code class="docutils literal notranslate"><span class="pre">fingerprint</span></code>, <code class="docutils literal notranslate"><span class="pre">describe</span></code>, <code class="docutils literal notranslate"><span class="pre">scale</span></code>, <code class="docutils literal notranslate"><span class="pre">impute</span></code>, <code class="docutils literal notranslate"><span class="pre">drop_constant</span></code>,
+<code class="docutils literal notranslate"><span class="pre">drop_correlated</span></code>, <code class="docutils literal notranslate"><span class="pre">select_features</span></code>, <code class="docutils literal notranslate"><span class="pre">split</span></code>, <code class="docutils literal notranslate"><span class="pre">fit</span></code>,
+<code class="docutils literal notranslate"><span class="pre">cross_validate</span></code>, <code class="docutils literal notranslate"><span class="pre">applicability_domain</span></code>, <code class="docutils literal notranslate"><span class="pre">collect</span></code>, plus
+flowchart rendering to PNG, PDF and SVG.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QSARReport</span></code> renders to plain text and PDF in addition to Markdown,
+HTML and JSON, with tables and plots carried into each.</p></li>
+<li><p>New plots: <code class="docutils literal notranslate"><span class="pre">plot_calibration_curve</span></code>, <code class="docutils literal notranslate"><span class="pre">plot_qq</span></code>,
+<code class="docutils literal notranslate"><span class="pre">plot_threshold_sweep</span></code>, <code class="docutils literal notranslate"><span class="pre">plot_precision_recall</span></code>,
+<code class="docutils literal notranslate"><span class="pre">plot_atom_contributions</span></code>.</p></li>
+</ul>
+<p><strong>Fixes</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">StructureValidator</span></code> now checks <em>net</em> formal charge. It previously
+flagged every zwitterion — glycine, ciprofloxacin, any betaine — as a
+record that had escaped neutralization.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_activity_units</span></code> no longer reports raw molar concentrations as
+logarithmic when they happen to span a narrow numeric range. A
+pActivity of 1e-9 would mean an IC50 near 1 M.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NearestNeighborAnalyzer.nearest_similarity(exclude_self=True)</span></code> masks
+each query’s own row rather than every perfect match, so <code class="docutils literal notranslate"><span class="pre">redundancy</span></code>
+detects exact duplicates instead of hiding them.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DiversityAnalyzer</span></code> and <code class="docutils literal notranslate"><span class="pre">ScaffoldAnalyzer</span></code> now agree on
+<code class="docutils literal notranslate"><span class="pre">n_scaffolds</span></code>: both exclude acyclic molecules, which have no
+Bemis-Murcko framework. Previously a library of straight chains looked
+scaffold-diverse.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CorrelationFilter</span></code> drops zero-variance columns deliberately instead
+of as a side effect of NaN comparisons, and no longer emits a
+divide-by-zero warning per column on fingerprint input.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GlycanDescriptors</span></code> and <code class="docutils literal notranslate"><span class="pre">FragmentRemover</span></code> no longer substitute
+defaults in <code class="docutils literal notranslate"><span class="pre">__init__</span></code>, which broke <code class="docutils literal notranslate"><span class="pre">clone()</span></code> and made
+<code class="docutils literal notranslate"><span class="pre">get_params()</span></code> report values the caller never passed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QSARReport.to_markdown</span></code> no longer requires the undeclared
+<code class="docutils literal notranslate"><span class="pre">tabulate</span></code> package for reports containing a table.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">functional.molecules</span></code> and the SMILES readers restore the caller’s
+RDKit logging state instead of switching it back on.</p></li>
+<li><p>Per-molecule error handling no longer uses bare <code class="docutils literal notranslate"><span class="pre">except</span> <span class="pre">Exception</span></code>,
+which swallowed <code class="docutils literal notranslate"><span class="pre">MemoryError</span></code>. A documented
+<code class="docutils literal notranslate"><span class="pre">RDKIT_MOLECULE_ERRORS</span></code> tuple replaces it.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DuplicateDetector</span></code> computes activity spread with vectorized NumPy.</p></li>
+</ul>
+<p><strong>Documentation</strong></p>
+<ul class="simple">
+<li><p>Every example in the docstrings, the guide, the API reference and the
+notebooks is executed by the test suite, so none can go stale silently.</p></li>
+<li><p>Four example notebooks covering every public subpackage, committed with
+their output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">package.md</span></code> describes the whole package organization in one file.</p></li>
+<li><p>LaTeX formulas render in HTML and PDF; the Read the Docs build treats
+warnings as errors.</p></li>
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">LICENSE</span></code> file, which <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> had referenced
+without shipping.</p></li>
+</ul>
+</section>
+<section id="changelog-0-2-0">
+<span id="id1"></span><h2>0.2.0<a class="headerlink" href="#changelog-0-2-0" title="Link to this heading">¶</a></h2>
+<p>Expanded qsarkit from a QSAR modeling library into a broad cheminformatics
+platform. Much of this was removed again in 0.3.0; see above.</p>
 <p><strong>New modules</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">chemistry</span></code> — standardization, glycan detection/removal/descriptors,
-fragment and protecting-group removal, scaffold extraction, reaction
-templates and named metabolic transformations, molecular graphs.</p></li>
+fragment and protecting-group removal, scaffold extraction, molecular
+graphs.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sar</span></code> — matched molecular pairs, activity cliffs, SALI, SARI,
 activity-landscape (SAS) maps, R-group tables, Free-Wilson analysis.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">applicability</span></code> — eleven applicability-domain definitions behind one
@@ -291,11 +390,8 @@ interface, plus coverage and accuracy-vs-coverage analysis.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">neighbors</span></code> and <code class="docutils literal notranslate"><span class="pre">cluster</span></code> — Tanimoto/Jaccard similarity search and
 k-NN estimators; Taylor-Butina, sphere exclusion, MaxMin and
 hierarchical clustering with a scikit-learn API.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">docking</span></code> — docking output parsing, binding-pocket descriptors,
-protein-ligand interaction fingerprints, rescoring and pose validation.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">text_mining</span></code>, <code class="docutils literal notranslate"><span class="pre">databases</span></code>, <code class="docutils literal notranslate"><span class="pre">data_quality</span></code>, <code class="docutils literal notranslate"><span class="pre">representation</span></code>,
-<code class="docutils literal notranslate"><span class="pre">design</span></code>, <code class="docutils literal notranslate"><span class="pre">admet</span></code>, <code class="docutils literal notranslate"><span class="pre">active_learning</span></code>, <code class="docutils literal notranslate"><span class="pre">experiment_design</span></code>,
-<code class="docutils literal notranslate"><span class="pre">reporting</span></code>, <code class="docutils literal notranslate"><span class="pre">benchmarking</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data_quality</span></code>, <code class="docutils literal notranslate"><span class="pre">representation</span></code>, <code class="docutils literal notranslate"><span class="pre">uncertainty</span></code>,
+<code class="docutils literal notranslate"><span class="pre">explainability</span></code>, <code class="docutils literal notranslate"><span class="pre">chemspace</span></code>, <code class="docutils literal notranslate"><span class="pre">reporting</span></code>, <code class="docutils literal notranslate"><span class="pre">functional</span></code>.</p></li>
 </ul>
 <p><strong>Infrastructure</strong></p>
 <ul class="simple">
@@ -305,8 +401,8 @@ protein-ligand interaction fingerprints, rescoring and pose validation.</p></li>
 <li><p>Sphinx documentation with per-class scientific references.</p></li>
 </ul>
 </section>
-<section id="id2">
-<h2>0.1.0<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="changelog-0-1-0">
+<span id="id2"></span><h2>0.1.0<a class="headerlink" href="#changelog-0-1-0" title="Link to this heading">¶</a></h2>
 <p>Initial QSAR modeling library.</p>
 </section>
 </section>
@@ -338,7 +434,7 @@ protein-ligand interaction fingerprints, rescoring and pose validation.</p></li>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-10</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -360,8 +456,9 @@ protein-ligand interaction fingerprints, rescoring and pose validation.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#id1">0.2.0</a></li>
-<li><a class="reference internal" href="#id2">0.1.0</a></li>
+<li><a class="reference internal" href="#unreleased">0.3.0 (unreleased)</a></li>
+<li><a class="reference internal" href="#changelog-0-2-0">0.2.0</a></li>
+<li><a class="reference internal" href="#changelog-0-1-0">0.1.0</a></li>
 </ul>
 </li>
 </ul>
@@ -373,7 +470,7 @@ protein-ligand interaction fingerprints, rescoring and pose validation.</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="_static/documentation_options.js?v=f129cdf0"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.functional._steps - qsarkit 0.2</title>
+        <title>qsarkit.functional._steps - qsarkit 0.3</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.2</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.3</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.2</span>
+  <span class="sidebar-brand-text">qsarkit 0.3</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -203,6 +203,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../guide/applicability.html">Applicability domain</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../guide/sar.html">SAR interpretation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../guide/oecd.html">OECD validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../guide/deployment.html">Saving and sharing a model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../api/index.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
@@ -225,6 +226,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/explainability.html">Explainability</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/chemspace.html">Chemical space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/reporting.html">Reporting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/persistence.html">Persistence</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/utils.html">Utilities</a></li>
 </ul>
 </li>
@@ -283,6 +285,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.functional._core</span><span class="w"> </span><span class="kn">import</span> <span class="n">step</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.base.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">RDKIT_MOLECULE_ERRORS</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mol</span>
@@ -420,7 +423,10 @@
             <span class="k">continue</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chooser</span><span class="o">.</span><span class="n">choose</span><span class="p">(</span><span class="n">mol</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">RDKIT_MOLECULE_ERRORS</span><span class="p">:</span>
+            <span class="c1"># A molecule the fragment chooser cannot resolve becomes None,</span>
+            <span class="c1"># keeping its position so `y` stays aligned; drop_invalid()</span>
+            <span class="c1"># removes it together with its label.</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">out</span><span class="p">,</span> <span class="n">y</span></div>
 
@@ -467,7 +473,7 @@
             <span class="k">continue</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">uncharger</span><span class="o">.</span><span class="n">uncharge</span><span class="p">(</span><span class="n">mol</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">RDKIT_MOLECULE_ERRORS</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">out</span><span class="p">,</span> <span class="n">y</span></div>
 
@@ -517,7 +523,7 @@
             <span class="k">continue</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enumerator</span><span class="o">.</span><span class="n">Canonicalize</span><span class="p">(</span><span class="n">mol</span><span class="p">))</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">RDKIT_MOLECULE_ERRORS</span><span class="p">:</span>
             <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">out</span><span class="p">,</span> <span class="n">y</span></div>
 
@@ -723,7 +729,7 @@
                 <span class="k">return</span> <span class="nb">str</span><span class="p">(</span>
                     <span class="n">Chem</span><span class="o">.</span><span class="n">MolToSmiles</span><span class="p">(</span><span class="n">MurckoScaffold</span><span class="o">.</span><span class="n">GetScaffoldForMol</span><span class="p">(</span><span class="n">mol</span><span class="p">))</span>
                 <span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">RDKIT_MOLECULE_ERRORS</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;on must be &#39;inchikey&#39;, &#39;smiles&#39; or &#39;scaffold&#39;, got </span><span class="si">{</span><span class="n">on</span><span class="si">!r}</span><span class="s2">.&quot;</span>
@@ -790,8 +796,9 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">balance</span><span class="p">(</span>
     <span class="n">X</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
     <span class="n">y</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">method</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;undersample&quot;</span><span class="p">,</span> <span class="s2">&quot;oversample&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;undersample&quot;</span><span class="p">,</span>
+    <span class="n">method</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="s2">&quot;undersample&quot;</span><span class="p">,</span>
     <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">featurizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_Payload</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Balance a classification set across its label values.</span>
 
@@ -799,17 +806,60 @@
 <span class="sd">    ----------</span>
 <span class="sd">    X : list of Mol</span>
 <span class="sd">    y : ndarray</span>
-<span class="sd">        Class labels. Required — balancing an unlabelled set is</span>
+<span class="sd">        Class labels. Required -- balancing an unlabelled set is</span>
 <span class="sd">        meaningless, so this raises rather than silently doing nothing.</span>
-<span class="sd">    method : {&quot;undersample&quot;, &quot;oversample&quot;}, default &quot;undersample&quot;</span>
-<span class="sd">        Undersampling discards majority-class molecules; oversampling</span>
-<span class="sd">        duplicates minority-class ones.</span>
+<span class="sd">    method : {&quot;undersample&quot;, &quot;oversample&quot;} or sampler, default &quot;undersample&quot;</span>
+<span class="sd">        ``&quot;undersample&quot;`` discards majority-class molecules and</span>
+<span class="sd">        ``&quot;oversample&quot;`` duplicates minority-class ones, both by simple</span>
+<span class="sd">        random choice.</span>
+
+<span class="sd">        Alternatively, any `imbalanced-learn</span>
+<span class="sd">        &lt;https://imbalanced-learn.org&gt;`_ sampler with</span>
+<span class="sd">        ``fit_resample(X, y)``. It must be one that *selects* existing</span>
+<span class="sd">        samples rather than synthesizing new ones -- see the note below.</span>
 <span class="sd">    random_state : int, optional</span>
-<span class="sd">        Seed, for reproducibility.</span>
+<span class="sd">        Seed, for reproducibility. Ignored when ``method`` is a sampler</span>
+<span class="sd">        instance, which carries its own.</span>
+<span class="sd">    featurizer : object, optional</span>
+<span class="sd">        Transformer used to featurize the molecules for a sampler that</span>
+<span class="sd">        needs a feature matrix (``TomekLinks``, ``EditedNearestNeighbours``,</span>
+<span class="sd">        ``NearMiss``, ...). Defaults to</span>
+<span class="sd">        :class:`~qsarkit.representation.MorganFingerprint`. Unused by the</span>
+<span class="sd">        two built-in string methods, which work on indices alone.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    (list of Mol, ndarray)</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If ``y`` is None, if ``method`` is an unrecognized string, or if a</span>
+<span class="sd">        supplied sampler synthesizes samples instead of selecting them.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    **Why SMOTE cannot be used here.** SMOTE and its relatives</span>
+<span class="sd">    (``ADASYN``, ``BorderlineSMOTE``) balance a dataset by interpolating</span>
+<span class="sd">    *new feature vectors* between existing ones. In descriptor space that</span>
+<span class="sd">    is a defensible trick; at the molecule stage it is not, because the</span>
+<span class="sd">    interpolated vector corresponds to no molecule -- there is nothing to</span>
+<span class="sd">    put in the returned list. Such a sampler is therefore rejected with an</span>
+<span class="sd">    explanation rather than silently producing rows whose structures are</span>
+<span class="sd">    fabricated.</span>
+
+<span class="sd">    If you want SMOTE, apply it after featurization, where the objects</span>
+<span class="sd">    being synthesized are honestly just vectors::</span>
+
+<span class="sd">        molecules(smiles, y) &gt;&gt; fingerprint() &gt;&gt; resample(SMOTE())</span>
+
+<span class="sd">    See :func:`~qsarkit.functional.resample`.</span>
+
+<span class="sd">    **Balance the training set only.** Resampling the test set changes the</span>
+<span class="sd">    class prior you are measuring against, so a balanced test score does</span>
+<span class="sd">    not describe the deployment population. Put this step after</span>
+<span class="sd">    :func:`~qsarkit.functional.split`, or apply it to the training half</span>
+<span class="sd">    alone.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -821,6 +871,24 @@
 <span class="sd">    &gt;&gt;&gt; sorted(y.tolist())</span>
 <span class="sd">    [0, 1]</span>
 
+<span class="sd">    Oversampling keeps every majority-class molecule and repeats the</span>
+<span class="sd">    minority ones:</span>
+
+<span class="sd">    &gt;&gt;&gt; mols, y = (</span>
+<span class="sd">    ...     molecules([&quot;CCO&quot;, &quot;CCN&quot;, &quot;CCC&quot;, &quot;c1ccccc1&quot;], [0, 0, 0, 1])</span>
+<span class="sd">    ...     &gt;&gt; balance(&quot;oversample&quot;, random_state=0)</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; sorted(y.tolist())</span>
+<span class="sd">    [0, 0, 0, 1, 1, 1]</span>
+
+<span class="sd">    An imbalanced-learn sampler that selects rather than synthesizes works</span>
+<span class="sd">    directly:</span>
+
+<span class="sd">    &gt;&gt;&gt; from imblearn.under_sampling import RandomUnderSampler  # doctest: +SKIP</span>
+<span class="sd">    &gt;&gt;&gt; mols, y = (</span>
+<span class="sd">    ...     molecules(smiles, labels) &gt;&gt; balance(RandomUnderSampler())</span>
+<span class="sd">    ... )  # doctest: +SKIP</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    - He, H. &amp; Garcia, E. A. (2009). &quot;Learning from Imbalanced Data.&quot;</span>
@@ -829,21 +897,31 @@
 <span class="sd">    - Chawla, N. V. et al. (2002). &quot;SMOTE: Synthetic Minority</span>
 <span class="sd">      Over-sampling Technique.&quot; J. Artif. Intell. Res., 16, 321-357.</span>
 <span class="sd">      https://doi.org/10.1613/jair.953</span>
+<span class="sd">    - Lemaitre, G., Nogueira, F. &amp; Aridas, C. K. (2017).</span>
+<span class="sd">      &quot;Imbalanced-learn: A Python Toolbox to Tackle the Curse of</span>
+<span class="sd">      Imbalanced Datasets in Machine Learning.&quot; J. Mach. Learn. Res.,</span>
+<span class="sd">      18(17), 1-5. https://jmlr.org/papers/v18/16-365</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;balance() needs labels; the MoleculeSet is unlabelled.&quot;</span>
         <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">keep</span> <span class="o">=</span> <span class="n">_sampler_indices</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">featurizer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_subset</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">keep</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;undersample&quot;</span><span class="p">,</span> <span class="s2">&quot;oversample&quot;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;method must be &#39;undersample&#39; or &#39;oversample&#39;, got </span><span class="si">{</span><span class="n">method</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;method must be &#39;undersample&#39;, &#39;oversample&#39;, or an &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;imbalanced-learn sampler, got </span><span class="si">{</span><span class="n">method</span><span class="si">!r}</span><span class="s2">.&quot;</span>
         <span class="p">)</span>
 
     <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">RandomState</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
     <span class="n">classes</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;undersample&quot;</span> <span class="k">else</span> <span class="n">counts</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
-    <span class="n">keep</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">keep</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">classes</span><span class="p">,</span> <span class="n">counts</span><span class="p">):</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="bp">cls</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="n">target</span><span class="p">:</span>
@@ -857,6 +935,68 @@
     <span class="n">keep</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">_subset</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">keep</span><span class="p">)</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_sampler_indices</span><span class="p">(</span>
+    <span class="n">sampler</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">mols</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+    <span class="n">y</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span>
+    <span class="n">featurizer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Run an imbalanced-learn sampler and recover the molecules it kept.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sampler : object</span>
+<span class="sd">        Anything with ``fit_resample(X, y)``.</span>
+<span class="sd">    mols : list of Mol</span>
+<span class="sd">        The molecules, featurized to give the sampler something to work on.</span>
+<span class="sd">    y : ndarray</span>
+<span class="sd">        Class labels.</span>
+<span class="sd">    featurizer : object, optional</span>
+<span class="sd">        Transformer for the molecules; Morgan fingerprints by default.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of int</span>
+<span class="sd">        Positions to keep, so the molecules and labels stay aligned.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the object has no ``fit_resample``, or if it synthesizes samples</span>
+<span class="sd">        rather than selecting them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="s2">&quot;fit_resample&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> has no fit_resample(X, y) method, so &quot;</span>
+            <span class="s2">&quot;it is not an imbalanced-learn sampler. Pass &#39;undersample&#39;, &quot;</span>
+            <span class="s2">&quot;&#39;oversample&#39;, or a sampler object.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">featurizer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorganFingerprint</span>
+
+        <span class="n">featurizer</span> <span class="o">=</span> <span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">featurizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">mols</span><span class="p">))</span>
+
+    <span class="n">sampler</span><span class="o">.</span><span class="n">fit_resample</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># A selecting sampler records which rows it kept; a synthesizing one</span>
+    <span class="c1"># cannot, because its output rows are new. That attribute is therefore</span>
+    <span class="c1"># exactly the test for whether the sampler is usable on molecules.</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="s2">&quot;sample_indices_&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> does not expose sample_indices_, &quot;</span>
+            <span class="s2">&quot;which means it synthesizes new feature vectors rather than &quot;</span>
+            <span class="s2">&quot;selecting existing samples. There is no molecule corresponding &quot;</span>
+            <span class="s2">&quot;to a synthesized vector, so it cannot be used at this stage.</span><span class="se">\\</span><span class="s2">n&quot;</span>
+            <span class="s2">&quot;Apply it after featurization instead, where the objects being &quot;</span>
+            <span class="s2">&quot;created are honestly just vectors:</span><span class="se">\\</span><span class="s2">n&quot;</span>
+            <span class="s2">&quot;    molecules(X, y) &gt;&gt; fingerprint() &gt;&gt; resample(SMOTE())&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
 
 
 <div class="viewcode-block" id="keep_if">
@@ -1190,7 +1330,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-09</div>
+              Last updated on 2026-09-25</div>
           </div>
           <div class="right-details">
             
@@ -1205,7 +1345,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=95e61db4"></script>
+</div><script src="../../../_static/documentation_options.js?v=f129cdf0"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
