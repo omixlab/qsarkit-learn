@@ -29,26 +29,28 @@ The package is organized around the core stages of a QSAR project:
 
 ## Installation
 
-Install `qsarkit` directly from PyPI (or your local environment) using pip. Python 3.9+ is required.
+Install from PyPI with pip. Python 3.9+ is required.
 
 ```bash
-pip install qsarkit
+pip install qsarkit-learn
 ```
+
+> The distribution is **`qsarkit-learn`**; the package you import is **`qsarkit`** — the same split as `scikit-learn` and `sklearn`. The bare name `qsarkit` on PyPI belongs to an unrelated project.
 
 The package uses optional dependencies to avoid bloating your environment. You can install specific extras depending on your use case:
 
 ```bash
 # For embeddings and NLP-based representations
-pip install qsarkit[embeddings,nlp]
+pip install qsarkit-learn[embeddings,nlp]
 
 # For tree-based models and explainability tools
-pip install qsarkit[boosting,explainability]
+pip install qsarkit-learn[boosting,explainability]
 
 # For pickle-free model saving and PDF reports
-pip install qsarkit[persistence,reporting]
+pip install qsarkit-learn[persistence,reporting]
 
 # To install everything
-pip install qsarkit[all]
+pip install qsarkit-learn[all]
 ```
 
 A missing optional dependency raises an error naming the extra that provides it, rather than an `ImportError` you have to interpret.

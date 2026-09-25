@@ -293,7 +293,7 @@ The same report renders five ways, and every one carries the tables:
    ['author', 'created', 'endpoint', 'sections', 'title']
 
 PDF needs ``reportlab``, and embedding the plots needs ``kaleido``
-(``pip install qsarkit[reporting]``):
+(``pip install qsarkit-learn[reporting]``):
 
 .. doctest::
 

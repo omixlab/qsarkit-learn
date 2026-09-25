@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Quick start" href="quickstart.html"><link rel="prev" title="User guide" href="index.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Installation - qsarkit 0.3</title>
+        <title>Installation - qsarkit 0.4</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.3</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.4</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.3</span>
+  <span class="sidebar-brand-text">qsarkit 0.4</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -277,11 +277,21 @@
         <article role="main" id="furo-main-content">
           <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qsarkit-learn
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The distribution is <strong>qsarkit-learn</strong>; the package you import is
+<strong>qsarkit</strong> — the same split as <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> and <code class="docutils literal notranslate"><span class="pre">sklearn</span></code>. The bare
+name <code class="docutils literal notranslate"><span class="pre">qsarkit</span></code> on PyPI belongs to an unrelated project.</p>
+</div>
+<p>To track the development version instead:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/omixlab/qsarkit-learn
 </pre></div>
 </div>
-<p>That installs the core: NumPy, SciPy, pandas, scikit-learn, RDKit,
-NetworkX, requests and Plotly. Everything in <a class="reference internal" href="../api/chemistry.html#module-qsarkit.chemistry" title="qsarkit.chemistry"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qsarkit.chemistry</span></code></a>,
+<p>Either installs the core: NumPy, SciPy, pandas, scikit-learn, RDKit,
+NetworkX and Plotly. Everything in <a class="reference internal" href="../api/chemistry.html#module-qsarkit.chemistry" title="qsarkit.chemistry"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qsarkit.chemistry</span></code></a>,
 <a class="reference internal" href="../api/sar.html#module-qsarkit.sar" title="qsarkit.sar"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qsarkit.sar</span></code></a>, <a class="reference internal" href="../api/applicability.html#module-qsarkit.applicability" title="qsarkit.applicability"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qsarkit.applicability</span></code></a>, <a class="reference internal" href="../api/neighbors.html#module-qsarkit.neighbors" title="qsarkit.neighbors"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qsarkit.neighbors</span></code></a>
 and <a class="reference internal" href="../api/cluster.html#module-qsarkit.cluster" title="qsarkit.cluster"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qsarkit.cluster</span></code></a> works with just that.</p>
 <section id="optional-extras">
@@ -323,8 +333,8 @@ install.</p>
 </tbody>
 </table>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;qsarkit[explainability]&quot;</span><span class="w">   </span><span class="c1"># pick what you need</span>
-pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;qsarkit[all]&quot;</span><span class="w">              </span><span class="c1"># or take everything</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;qsarkit-learn[explainability]&quot;</span><span class="w">   </span><span class="c1"># pick what you need</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;qsarkit-learn[all]&quot;</span><span class="w">              </span><span class="c1"># or take everything</span>
 </pre></div>
 </div>
 <p>A missing optional dependency raises an error naming the extra that
@@ -347,8 +357,8 @@ ruff<span class="w"> </span>check<span class="w"> </span>qsarkit<span class="w">
 <h3>Verifying a source distribution<a class="headerlink" href="#verifying-a-source-distribution" title="Link to this heading">¶</a></h3>
 <p>The sdist ships the test suite, so a packager can verify a build without
 the repository:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>xf<span class="w"> </span>qsarkit-0.3.0.tar.gz
-<span class="nb">cd</span><span class="w"> </span>qsarkit-0.3.0
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar<span class="w"> </span>xf<span class="w"> </span>qsarkit_learn-*.tar.gz
+<span class="nb">cd</span><span class="w"> </span>qsarkit_learn-*/
 pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
 pytest<span class="w">                             </span><span class="c1"># the notebooks need `-m slow`</span>
 </pre></div>
@@ -454,7 +464,7 @@ real type errors. Keep it.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=f129cdf0"></script>
+</div><script src="../_static/documentation_options.js?v=1437fa6d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

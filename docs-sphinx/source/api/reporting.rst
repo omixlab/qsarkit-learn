@@ -11,7 +11,7 @@ the Plotly figures that go in them.
    All plotting returns :class:`plotly.graph_objects.Figure`. Nothing here
    calls ``.show()`` or writes a file, so the same figure composes into a
    notebook, a dashboard and an HTML report. Static export
-   (``fig.write_image``) needs ``kaleido`` — ``pip install qsarkit[reporting]``.
+   (``fig.write_image``) needs ``kaleido`` — ``pip install qsarkit-learn[reporting]``.
 
 Figures
 -------
@@ -98,7 +98,7 @@ for sharing; JSON for a downstream system; PDF for a submission:
    True
 
 ``to_pdf`` needs ``reportlab``; embedding plots into PDF or Markdown
-additionally needs ``kaleido`` (``pip install qsarkit[reporting]``).
+additionally needs ``kaleido`` (``pip install qsarkit-learn[reporting]``).
 
 Figures and tables
 ------------------

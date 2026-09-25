@@ -76,7 +76,7 @@ def test_modules_it_names_exist(readme: str) -> None:
 def test_advertised_extras_exist(readme: str) -> None:
     """Every extra shown in a pip install line is defined in pyproject."""
     shown: set[str] = set()
-    for group in re.findall(r"pip install [\"']?qsarkit\[([^\]]+)\]", readme):
+    for group in re.findall(r"pip install [\"']?qsarkit-learn\[([^\]]+)\]", readme):
         shown.update(part.strip() for part in group.split(","))
     if not shown:
         pytest.skip("README advertises no extras")

@@ -3,10 +3,22 @@ Installation
 
 .. code-block:: bash
 
+   pip install qsarkit-learn
+
+.. note::
+
+   The distribution is **qsarkit-learn**; the package you import is
+   **qsarkit** — the same split as ``scikit-learn`` and ``sklearn``. The bare
+   name ``qsarkit`` on PyPI belongs to an unrelated project.
+
+To track the development version instead:
+
+.. code-block:: bash
+
    pip install git+https://github.com/omixlab/qsarkit-learn
 
-That installs the core: NumPy, SciPy, pandas, scikit-learn, RDKit,
-NetworkX, requests and Plotly. Everything in :mod:`qsarkit.chemistry`,
+Either installs the core: NumPy, SciPy, pandas, scikit-learn, RDKit,
+NetworkX and Plotly. Everything in :mod:`qsarkit.chemistry`,
 :mod:`qsarkit.sar`, :mod:`qsarkit.applicability`, :mod:`qsarkit.neighbors`
 and :mod:`qsarkit.cluster` works with just that.
 
@@ -39,8 +51,8 @@ install.
 
 .. code-block:: bash
 
-   pip install "qsarkit[explainability]"   # pick what you need
-   pip install "qsarkit[all]"              # or take everything
+   pip install "qsarkit-learn[explainability]"   # pick what you need
+   pip install "qsarkit-learn[all]"              # or take everything
 
 A missing optional dependency raises an error naming the extra that
 provides it, rather than an ``ImportError`` you have to interpret.
@@ -68,8 +80,8 @@ the repository:
 
 .. code-block:: bash
 
-   tar xf qsarkit-0.3.0.tar.gz
-   cd qsarkit-0.3.0
+   tar xf qsarkit_learn-*.tar.gz
+   cd qsarkit_learn-*/
    pip install ".[dev]"
    pytest                             # the notebooks need `-m slow`
 

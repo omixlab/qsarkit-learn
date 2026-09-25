@@ -37,7 +37,7 @@ Use `qsarkit.base.ensure_mol_list` to validate/materialize input inside
   `qsarkit.base.require("torch")` inside `__init__`/`fit`/the method that
   needs them — never at module top level. This keeps `import qsarkit`
   cheap and lets users install only the extras they need
-  (`pip install qsarkit[nlp]`, see `pyproject.toml`).
+  (`pip install qsarkit-learn[nlp]`, see `pyproject.toml`).
 
 ## 3. Mandatory documentation
 

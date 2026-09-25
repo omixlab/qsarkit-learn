@@ -1,9 +1,9 @@
 Changelog
 =========
 
-.. _changelog-0-3-0:
+.. _changelog-0-4-0:
 
-0.3.0 (unreleased)
+0.4.0 (unreleased)
 ------------------
 
 Narrowed the package back to the QSAR workflow proper, and filled the gaps
@@ -109,7 +109,7 @@ trustworthy. 29 subpackages became 21.
 -----
 
 Expanded qsarkit from a QSAR modeling library into a broad cheminformatics
-platform. Much of this was removed again in 0.3.0; see above.
+platform. Much of this was removed again in 0.4.0; see above.
 
 **New modules**
 
