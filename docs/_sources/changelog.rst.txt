@@ -1,9 +1,9 @@
 Changelog
 =========
 
-.. _changelog-0-4-1:
+.. _changelog-0-5-0:
 
-0.4.1 (unreleased)
+0.5.0 (unreleased)
 ------------------
 
 Narrowed the package back to the QSAR workflow proper, and filled the gaps
@@ -28,6 +28,25 @@ trustworthy. 29 subpackages became 21.
 
 **New functionality**
 
+- Every validator in ``validation`` -- ``CrossValidator``, ``YScrambling``,
+  ``ExternalValidator`` and ``BootstrapValidator`` -- now takes a
+  ``scoring`` argument instead of being fixed to :math:`R^2`. Name a metric
+  from ``available_metrics()``, pass a ``(y_true, y_pred)`` callable, or
+  wrap one with ``make_scorer`` when it needs probabilities or is a loss.
+  Pass an iterable of metrics and every score in the result becomes an
+  array in the order given, computed from a single pass over the folds.
+
+  ``roc_auc``, ``pr_auc`` and ``brier`` are given ``predict_proba``'s
+  positive-class column rather than a thresholded label. A loss declares
+  ``greater_is_better=False``, which is what keeps a y-randomization
+  p-value from being reported backwards when it is computed on RMSE.
+
+  ``YScrambling`` also gained ``cv`` and ``stratify``, which score out of
+  fold rather than in sample. This is necessary rather than cosmetic for a
+  ranking metric: a random forest separates permuted labels in-sample as
+  perfectly as real ones, so an in-sample ROC-AUC comparison reads 1.0
+  against 1.0 and detects nothing. The default stays in-sample, so existing
+  results are unchanged.
 - ``validation`` gained ``YScrambling`` (y-randomization, required
   evidence under OECD principle 4), ``BootstrapValidator`` (out-of-bag
   score with a confidence interval) and ``ExternalValidator``.

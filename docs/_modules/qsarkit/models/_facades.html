@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.models._facades - qsarkit 0.4.1</title>
+        <title>qsarkit.models._facades - qsarkit 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.4.1</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.4.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -309,6 +309,21 @@
     <span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="s2">&quot;svm&quot;</span><span class="p">,</span> <span class="s2">&quot;gbm&quot;</span><span class="p">,</span> <span class="s2">&quot;xgboost&quot;</span><span class="p">,</span> <span class="s2">&quot;lightgbm&quot;</span><span class="p">,</span> <span class="s2">&quot;knn&quot;</span><span class="p">,</span> <span class="s2">&quot;pls&quot;</span><span class="p">,</span>
     <span class="s2">&quot;ridge&quot;</span><span class="p">,</span> <span class="s2">&quot;lasso&quot;</span><span class="p">,</span> <span class="s2">&quot;elasticnet&quot;</span><span class="p">,</span> <span class="s2">&quot;mlp&quot;</span><span class="p">,</span> <span class="s2">&quot;gp&quot;</span><span class="p">,</span>
 <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="o">**</span><span class="n">defaults</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The facade&#39;s defaults, overridable by the caller&#39;s ``model_params``.</span>
+
+<span class="sd">    ``model_params`` is the documented way to configure a backend, so passing</span>
+<span class="sd">    a keyword the facade also sets has to work. Splatting both into the</span>
+<span class="sd">    constructor instead raises ``TypeError: got multiple values for keyword</span>
+<span class="sd">    argument``, which is a confusing way to reject a documented use --</span>
+<span class="sd">    ``QSARClassifier(&quot;rf&quot;, model_params={&quot;n_estimators&quot;: 100})`` hit exactly</span>
+<span class="sd">    that. The caller&#39;s value wins.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">defaults</span><span class="p">)</span>
+    <span class="n">merged</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">merged</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_invalid_name_error</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -669,11 +684,13 @@
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;rf&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">RandomForestQSAR</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">RandomForestQSAR</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;svm&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SVMQSAR</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;gbm&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">HistGradientBoostingRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">HistGradientBoostingRegressor</span><span class="p">(</span>
+                <span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;xgboost&quot;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="kn">import</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xgb</span>
@@ -685,9 +702,9 @@
                     <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="n">HistGradientBoostingRegressor</span><span class="p">(</span>
-                    <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                    <span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
                 <span class="p">)</span>
-            <span class="k">return</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBRegressor</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;lightgbm&quot;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="kn">import</span><span class="w"> </span><span class="nn">lightgbm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">lgb</span>
@@ -699,23 +716,23 @@
                     <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="n">HistGradientBoostingRegressor</span><span class="p">(</span>
-                    <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                    <span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
                 <span class="p">)</span>
-            <span class="k">return</span> <span class="n">lgb</span><span class="o">.</span><span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">lgb</span><span class="o">.</span><span class="n">LGBMRegressor</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;knn&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">JaccardKNeighborsRegressor</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;pls&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">PLSRegressor</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;ridge&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Ridge</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Ridge</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;lasso&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Lasso</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Lasso</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;elasticnet&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ElasticNet</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ElasticNet</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;mlp&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">NeuralNetworkQSAR</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">NeuralNetworkQSAR</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;gp&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">GaussianProcessQSAR</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">GaussianProcessQSAR</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">raise</span> <span class="n">_invalid_name_error</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
 <div class="viewcode-block" id="QSARRegressor.fit">
@@ -929,13 +946,13 @@
 
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;rf&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">RandomForestClassifier</span><span class="p">(</span>
-                <span class="n">n_estimators</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                <span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;svm&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">SVC</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;gbm&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">(</span>
-                <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                <span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;xgboost&quot;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -948,9 +965,9 @@
                     <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">(</span>
-                    <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                    <span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
                 <span class="p">)</span>
-            <span class="k">return</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBClassifier</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;lightgbm&quot;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="kn">import</span><span class="w"> </span><span class="nn">lightgbm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">lgb</span>
@@ -962,15 +979,15 @@
                     <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="n">HistGradientBoostingClassifier</span><span class="p">(</span>
-                    <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span>
+                    <span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
                 <span class="p">)</span>
-            <span class="k">return</span> <span class="n">lgb</span><span class="o">.</span><span class="n">LGBMClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">lgb</span><span class="o">.</span><span class="n">LGBMClassifier</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;knn&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">JaccardKNeighborsClassifier</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;pls&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_PLSDAClassifier</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;ridge&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">RidgeClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">RidgeClassifier</span><span class="p">(</span><span class="o">**</span><span class="n">_with_defaults</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;lasso&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">LogisticRegression</span><span class="p">(</span>
                 <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;l1&quot;</span><span class="p">,</span>
@@ -1132,7 +1149,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=bd778e0b"></script>
+</div><script src="../../../_static/documentation_options.js?v=70f82a29"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

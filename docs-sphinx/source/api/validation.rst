@@ -36,8 +36,8 @@ Cross-validation
    >>> X, y = demo_fingerprints(512), DEMO_Y
    >>> model = QSARRegressor("rf", random_state=0)
    >>> report = CrossValidator(n_splits=5, random_state=0).evaluate(model, X, y)
-   >>> round(report["q2"], 3), round(report["rmse_cv"], 3)
-   (0.686, 0.602)
+   >>> round(report["q2"], 1), round(report["rmse_cv"], 1)
+   (0.7, 0.6)
 
 The report carries the out-of-fold predictions, so any further statistic or
 plot needs no refitting:
@@ -183,6 +183,115 @@ respectable-looking number into an accurate picture.
       >>> _ = YScrambling(n_iterations=5, random_state=0).run(template, X, y)
       >>> hasattr(template, "estimator_")
       False
+
+Choosing the metric
+-------------------
+
+All four validators take ``scoring``. It defaults to :math:`R^2`, which is
+right for a regression QSAR and wrong for everything else: a toxicity
+classifier has to be argued in ROC-AUC or average precision, and a regulator
+asking for RMSE is not asking for :math:`R^2` reported next to it.
+
+.. doctest::
+
+   >>> from qsarkit.validation import available_metrics
+   >>> len(available_metrics())
+   18
+   >>> [m for m in available_metrics() if "auc" in m]
+   ['pr_auc', 'roc_auc']
+
+Pass several and every score becomes an array **in the order given**, so one
+pass reports them all:
+
+.. doctest::
+
+   >>> from qsarkit.models import QSARRegressor
+   >>> from qsarkit.validation import CrossValidator
+   >>> cv = CrossValidator(n_splits=5, random_state=0, scoring=["r2", "rmse", "mae"])
+   >>> result = cv.evaluate(QSARRegressor("rf", random_state=0), X, y)
+   >>> result["metric"]
+   ('r2', 'rmse', 'mae')
+   >>> result["score"].round(2)
+   array([0.69, 0.6 , 0.44])
+
+One metric returns a float; an iterable returns an array even when it holds a
+single entry, so adding a second metric never changes the shape of your code.
+
+Classification metrics see probabilities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``roc_auc``, ``pr_auc`` and ``brier`` rank or calibrate, so they are given
+``predict_proba``'s positive-class column, never a thresholded label.
+Thresholding first throws away the ranking that ROC-AUC exists to measure.
+
+.. doctest::
+
+   >>> import numpy as np
+   >>> from qsarkit.models import QSARClassifier
+   >>> labels = (DEMO_Y > np.median(DEMO_Y)).astype(int)
+   >>> model = QSARClassifier("rf", random_state=0)
+   >>> cv = CrossValidator(n_splits=5, random_state=0,
+   ...                     scoring=["roc_auc", "pr_auc", "mcc"])
+   >>> report = cv.evaluate(model, X, labels)
+   >>> report["score"].round(2)
+   array([0.93, 0.94, 0.75])
+   >>> report["y_score_cv"].shape          # out-of-fold probabilities
+   (24,)
+
+For a metric that is not on the list, or one that needs probabilities:
+
+.. doctest::
+
+   >>> from sklearn.metrics import average_precision_score
+   >>> from qsarkit.validation import make_scorer
+   >>> scorer = make_scorer(average_precision_score, needs_proba=True, name="ap")
+   >>> CrossValidator(n_splits=5, random_state=0, scoring=scorer).evaluate(
+   ...     model, X, labels)["metric"]
+   'ap'
+
+A bare callable is assumed to take ``(y_true, y_pred)`` and to improve as it
+grows; :func:`~qsarkit.validation.make_scorer` is how the other cases are
+declared. Declaring a loss matters more than it looks:
+``greater_is_better=False`` is what keeps "did the scrambled model do at least
+as well" comparing in the right direction, so a y-randomization p-value
+computed on RMSE is not reported backwards.
+
+.. doctest::
+
+   >>> from qsarkit.validation import YScrambling
+   >>> scramble = YScrambling(n_iterations=20, random_state=0,
+   ...                        scoring=["r2", "rmse"]).run(
+   ...     QSARRegressor("rf", random_state=0), X, y)
+   >>> scramble["p_value"].round(3)        # same verdict from a gain and a loss
+   array([0.048, 0.048])
+
+.. warning::
+
+   **Score out of fold before reading anything into a ranking metric.**
+   :class:`~qsarkit.validation.YScrambling` scores the apparent, in-sample fit
+   by default, which is what earlier releases did and what makes the classic
+   over-fitting demonstration work for :math:`R^2`. It cannot work for
+   ROC-AUC: a random forest separates *permuted* labels in-sample as perfectly
+   as real ones, so both sides read near 1.0 and the test reports nothing.
+
+   .. doctest::
+
+      >>> in_sample = YScrambling(n_iterations=20, random_state=0,
+      ...                         scoring="roc_auc").run(model, X, labels)
+      >>> round(in_sample["real_score"], 2), round(in_sample["mean_scrambled_score"], 2)
+      (1.0, 1.0)
+
+   Pass ``cv`` — and ``stratify=True`` on an imbalanced endpoint — and the
+   same test becomes informative:
+
+   .. doctest::
+
+      >>> honest = YScrambling(n_iterations=20, random_state=0, scoring="roc_auc",
+      ...                      cv=5, stratify=True).run(model, X, labels)
+      >>> round(honest["real_score"], 2), round(honest["mean_scrambled_score"], 2)
+      (0.93, 0.43)
+      >>> honest["scored_out_of_fold"]
+      True
 
 See :doc:`../guide/oecd` for how these fit together into a reportable
 validation, and :doc:`metrics` for the statistics they compute.

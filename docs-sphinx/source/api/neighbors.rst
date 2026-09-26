@@ -37,8 +37,19 @@ Similarity search
    >>> from qsarkit.neighbors import JaccardNeighborSearch
    >>> search = JaccardNeighborSearch(n_neighbors=3).fit(X)
    >>> distances, indices = search.kneighbors(X[:1])
-   >>> indices.tolist()
-   [[0, 3, 2]]
+   >>> indices.shape
+   (1, 3)
+   >>> int(indices[0, 0])                    # a molecule is its own neighbour
+   0
+   >>> distances.round(3).tolist()
+   [[0.0, 0.421, 0.45]]
+
+The *distances* are fixed, but the third index is not: three molecules in
+this set sit at exactly 0.45, and which of them fills the last slot is
+whatever the underlying partition happens to return. Ranking ties are
+ordinary in fingerprint space, where similarity takes few distinct values,
+so treat the membership of a k-nearest list as one of several equally valid
+answers rather than the answer.
 
 A threshold search returns everything similar enough, rather than a fixed
 count — which is what a chemist actually wants when asking "what else
@@ -56,9 +67,20 @@ k-NN estimators
 .. doctest::
 
    >>> from qsarkit.neighbors import JaccardKNeighborsRegressor
-   >>> model = JaccardKNeighborsRegressor(n_neighbors=3).fit(X, DEMO_Y)
-   >>> round(float(model.predict(X[:1])[0]), 2)
-   6.1
+   >>> model = JaccardKNeighborsRegressor(n_neighbors=1).fit(X, DEMO_Y)
+   >>> round(float(model.predict(X[:1])[0]), 2)   # its own label, exactly
+   5.1
+
+With more neighbours the prediction averages their labels, and because of
+the ties above the exact average depends on which tied molecule is drawn
+in. What the method guarantees is the bound, not the value:
+
+.. doctest::
+
+   >>> averaged = JaccardKNeighborsRegressor(n_neighbors=3).fit(X, DEMO_Y)
+   >>> prediction = float(averaged.predict(X[:1])[0])
+   >>> bool(DEMO_Y.min() <= prediction <= DEMO_Y.max())
+   True
 
 ``weights="similarity"`` weights neighbours by Tanimoto similarity rather
 than inverse distance, which is the natural reading for fingerprints:

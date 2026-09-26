@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.validation._robustness - qsarkit 0.4.1</title>
+        <title>qsarkit.validation._robustness - qsarkit 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.4.1</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.4.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -289,26 +289,84 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">clone</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation._scoring</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Scorer</span><span class="p">,</span>
+    <span class="n">Scoring</span><span class="p">,</span>
+    <span class="n">metric_names</span><span class="p">,</span>
+    <span class="n">resolve_scoring</span><span class="p">,</span>
+    <span class="n">score_all</span><span class="p">,</span>
+    <span class="n">score_estimator</span><span class="p">,</span>
+    <span class="n">unwrap</span><span class="p">,</span>
+<span class="p">)</span>
+
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;YScrambling&quot;</span><span class="p">,</span> <span class="s2">&quot;ExternalValidator&quot;</span><span class="p">,</span> <span class="s2">&quot;BootstrapValidator&quot;</span><span class="p">]</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_fit_score</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_fit_and_score</span><span class="p">(</span>
     <span class="n">estimator</span><span class="p">:</span> <span class="n">BaseEstimator</span><span class="p">,</span>
     <span class="n">X</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">,</span>
-    <span class="n">y</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit a fresh clone and return its coefficient of determination.&quot;&quot;&quot;</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">r2_score</span>
-
+    <span class="n">y</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span>
+    <span class="n">scorers</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Scorer</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fit a fresh clone and score it on the same data it was fit on.&quot;&quot;&quot;</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span>
     <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">r2_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">score_estimator</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_cross_val_score</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="p">:</span> <span class="n">BaseEstimator</span><span class="p">,</span>
+    <span class="n">X</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">,</span>
+    <span class="n">scorers</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Scorer</span><span class="p">],</span>
+    <span class="n">cv</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="n">stratify</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Score out of fold, pooling the held-out predictions before scoring.</span>
+
+<span class="sd">    Pooled rather than averaged per fold because a ranking metric is not a</span>
+<span class="sd">    mean of per-fold rankings: with a 3% positive rate a fold can contain no</span>
+<span class="sd">    positives at all, where ROC-AUC is undefined. Pooling the out-of-fold</span>
+<span class="sd">    predictions and scoring once sidesteps that and matches how a</span>
+<span class="sd">    cross-validated Q^2 is defined.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">KFold</span><span class="p">,</span> <span class="n">StratifiedKFold</span>
+
+    <span class="n">needs_proba</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">needs_proba</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scorers</span><span class="p">)</span>
+    <span class="n">needs_pred</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">needs_proba</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scorers</span><span class="p">)</span>
+
+    <span class="n">splitter</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="k">if</span> <span class="n">stratify</span><span class="p">:</span>
+        <span class="n">splitter</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span>
+            <span class="n">n_splits</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">splitter</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">pooled_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">if</span> <span class="n">needs_pred</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">pooled_score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="k">if</span> <span class="n">needs_proba</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span> <span class="ow">in</span> <span class="n">splitter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pooled_pred</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pooled_pred</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">pooled_score</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation._scoring</span><span class="w"> </span><span class="kn">import</span> <span class="n">positive_class_scores</span>
+
+            <span class="n">pooled_score</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">positive_class_scores</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">score_all</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pooled_pred</span><span class="p">,</span> <span class="n">pooled_score</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="YScrambling">
@@ -334,13 +392,34 @@
 <span class="sd">        anything below 0.0099.</span>
 <span class="sd">    random_state : int, optional</span>
 <span class="sd">        Seed for the permutations.</span>
+<span class="sd">    scoring : str, callable, Scorer, or iterable of those, optional</span>
+<span class="sd">        The metric to argue in. Defaults to :math:`R^2`. Name one of</span>
+<span class="sd">        :func:`~qsarkit.validation.available_metrics`, pass a</span>
+<span class="sd">        ``(y_true, y_pred)`` callable, or use</span>
+<span class="sd">        :func:`~qsarkit.validation.make_scorer` for a metric that needs</span>
+<span class="sd">        probabilities or is a loss. Pass several and every score in the</span>
+<span class="sd">        result becomes an array in the order given.</span>
+<span class="sd">    cv : int, optional</span>
+<span class="sd">        Score out of fold over this many folds instead of on the training</span>
+<span class="sd">        data. **Strongly recommended for any flexible model, and required</span>
+<span class="sd">        for a ranking metric to mean anything**: a random forest reaches an</span>
+<span class="sd">        in-sample ROC-AUC near 1.0 on permuted labels just as it does on real</span>
+<span class="sd">        ones, so the in-sample comparison shows no gap and the test reports</span>
+<span class="sd">        nothing. The default is ``None`` -- the apparent, in-sample fit --</span>
+<span class="sd">        because that is what earlier releases computed.</span>
+<span class="sd">    stratify : bool, default False</span>
+<span class="sd">        Use stratified folds when ``cv`` is set. Needed on an imbalanced</span>
+<span class="sd">        classification endpoint, where an unstratified fold can contain no</span>
+<span class="sd">        positives at all.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    real_score_ : float</span>
-<span class="sd">        The model&#39;s score on the true labels.</span>
-<span class="sd">    scrambled_scores_ : ndarray of shape (n_iterations,)</span>
-<span class="sd">        Scores obtained on permuted labels.</span>
+<span class="sd">    real_score_ : float or ndarray</span>
+<span class="sd">        The model&#39;s score on the true labels: a float for one metric, an</span>
+<span class="sd">        array in the given order for several.</span>
+<span class="sd">    scrambled_scores_ : ndarray</span>
+<span class="sd">        Shape ``(n_iterations,)`` for one metric, ``(n_iterations,</span>
+<span class="sd">        n_metrics)`` for several.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -380,14 +459,22 @@
 <span class="sd">      https://doi.org/10.1787/9789264085442-en</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">real_score_</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">real_score_</span><span class="p">:</span> <span class="n">Any</span>
     <span class="n">scrambled_scores_</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scoring</span><span class="p">:</span> <span class="n">Scoring</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cv</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">stratify</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span> <span class="o">=</span> <span class="n">n_iterations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">=</span> <span class="n">cv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stratify</span> <span class="o">=</span> <span class="n">stratify</span>
 
 <div class="viewcode-block" id="YScrambling.run">
 <a class="viewcode-back" href="../../../api/validation.html#qsarkit.validation.YScrambling.run">[docs]</a>
@@ -410,10 +497,15 @@
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
 <span class="sd">            ``real_score``, ``mean_scrambled_score``,</span>
-<span class="sd">            ``std_scrambled_score``, ``max_scrambled_score``, ``p_value``</span>
-<span class="sd">            (the fraction of permutations scoring at least as well as the</span>
-<span class="sd">            real fit, with the conventional +1 correction) and</span>
-<span class="sd">            ``n_iterations``.</span>
+<span class="sd">            ``std_scrambled_score``, ``max_scrambled_score``,</span>
+<span class="sd">            ``best_scrambled_score`` (the largest for a metric where more is</span>
+<span class="sd">            better, the smallest for a loss), ``p_value`` (the fraction of</span>
+<span class="sd">            permutations scoring at least as well as the real fit, with the</span>
+<span class="sd">            conventional +1 correction), ``n_iterations``, ``metric`` (the</span>
+<span class="sd">            name, or the tuple of names) and ``scored_out_of_fold``.</span>
+
+<span class="sd">            Every score is a float when one metric was requested and an</span>
+<span class="sd">            ndarray in the requested order when several were.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -424,30 +516,68 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;n_iterations must be at least 1, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
-        <span class="n">X_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">y_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cv must be at least 2, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">real_score_</span> <span class="o">=</span> <span class="n">_fit_score</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_arr</span><span class="p">,</span> <span class="n">y_arr</span><span class="p">)</span>
+        <span class="n">scorers</span><span class="p">,</span> <span class="n">single</span> <span class="o">=</span> <span class="n">resolve_scoring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">)</span>
+        <span class="n">X_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="c1"># The label dtype is left alone: coercing to float would turn class</span>
+        <span class="c1"># labels into floats, and a metric such as MCC then scores something</span>
+        <span class="c1"># other than what the caller passed.</span>
+        <span class="n">y_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">labels</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_fit_and_score</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_arr</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">scorers</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_cross_val_score</span><span class="p">(</span>
+                <span class="n">estimator</span><span class="p">,</span>
+                <span class="n">X_arr</span><span class="p">,</span>
+                <span class="n">labels</span><span class="p">,</span>
+                <span class="n">scorers</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stratify</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">real</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">y_arr</span><span class="p">)</span>
 
         <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
-        <span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">scrambled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">scorers</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span><span class="p">):</span>
-            <span class="n">scores</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_fit_score</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_arr</span><span class="p">,</span> <span class="n">rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">y_arr</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scrambled_scores_</span> <span class="o">=</span> <span class="n">scores</span>
+            <span class="n">scrambled</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">y_arr</span><span class="p">))</span>
 
         <span class="c1"># The +1 correction keeps the p-value from ever being exactly zero:</span>
         <span class="c1"># a permutation test cannot distinguish &quot;very unlikely&quot; from</span>
         <span class="c1"># &quot;impossible&quot;, and reporting 0 would claim more than was measured.</span>
-        <span class="n">n_better</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">scores</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_score_</span><span class="p">))</span>
-        <span class="n">p_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_better</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">p_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scorers</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">best</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scorers</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">scorer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">scorers</span><span class="p">):</span>
+            <span class="n">column</span> <span class="o">=</span> <span class="n">scrambled</span><span class="p">[:,</span> <span class="n">j</span><span class="p">]</span>
+            <span class="c1"># Direction matters: for RMSE a scrambled model does &quot;at least as</span>
+            <span class="c1"># well&quot; by scoring *lower*, so comparing with &gt;= would invert the</span>
+            <span class="c1"># test and report a loss metric&#39;s p-value backwards.</span>
+            <span class="n">at_least_as_good</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="n">scorer</span><span class="o">.</span><span class="n">is_at_least_as_good_as</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">real</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">column</span>
+            <span class="p">)</span>
+            <span class="n">p_values</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">at_least_as_good</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">best</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="k">if</span> <span class="n">scorer</span><span class="o">.</span><span class="n">greater_is_better</span> <span class="k">else</span> <span class="n">column</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">real_score_</span> <span class="o">=</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">single</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scrambled_scores_</span> <span class="o">=</span> <span class="n">scrambled</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">single</span> <span class="k">else</span> <span class="n">scrambled</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;real_score&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_score_</span><span class="p">,</span>
-            <span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
-            <span class="s2">&quot;std_scrambled_score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span>
-            <span class="s2">&quot;max_scrambled_score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
-            <span class="s2">&quot;p_value&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_value</span><span class="p">),</span>
+            <span class="s2">&quot;real_score&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">real</span><span class="p">,</span> <span class="n">single</span><span class="p">),</span>
+            <span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">scrambled</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">single</span><span class="p">),</span>
+            <span class="s2">&quot;std_scrambled_score&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">scrambled</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">single</span><span class="p">),</span>
+            <span class="s2">&quot;max_scrambled_score&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">scrambled</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">single</span><span class="p">),</span>
+            <span class="c1"># For a loss metric the *best* scrambled score is the smallest,</span>
+            <span class="c1"># which `max_scrambled_score` (kept for compatibility) does not</span>
+            <span class="c1"># give.</span>
+            <span class="s2">&quot;best_scrambled_score&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">best</span><span class="p">,</span> <span class="n">single</span><span class="p">),</span>
+            <span class="s2">&quot;p_value&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">p_values</span><span class="p">,</span> <span class="n">single</span><span class="p">),</span>
             <span class="s2">&quot;n_iterations&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span><span class="p">,</span>
+            <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="n">metric_names</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">single</span><span class="p">),</span>
+            <span class="s2">&quot;scored_out_of_fold&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
@@ -517,6 +647,12 @@
 <span class="sd">        A cross-validated Q² from the training set. Supply it so that</span>
 <span class="sd">        Golbraikh-Tropsha criterion 1 can be evaluated; without it that</span>
 <span class="sd">        criterion reports ``None`` rather than silently passing.</span>
+<span class="sd">    scoring : str, callable, Scorer, or iterable of those, optional</span>
+<span class="sd">        Report these metrics instead of the regression report. The default</span>
+<span class="sd">        (``None``) keeps the QSAR regression report and the</span>
+<span class="sd">        Golbraikh-Tropsha criteria, which is what a regression submission</span>
+<span class="sd">        needs; naming metrics is how a classification endpoint is validated,</span>
+<span class="sd">        and then ``score`` and ``metric`` replace the report.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -543,8 +679,9 @@
 <span class="sd">      Model., 49(7), 1669-1678. https://doi.org/10.1021/ci900115y</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q2</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scoring</span><span class="p">:</span> <span class="n">Scoring</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">q2</span> <span class="o">=</span> <span class="n">q2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
 
 <div class="viewcode-block" id="ExternalValidator.validate">
 <a class="viewcode-back" href="../../../api/validation.html#qsarkit.validation.ExternalValidator.validate">[docs]</a>
@@ -574,6 +711,21 @@
 <span class="sd">            The regression report, plus ``q2_f1`` when ``y_train`` is given</span>
 <span class="sd">            and ``golbraikh_tropsha``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># With an explicit metric the caller has said what to report, and the</span>
+        <span class="c1"># regression report would be meaningless anyway on a classification</span>
+        <span class="c1"># endpoint -- R^2 of 0/1 labels answers no question anyone asked.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scorers</span><span class="p">,</span> <span class="n">single</span> <span class="o">=</span> <span class="n">resolve_scoring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">)</span>
+            <span class="n">y_true_any</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y_test</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span>
+                    <span class="n">score_estimator</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">estimator</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> <span class="n">y_true_any</span><span class="p">),</span>
+                    <span class="n">single</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="n">metric_names</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">single</span><span class="p">),</span>
+                <span class="s2">&quot;n_test&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_true_any</span><span class="p">)),</span>
+            <span class="p">}</span>
+
         <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
             <span class="n">golbraikh_tropsha_criteria</span><span class="p">,</span>
             <span class="n">q2_f1</span><span class="p">,</span>
@@ -643,10 +795,14 @@
     <span class="n">scores_</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scoring</span><span class="p">:</span> <span class="n">Scoring</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span> <span class="o">=</span> <span class="n">n_iterations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
 
 <div class="viewcode-block" id="BootstrapValidator.run">
 <a class="viewcode-back" href="../../../api/validation.html#qsarkit.validation.BootstrapValidator.run">[docs]</a>
@@ -672,8 +828,11 @@
 <span class="sd">        -------</span>
 <span class="sd">        dict</span>
 <span class="sd">            ``mean_score``, ``std_score``, ``ci_lower``, ``ci_upper``,</span>
-<span class="sd">            ``n_iterations`` and ``n_effective`` (resamples that produced a</span>
-<span class="sd">            usable out-of-bag set).</span>
+<span class="sd">            ``confidence``, ``n_iterations``, ``n_effective`` (resamples that</span>
+<span class="sd">            produced a usable out-of-bag set) and ``metric``.</span>
+
+<span class="sd">            Every score is a float when one metric was requested and an</span>
+<span class="sd">            ndarray in the requested order when several were.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -681,8 +840,6 @@
 <span class="sd">            If ``n_iterations`` is not positive, ``confidence`` is not in</span>
 <span class="sd">            (0, 1), or no resample left any out-of-bag samples.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">r2_score</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;n_iterations must be at least 1, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span><span class="si">}</span><span class="s2">.&quot;</span>
@@ -692,12 +849,13 @@
                 <span class="sa">f</span><span class="s2">&quot;confidence must be in (0, 1), got </span><span class="si">{</span><span class="n">confidence</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
+        <span class="n">scorers</span><span class="p">,</span> <span class="n">single</span> <span class="o">=</span> <span class="n">resolve_scoring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">)</span>
         <span class="n">X_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="n">y_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">y_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_arr</span><span class="p">)</span>
         <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">)</span>
 
-        <span class="n">scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">collected</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span><span class="p">):</span>
             <span class="n">train_idx</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
             <span class="c1"># Out-of-bag: about 36.8% of the data is left out of any given</span>
@@ -706,26 +864,34 @@
             <span class="n">oob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">oob</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">continue</span>
+            <span class="c1"># A ranking metric needs both classes present out of bag, and a</span>
+            <span class="c1"># resample of an imbalanced endpoint can leave only one. Such a</span>
+            <span class="c1"># resample is skipped rather than scored as if it were valid;</span>
+            <span class="c1"># `n_effective` reports how many actually counted.</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">needs_proba</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scorers</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_arr</span><span class="p">[</span><span class="n">oob</span><span class="p">]))</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span>
             <span class="n">model</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span>
             <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_arr</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">y_arr</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
-            <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">r2_score</span><span class="p">(</span><span class="n">y_arr</span><span class="p">[</span><span class="n">oob</span><span class="p">],</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_arr</span><span class="p">[</span><span class="n">oob</span><span class="p">]))))</span>
+            <span class="n">collected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score_estimator</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">X_arr</span><span class="p">[</span><span class="n">oob</span><span class="p">],</span> <span class="n">y_arr</span><span class="p">[</span><span class="n">oob</span><span class="p">]))</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">scores</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">collected</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;No bootstrap resample left usable out-of-bag samples; the &quot;</span>
                 <span class="s2">&quot;dataset is too small for this validation.&quot;</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">scores_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">collected</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scores_</span> <span class="o">=</span> <span class="n">stacked</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">single</span> <span class="k">else</span> <span class="n">stacked</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">confidence</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;mean_score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores_</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
-            <span class="s2">&quot;std_score&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores_</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span>
-            <span class="s2">&quot;ci_lower&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores_</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)),</span>
-            <span class="s2">&quot;ci_upper&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores_</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)),</span>
+            <span class="s2">&quot;mean_score&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">stacked</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">single</span><span class="p">),</span>
+            <span class="s2">&quot;std_score&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">stacked</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">single</span><span class="p">),</span>
+            <span class="s2">&quot;ci_lower&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">stacked</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">single</span><span class="p">),</span>
+            <span class="s2">&quot;ci_upper&quot;</span><span class="p">:</span> <span class="n">unwrap</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">stacked</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">single</span><span class="p">),</span>
             <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="n">confidence</span><span class="p">,</span>
             <span class="s2">&quot;n_iterations&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span><span class="p">,</span>
-            <span class="s2">&quot;n_effective&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">),</span>
+            <span class="s2">&quot;n_effective&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">collected</span><span class="p">),</span>
+            <span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="n">metric_names</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">single</span><span class="p">),</span>
         <span class="p">}</span></div>
 </div>
 
@@ -762,7 +928,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=bd778e0b"></script>
+</div><script src="../../../_static/documentation_options.js?v=70f82a29"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

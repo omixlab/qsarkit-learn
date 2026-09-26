@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="References" href="references.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Changelog - qsarkit 0.4.1</title>
+        <title>Changelog - qsarkit 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">qsarkit 0.4.1</div></a>
+      <a href="index.html"><div class="brand">qsarkit 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.4.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -278,7 +278,7 @@
           <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
 <section id="unreleased">
-<span id="changelog-0-4-1"></span><h2>0.4.1 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
+<span id="changelog-0-5-0"></span><h2>0.5.0 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
 <p>Narrowed the package back to the QSAR workflow proper, and filled the gaps
 that narrowing exposed.</p>
 <p><strong>Scope</strong></p>
@@ -297,7 +297,25 @@ scikit-learn upgrade and can be inspected before it is loaded. Carries
 the provenance OECD principle 2 asks for.</p></li>
 </ul>
 <p><strong>New functionality</strong></p>
-<ul class="simple">
+<ul>
+<li><p>Every validator in <code class="docutils literal notranslate"><span class="pre">validation</span></code> – <code class="docutils literal notranslate"><span class="pre">CrossValidator</span></code>, <code class="docutils literal notranslate"><span class="pre">YScrambling</span></code>,
+<code class="docutils literal notranslate"><span class="pre">ExternalValidator</span></code> and <code class="docutils literal notranslate"><span class="pre">BootstrapValidator</span></code> – now takes a
+<code class="docutils literal notranslate"><span class="pre">scoring</span></code> argument instead of being fixed to <span class="math notranslate nohighlight">\(R^2\)</span>. Name a metric
+from <code class="docutils literal notranslate"><span class="pre">available_metrics()</span></code>, pass a <code class="docutils literal notranslate"><span class="pre">(y_true,</span> <span class="pre">y_pred)</span></code> callable, or
+wrap one with <code class="docutils literal notranslate"><span class="pre">make_scorer</span></code> when it needs probabilities or is a loss.
+Pass an iterable of metrics and every score in the result becomes an
+array in the order given, computed from a single pass over the folds.</p>
+<p><code class="docutils literal notranslate"><span class="pre">roc_auc</span></code>, <code class="docutils literal notranslate"><span class="pre">pr_auc</span></code> and <code class="docutils literal notranslate"><span class="pre">brier</span></code> are given <code class="docutils literal notranslate"><span class="pre">predict_proba</span></code>’s
+positive-class column rather than a thresholded label. A loss declares
+<code class="docutils literal notranslate"><span class="pre">greater_is_better=False</span></code>, which is what keeps a y-randomization
+p-value from being reported backwards when it is computed on RMSE.</p>
+<p><code class="docutils literal notranslate"><span class="pre">YScrambling</span></code> also gained <code class="docutils literal notranslate"><span class="pre">cv</span></code> and <code class="docutils literal notranslate"><span class="pre">stratify</span></code>, which score out of
+fold rather than in sample. This is necessary rather than cosmetic for a
+ranking metric: a random forest separates permuted labels in-sample as
+perfectly as real ones, so an in-sample ROC-AUC comparison reads 1.0
+against 1.0 and detects nothing. The default stays in-sample, so existing
+results are unchanged.</p>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">validation</span></code> gained <code class="docutils literal notranslate"><span class="pre">YScrambling</span></code> (y-randomization, required
 evidence under OECD principle 4), <code class="docutils literal notranslate"><span class="pre">BootstrapValidator</span></code> (out-of-bag
 score with a confidence interval) and <code class="docutils literal notranslate"><span class="pre">ExternalValidator</span></code>.</p></li>
@@ -456,7 +474,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#unreleased">0.4.1 (unreleased)</a></li>
+<li><a class="reference internal" href="#unreleased">0.5.0 (unreleased)</a></li>
 <li><a class="reference internal" href="#changelog-0-2-0">0.2.0</a></li>
 <li><a class="reference internal" href="#changelog-0-1-0">0.1.0</a></li>
 </ul>
@@ -470,12 +488,14 @@ hierarchical clustering with a scikit-learn API.</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=bd778e0b"></script>
+</div><script src="_static/documentation_options.js?v=70f82a29"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>window.MathJax = {"tex": {"packages": {"[+]": ["ams", "boldsymbol"]}, "inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "macros": {"Tanimoto": "T", "Rsq": "R^{2}", "Qsq": ["Q^{2}_{\\mathrm{#1}}", 1], "RMSE": "\\mathrm{RMSE}", "ECE": "\\mathrm{ECE}", "argmax": "\\operatorname*{arg\\,max}", "argmin": "\\operatorname*{arg\\,min}"}}, "options": {"ignoreHtmlClass": "highlight|no-mathjax", "processHtmlClass": "math|tex2jax_process"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     </body>
 </html>

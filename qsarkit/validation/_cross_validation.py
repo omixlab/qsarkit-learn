@@ -28,6 +28,14 @@ from sklearn.base import BaseEstimator, clone
 from sklearn.model_selection import KFold, LeaveOneGroupOut, LeaveOneOut, RepeatedKFold
 
 from qsarkit.metrics import mae, r2_score, rmse
+from qsarkit.validation._scoring import (
+    Scoring,
+    metric_names,
+    positive_class_scores,
+    resolve_scoring,
+    score_all,
+    unwrap,
+)
 
 __all__ = ["CrossValidator"]
 
@@ -90,11 +98,13 @@ class CrossValidator:
         n_splits: int = 5,
         n_repeats: int = 10,
         random_state: Optional[int] = None,
+        scoring: Scoring = None,
     ) -> None:
         self.method = method
         self.n_splits = n_splits
         self.n_repeats = n_repeats
         self.random_state = random_state
+        self.scoring = scoring
 
     def _splitter_and_args(
         self,
@@ -183,31 +193,65 @@ class CrossValidator:
         X_arr = np.asarray(X, dtype=np.float64)
         if X_arr.ndim != 2:
             raise ValueError(f"X must be 2-dimensional, got shape {X_arr.shape}.")
-        y_arr = np.asarray(y, dtype=np.float64).ravel()
+        y_labels = np.asarray(y).ravel()
+        # The float view is what the regression statistics are computed from;
+        # the original dtype is what the estimator is fitted on, so class
+        # labels are not silently turned into floats.
+        y_arr = y_labels.astype(np.float64, copy=False) if (
+            y_labels.dtype.kind in "biufc"
+        ) else y_labels
         groups_arr = None if groups is None else np.asarray(groups)
 
         splitter, split_args = self._splitter_and_args(X_arr, y_arr, groups_arr)
 
+        scorers, single = resolve_scoring(self.scoring)
+        needs_proba = any(s.needs_proba for s in scorers)
+        needs_pred = any(not s.needs_proba for s in scorers) or self.scoring is None
+
         n = X_arr.shape[0]
         pred_sum = np.zeros(n, dtype=np.float64)
         pred_count = np.zeros(n, dtype=np.int64)
+        score_sum = np.zeros(n, dtype=np.float64)
         # Report the number of folds actually run, not the constructor
         # argument: LOO runs one fold per sample and leave-group-out one
         # per group, so echoing self.n_splits would describe a different
         # experiment from the one performed.
         n_splits_run = int(splitter.get_n_splits(*split_args))
         for train_idx, test_idx in splitter.split(*split_args):
-            fitted = clone(estimator).fit(X_arr[train_idx], y_arr[train_idx])
-            preds = np.asarray(fitted.predict(X_arr[test_idx]), dtype=np.float64)
-            pred_sum[test_idx] += preds
+            fitted = clone(estimator).fit(X_arr[train_idx], y_labels[train_idx])
+            if needs_pred:
+                preds = np.asarray(fitted.predict(X_arr[test_idx]), dtype=np.float64)
+                pred_sum[test_idx] += preds
+            if needs_proba:
+                score_sum[test_idx] += positive_class_scores(fitted, X_arr[test_idx])
             pred_count[test_idx] += 1
 
-        y_pred_cv = pred_sum / pred_count
-        return {
-            "q2": r2_score(y_arr, y_pred_cv),
-            "rmse_cv": rmse(y_arr, y_pred_cv),
-            "mae_cv": mae(y_arr, y_pred_cv),
-            "y_pred_cv": y_pred_cv,
+        y_pred_cv = pred_sum / pred_count if needs_pred else None
+        y_score_cv = score_sum / pred_count if needs_proba else None
+
+        result: Dict[str, Any] = {
             "method": self.method,
             "n_splits": n_splits_run,
         }
+        if y_pred_cv is not None:
+            result["y_pred_cv"] = y_pred_cv
+        if y_score_cv is not None:
+            result["y_score_cv"] = y_score_cv
+
+        if self.scoring is None:
+            # Unchanged default: the three statistics a regression QSAR is
+            # reported with, so existing callers see exactly what they did.
+            # Recomputed from the sums rather than reusing `y_pred_cv`, which
+            # is Optional for the scoring path; with no `scoring` the
+            # predictions were always collected.
+            default_pred = pred_sum / pred_count
+            result["q2"] = r2_score(y_arr, default_pred)
+            result["rmse_cv"] = rmse(y_arr, default_pred)
+            result["mae_cv"] = mae(y_arr, default_pred)
+            return result
+
+        result["score"] = unwrap(
+            score_all(scorers, y_labels, y_pred_cv, y_score_cv), single
+        )
+        result["metric"] = metric_names(scorers, single)
+        return result

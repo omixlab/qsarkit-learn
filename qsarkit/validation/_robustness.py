@@ -22,26 +22,84 @@ References
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Sequence
 
 import numpy as np
 import numpy.typing as npt
 from sklearn.base import BaseEstimator, clone
 
+from qsarkit.validation._scoring import (
+    Scorer,
+    Scoring,
+    metric_names,
+    resolve_scoring,
+    score_all,
+    score_estimator,
+    unwrap,
+)
+
 __all__ = ["YScrambling", "ExternalValidator", "BootstrapValidator"]
 
 
-def _fit_score(
+def _fit_and_score(
     estimator: BaseEstimator,
     X: "npt.NDArray[np.float64]",
-    y: "npt.NDArray[np.float64]",
-) -> float:
-    """Fit a fresh clone and return its coefficient of determination."""
-    from qsarkit.metrics import r2_score
-
+    y: "npt.NDArray[Any]",
+    scorers: Sequence[Scorer],
+) -> "npt.NDArray[np.float64]":
+    """Fit a fresh clone and score it on the same data it was fit on."""
     model = clone(estimator)
     model.fit(X, y)
-    return float(r2_score(y, model.predict(X)))
+    return score_estimator(scorers, model, X, y)
+
+
+def _cross_val_score(
+    estimator: BaseEstimator,
+    X: "npt.NDArray[np.float64]",
+    y: "npt.NDArray[Any]",
+    scorers: Sequence[Scorer],
+    cv: int,
+    random_state: Optional[int],
+    stratify: bool,
+) -> "npt.NDArray[np.float64]":
+    """Score out of fold, pooling the held-out predictions before scoring.
+
+    Pooled rather than averaged per fold because a ranking metric is not a
+    mean of per-fold rankings: with a 3% positive rate a fold can contain no
+    positives at all, where ROC-AUC is undefined. Pooling the out-of-fold
+    predictions and scoring once sidesteps that and matches how a
+    cross-validated Q^2 is defined.
+    """
+    from sklearn.model_selection import KFold, StratifiedKFold
+
+    needs_proba = any(s.needs_proba for s in scorers)
+    needs_pred = any(not s.needs_proba for s in scorers)
+
+    splitter: Any
+    if stratify:
+        splitter = StratifiedKFold(
+            n_splits=cv, shuffle=True, random_state=random_state
+        )
+    else:
+        splitter = KFold(n_splits=cv, shuffle=True, random_state=random_state)
+
+    n = len(y)
+    pooled_pred = np.empty(n, dtype=np.float64) if needs_pred else None
+    pooled_score = np.empty(n, dtype=np.float64) if needs_proba else None
+
+    for train_idx, test_idx in splitter.split(X, y):
+        model = clone(estimator)
+        model.fit(X[train_idx], y[train_idx])
+        if pooled_pred is not None:
+            pooled_pred[test_idx] = np.asarray(
+                model.predict(X[test_idx]), dtype=np.float64
+            )
+        if pooled_score is not None:
+            from qsarkit.validation._scoring import positive_class_scores
+
+            pooled_score[test_idx] = positive_class_scores(model, X[test_idx])
+
+    return score_all(scorers, y, pooled_pred, pooled_score)
 
 
 class YScrambling:
@@ -65,13 +123,34 @@ class YScrambling:
         anything below 0.0099.
     random_state : int, optional
         Seed for the permutations.
+    scoring : str, callable, Scorer, or iterable of those, optional
+        The metric to argue in. Defaults to :math:`R^2`. Name one of
+        :func:`~qsarkit.validation.available_metrics`, pass a
+        ``(y_true, y_pred)`` callable, or use
+        :func:`~qsarkit.validation.make_scorer` for a metric that needs
+        probabilities or is a loss. Pass several and every score in the
+        result becomes an array in the order given.
+    cv : int, optional
+        Score out of fold over this many folds instead of on the training
+        data. **Strongly recommended for any flexible model, and required
+        for a ranking metric to mean anything**: a random forest reaches an
+        in-sample ROC-AUC near 1.0 on permuted labels just as it does on real
+        ones, so the in-sample comparison shows no gap and the test reports
+        nothing. The default is ``None`` -- the apparent, in-sample fit --
+        because that is what earlier releases computed.
+    stratify : bool, default False
+        Use stratified folds when ``cv`` is set. Needed on an imbalanced
+        classification endpoint, where an unstratified fold can contain no
+        positives at all.
 
     Attributes
     ----------
-    real_score_ : float
-        The model's score on the true labels.
-    scrambled_scores_ : ndarray of shape (n_iterations,)
-        Scores obtained on permuted labels.
+    real_score_ : float or ndarray
+        The model's score on the true labels: a float for one metric, an
+        array in the given order for several.
+    scrambled_scores_ : ndarray
+        Shape ``(n_iterations,)`` for one metric, ``(n_iterations,
+        n_metrics)`` for several.
 
     Examples
     --------
@@ -111,14 +190,22 @@ class YScrambling:
       https://doi.org/10.1787/9789264085442-en
     """
 
-    real_score_: float
+    real_score_: Any
     scrambled_scores_: "npt.NDArray[np.float64]"
 
     def __init__(
-        self, n_iterations: int = 100, random_state: Optional[int] = None
+        self,
+        n_iterations: int = 100,
+        random_state: Optional[int] = None,
+        scoring: Scoring = None,
+        cv: Optional[int] = None,
+        stratify: bool = False,
     ) -> None:
         self.n_iterations = n_iterations
         self.random_state = random_state
+        self.scoring = scoring
+        self.cv = cv
+        self.stratify = stratify
 
     def run(
         self,
@@ -139,10 +226,15 @@ class YScrambling:
         -------
         dict
             ``real_score``, ``mean_scrambled_score``,
-            ``std_scrambled_score``, ``max_scrambled_score``, ``p_value``
-            (the fraction of permutations scoring at least as well as the
-            real fit, with the conventional +1 correction) and
-            ``n_iterations``.
+            ``std_scrambled_score``, ``max_scrambled_score``,
+            ``best_scrambled_score`` (the largest for a metric where more is
+            better, the smallest for a loss), ``p_value`` (the fraction of
+            permutations scoring at least as well as the real fit, with the
+            conventional +1 correction), ``n_iterations``, ``metric`` (the
+            name, or the tuple of names) and ``scored_out_of_fold``.
+
+            Every score is a float when one metric was requested and an
+            ndarray in the requested order when several were.
 
         Raises
         ------
@@ -153,30 +245,68 @@ class YScrambling:
             raise ValueError(
                 f"n_iterations must be at least 1, got {self.n_iterations}."
             )
-        X_arr = np.asarray(X, dtype=np.float64)
-        y_arr = np.asarray(y, dtype=np.float64).ravel()
+        if self.cv is not None and self.cv < 2:
+            raise ValueError(f"cv must be at least 2, got {self.cv}.")
 
-        self.real_score_ = _fit_score(estimator, X_arr, y_arr)
+        scorers, single = resolve_scoring(self.scoring)
+        X_arr = np.asarray(X, dtype=np.float64)
+        # The label dtype is left alone: coercing to float would turn class
+        # labels into floats, and a metric such as MCC then scores something
+        # other than what the caller passed.
+        y_arr = np.asarray(y).ravel()
+
+        def evaluate(labels: "npt.NDArray[Any]") -> "npt.NDArray[np.float64]":
+            if self.cv is None:
+                return _fit_and_score(estimator, X_arr, labels, scorers)
+            return _cross_val_score(
+                estimator,
+                X_arr,
+                labels,
+                scorers,
+                self.cv,
+                self.random_state,
+                self.stratify,
+            )
+
+        real = evaluate(y_arr)
 
         rng = np.random.default_rng(self.random_state)
-        scores = np.empty(self.n_iterations, dtype=np.float64)
+        scrambled = np.empty((self.n_iterations, len(scorers)), dtype=np.float64)
         for i in range(self.n_iterations):
-            scores[i] = _fit_score(estimator, X_arr, rng.permutation(y_arr))
-        self.scrambled_scores_ = scores
+            scrambled[i] = evaluate(rng.permutation(y_arr))
 
         # The +1 correction keeps the p-value from ever being exactly zero:
         # a permutation test cannot distinguish "very unlikely" from
         # "impossible", and reporting 0 would claim more than was measured.
-        n_better = int(np.sum(scores >= self.real_score_))
-        p_value = (n_better + 1) / (self.n_iterations + 1)
+        p_values = np.empty(len(scorers), dtype=np.float64)
+        best = np.empty(len(scorers), dtype=np.float64)
+        for j, scorer in enumerate(scorers):
+            column = scrambled[:, j]
+            # Direction matters: for RMSE a scrambled model does "at least as
+            # well" by scoring *lower*, so comparing with >= would invert the
+            # test and report a loss metric's p-value backwards.
+            at_least_as_good = sum(
+                scorer.is_at_least_as_good_as(value, real[j]) for value in column
+            )
+            p_values[j] = (at_least_as_good + 1) / (self.n_iterations + 1)
+            best[j] = column.max() if scorer.greater_is_better else column.min()
+
+        self.real_score_ = unwrap(real, single)
+        self.scrambled_scores_ = scrambled[:, 0] if single else scrambled
 
         return {
-            "real_score": self.real_score_,
-            "mean_scrambled_score": float(scores.mean()),
-            "std_scrambled_score": float(scores.std()),
-            "max_scrambled_score": float(scores.max()),
-            "p_value": float(p_value),
+            "real_score": unwrap(real, single),
+            "mean_scrambled_score": unwrap(scrambled.mean(axis=0), single),
+            "std_scrambled_score": unwrap(scrambled.std(axis=0), single),
+            "max_scrambled_score": unwrap(scrambled.max(axis=0), single),
+            # For a loss metric the *best* scrambled score is the smallest,
+            # which `max_scrambled_score` (kept for compatibility) does not
+            # give.
+            "best_scrambled_score": unwrap(best, single),
+            "p_value": unwrap(p_values, single),
             "n_iterations": self.n_iterations,
+            "metric": metric_names(scorers, single),
+            "scored_out_of_fold": self.cv is not None,
         }
 
     def plot(self, title: str = "y-scrambling") -> Any:
@@ -239,6 +369,12 @@ class ExternalValidator:
         A cross-validated Q² from the training set. Supply it so that
         Golbraikh-Tropsha criterion 1 can be evaluated; without it that
         criterion reports ``None`` rather than silently passing.
+    scoring : str, callable, Scorer, or iterable of those, optional
+        Report these metrics instead of the regression report. The default
+        (``None``) keeps the QSAR regression report and the
+        Golbraikh-Tropsha criteria, which is what a regression submission
+        needs; naming metrics is how a classification endpoint is validated,
+        and then ``score`` and ``metric`` replace the report.
 
     Examples
     --------
@@ -265,8 +401,9 @@ class ExternalValidator:
       Model., 49(7), 1669-1678. https://doi.org/10.1021/ci900115y
     """
 
-    def __init__(self, q2: Optional[float] = None) -> None:
+    def __init__(self, q2: Optional[float] = None, scoring: Scoring = None) -> None:
         self.q2 = q2
+        self.scoring = scoring
 
     def validate(
         self,
@@ -294,6 +431,21 @@ class ExternalValidator:
             The regression report, plus ``q2_f1`` when ``y_train`` is given
             and ``golbraikh_tropsha``.
         """
+        # With an explicit metric the caller has said what to report, and the
+        # regression report would be meaningless anyway on a classification
+        # endpoint -- R^2 of 0/1 labels answers no question anyone asked.
+        if self.scoring is not None:
+            scorers, single = resolve_scoring(self.scoring)
+            y_true_any = np.asarray(y_test).ravel()
+            return {
+                "score": unwrap(
+                    score_estimator(scorers, estimator, np.asarray(X_test), y_true_any),
+                    single,
+                ),
+                "metric": metric_names(scorers, single),
+                "n_test": int(len(y_true_any)),
+            }
+
         from qsarkit.metrics import (
             golbraikh_tropsha_criteria,
             q2_f1,
@@ -359,10 +511,14 @@ class BootstrapValidator:
     scores_: "npt.NDArray[np.float64]"
 
     def __init__(
-        self, n_iterations: int = 100, random_state: Optional[int] = None
+        self,
+        n_iterations: int = 100,
+        random_state: Optional[int] = None,
+        scoring: Scoring = None,
     ) -> None:
         self.n_iterations = n_iterations
         self.random_state = random_state
+        self.scoring = scoring
 
     def run(
         self,
@@ -386,8 +542,11 @@ class BootstrapValidator:
         -------
         dict
             ``mean_score``, ``std_score``, ``ci_lower``, ``ci_upper``,
-            ``n_iterations`` and ``n_effective`` (resamples that produced a
-            usable out-of-bag set).
+            ``confidence``, ``n_iterations``, ``n_effective`` (resamples that
+            produced a usable out-of-bag set) and ``metric``.
+
+            Every score is a float when one metric was requested and an
+            ndarray in the requested order when several were.
 
         Raises
         ------
@@ -395,8 +554,6 @@ class BootstrapValidator:
             If ``n_iterations`` is not positive, ``confidence`` is not in
             (0, 1), or no resample left any out-of-bag samples.
         """
-        from qsarkit.metrics import r2_score
-
         if self.n_iterations < 1:
             raise ValueError(
                 f"n_iterations must be at least 1, got {self.n_iterations}."
@@ -406,12 +563,13 @@ class BootstrapValidator:
                 f"confidence must be in (0, 1), got {confidence}."
             )
 
+        scorers, single = resolve_scoring(self.scoring)
         X_arr = np.asarray(X, dtype=np.float64)
-        y_arr = np.asarray(y, dtype=np.float64).ravel()
+        y_arr = np.asarray(y).ravel()
         n = len(y_arr)
         rng = np.random.default_rng(self.random_state)
 
-        scores: List[float] = []
+        collected: List["npt.NDArray[np.float64]"] = []
         for _ in range(self.n_iterations):
             train_idx = rng.integers(0, n, size=n)
             # Out-of-bag: about 36.8% of the data is left out of any given
@@ -420,24 +578,32 @@ class BootstrapValidator:
             oob = np.setdiff1d(np.arange(n), train_idx, assume_unique=False)
             if oob.size < 2:
                 continue
+            # A ranking metric needs both classes present out of bag, and a
+            # resample of an imbalanced endpoint can leave only one. Such a
+            # resample is skipped rather than scored as if it were valid;
+            # `n_effective` reports how many actually counted.
+            if any(s.needs_proba for s in scorers) and len(np.unique(y_arr[oob])) < 2:
+                continue
             model = clone(estimator)
             model.fit(X_arr[train_idx], y_arr[train_idx])
-            scores.append(float(r2_score(y_arr[oob], model.predict(X_arr[oob]))))
+            collected.append(score_estimator(scorers, model, X_arr[oob], y_arr[oob]))
 
-        if not scores:
+        if not collected:
             raise ValueError(
                 "No bootstrap resample left usable out-of-bag samples; the "
                 "dataset is too small for this validation."
             )
 
-        self.scores_ = np.asarray(scores, dtype=np.float64)
+        stacked = np.vstack(collected)
+        self.scores_ = stacked[:, 0] if single else stacked
         alpha = (1.0 - confidence) / 2.0
         return {
-            "mean_score": float(self.scores_.mean()),
-            "std_score": float(self.scores_.std()),
-            "ci_lower": float(np.quantile(self.scores_, alpha)),
-            "ci_upper": float(np.quantile(self.scores_, 1.0 - alpha)),
+            "mean_score": unwrap(stacked.mean(axis=0), single),
+            "std_score": unwrap(stacked.std(axis=0), single),
+            "ci_lower": unwrap(np.quantile(stacked, alpha, axis=0), single),
+            "ci_upper": unwrap(np.quantile(stacked, 1.0 - alpha, axis=0), single),
             "confidence": confidence,
             "n_iterations": self.n_iterations,
-            "n_effective": len(scores),
+            "n_effective": len(collected),
+            "metric": metric_names(scorers, single),
         }

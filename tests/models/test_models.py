@@ -420,3 +420,46 @@ class TestConsensusModel:
         X, _ = regression
         with pytest.raises(ModelNotFittedError):
             ConsensusModel(estimators=[("lr", LinearRegression())]).predict(X)
+
+
+class TestModelParamsOverrideFacadeDefaults:
+    """``model_params`` must win over whatever the facade sets for a backend.
+
+    ``model_params`` is the documented way to configure a backend, so passing
+    a keyword the facade also sets has to work. Splatting both into the
+    constructor raised ``TypeError: got multiple values for keyword argument``
+    instead -- ``QSARClassifier("rf", model_params={"n_estimators": 100})``
+    failed outright, and that is the package's default estimator.
+    """
+
+    def test_classifier_n_estimators_is_overridable(self):
+        model = QSARClassifier(
+            "rf", random_state=0, model_params={"n_estimators": 100, "n_jobs": -1}
+        )
+        built = model._build()
+        assert built.n_estimators == 100
+        assert built.n_jobs == -1
+        # The facade's own settings survive where the caller did not override.
+        assert built.random_state == 0
+
+    def test_regressor_n_estimators_is_overridable(self):
+        built = QSARRegressor(
+            "rf", random_state=0, model_params={"n_estimators": 50}
+        )._build()
+        assert built.n_estimators == 50
+
+    def test_overriding_one_default_keeps_the_others(self):
+        built = QSARClassifier("svm", model_params={"kernel": "linear"})._build()
+        assert built.kernel == "linear"
+        # probability=True is what makes predict_proba available, so the facade
+        # must keep setting it.
+        assert built.probability is True
+
+    def test_it_fits_end_to_end(self):
+        rng = np.random.default_rng(0)
+        X = rng.normal(size=(40, 6))
+        y = (X[:, 0] > 0).astype(int)
+        model = QSARClassifier(
+            "rf", random_state=0, model_params={"n_estimators": 10}
+        ).fit(X, y)
+        assert model.predict_proba(X).shape == (40, 2)

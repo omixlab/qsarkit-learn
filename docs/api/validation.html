@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Applicability domain" href="applicability.html"><link rel="prev" title="Metrics" href="metrics.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Validation - qsarkit 0.4.1</title>
+        <title>Validation - qsarkit 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.4.1</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.4.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -318,8 +318,8 @@ set plus the Golbraikh-Tropsha criteria.</p></td>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">demo_fingerprints</span><span class="p">(</span><span class="mi">512</span><span class="p">),</span> <span class="n">DEMO_Y</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">CrossValidator</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;rmse_cv&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">(0.686, 0.602)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;rmse_cv&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+<span class="go">(0.7, 0.6)</span>
 </pre></div>
 </div>
 <p>The report carries the out-of-fold predictions, so any further statistic or
@@ -446,12 +446,117 @@ all four.</p>
 </pre></div>
 </div>
 </div>
+</section>
+<section id="choosing-the-metric">
+<h2>Choosing the metric<a class="headerlink" href="#choosing-the-metric" title="Link to this heading">¶</a></h2>
+<p>All four validators take <code class="docutils literal notranslate"><span class="pre">scoring</span></code>. It defaults to <span class="math notranslate nohighlight">\(R^2\)</span>, which is
+right for a regression QSAR and wrong for everything else: a toxicity
+classifier has to be argued in ROC-AUC or average precision, and a regulator
+asking for RMSE is not asking for <span class="math notranslate nohighlight">\(R^2\)</span> reported next to it.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">available_metrics</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">available_metrics</span><span class="p">())</span>
+<span class="go">18</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">available_metrics</span><span class="p">()</span> <span class="k">if</span> <span class="s2">&quot;auc&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="p">]</span>
+<span class="go">[&#39;pr_auc&#39;, &#39;roc_auc&#39;]</span>
+</pre></div>
+</div>
+<p>Pass several and every score becomes an array <strong>in the order given</strong>, so one
+pass reports them all:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARRegressor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">CrossValidator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv</span> <span class="o">=</span> <span class="n">CrossValidator</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r2&quot;</span><span class="p">,</span> <span class="s2">&quot;rmse&quot;</span><span class="p">,</span> <span class="s2">&quot;mae&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;metric&quot;</span><span class="p">]</span>
+<span class="go">(&#39;r2&#39;, &#39;rmse&#39;, &#39;mae&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">array([0.69, 0.6 , 0.44])</span>
+</pre></div>
+</div>
+<p>One metric returns a float; an iterable returns an array even when it holds a
+single entry, so adding a second metric never changes the shape of your code.</p>
+<section id="classification-metrics-see-probabilities">
+<h3>Classification metrics see probabilities<a class="headerlink" href="#classification-metrics-see-probabilities" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">roc_auc</span></code>, <code class="docutils literal notranslate"><span class="pre">pr_auc</span></code> and <code class="docutils literal notranslate"><span class="pre">brier</span></code> rank or calibrate, so they are given
+<code class="docutils literal notranslate"><span class="pre">predict_proba</span></code>’s positive-class column, never a thresholded label.
+Thresholding first throws away the ranking that ROC-AUC exists to measure.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARClassifier</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="p">(</span><span class="n">DEMO_Y</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">DEMO_Y</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">QSARClassifier</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cv</span> <span class="o">=</span> <span class="n">CrossValidator</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">... </span>                    <span class="n">scoring</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;roc_auc&quot;</span><span class="p">,</span> <span class="s2">&quot;pr_auc&quot;</span><span class="p">,</span> <span class="s2">&quot;mcc&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">array([0.93, 0.94, 0.75])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;y_score_cv&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>          <span class="c1"># out-of-fold probabilities</span>
+<span class="go">(24,)</span>
+</pre></div>
+</div>
+<p>For a metric that is not on the list, or one that needs probabilities:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">average_precision_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_scorer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">average_precision_score</span><span class="p">,</span> <span class="n">needs_proba</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;ap&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CrossValidator</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scorer</span><span class="p">)</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">)[</span><span class="s2">&quot;metric&quot;</span><span class="p">]</span>
+<span class="go">&#39;ap&#39;</span>
+</pre></div>
+</div>
+<p>A bare callable is assumed to take <code class="docutils literal notranslate"><span class="pre">(y_true,</span> <span class="pre">y_pred)</span></code> and to improve as it
+grows; <a class="reference internal" href="#qsarkit.validation.make_scorer" title="qsarkit.validation.make_scorer"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_scorer()</span></code></a> is how the other cases are
+declared. Declaring a loss matters more than it looks:
+<code class="docutils literal notranslate"><span class="pre">greater_is_better=False</span></code> is what keeps “did the scrambled model do at least
+as well” comparing in the right direction, so a y-randomization p-value
+computed on RMSE is not reported backwards.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">YScrambling</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scramble</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">... </span>                       <span class="n">scoring</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r2&quot;</span><span class="p">,</span> <span class="s2">&quot;rmse&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;p_value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>        <span class="c1"># same verdict from a gain and a loss</span>
+<span class="go">array([0.048, 0.048])</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Score out of fold before reading anything into a ranking metric.</strong>
+<a class="reference internal" href="#qsarkit.validation.YScrambling" title="qsarkit.validation.YScrambling"><code class="xref py py-class docutils literal notranslate"><span class="pre">YScrambling</span></code></a> scores the apparent, in-sample fit
+by default, which is what earlier releases did and what makes the classic
+over-fitting demonstration work for <span class="math notranslate nohighlight">\(R^2\)</span>. It cannot work for
+ROC-AUC: a random forest separates <em>permuted</em> labels in-sample as perfectly
+as real ones, so both sides read near 1.0 and the test reports nothing.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">in_sample</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">... </span>                        <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;roc_auc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">in_sample</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">in_sample</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">(1.0, 1.0)</span>
+</pre></div>
+</div>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">cv</span></code> — and <code class="docutils literal notranslate"><span class="pre">stratify=True</span></code> on an imbalanced endpoint — and the
+same test becomes informative:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">honest</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;roc_auc&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                     <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">honest</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">honest</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">(0.93, 0.43)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">honest</span><span class="p">[</span><span class="s2">&quot;scored_out_of_fold&quot;</span><span class="p">]</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</div>
 <p>See <a class="reference internal" href="../guide/oecd.html"><span class="doc">OECD validation</span></a> for how these fit together into a reportable
 validation, and <a class="reference internal" href="metrics.html"><span class="doc">Metrics</span></a> for the statistics they compute.</p>
+</section>
 </section>
 <section id="module-qsarkit.validation">
 <span id="api"></span><h2>API<a class="headerlink" href="#module-qsarkit.validation" title="Link to this heading">¶</a></h2>
 <p>Model validation against the OECD principles.</p>
+<p>Every validator here takes a <code class="docutils literal notranslate"><span class="pre">scoring</span></code> argument. It defaults to
+<span class="math notranslate nohighlight">\(R^2\)</span>, which is the right default for a regression QSAR and wrong for
+everything else – a toxicity classifier has to be argued in ROC-AUC or
+average precision. Name a metric from <a class="reference internal" href="#qsarkit.validation.available_metrics" title="qsarkit.validation.available_metrics"><code class="xref py py-func docutils literal notranslate"><span class="pre">available_metrics()</span></code></a>, pass a
+<code class="docutils literal notranslate"><span class="pre">(y_true,</span> <span class="pre">y_pred)</span></code> callable, or wrap one with <a class="reference internal" href="#qsarkit.validation.make_scorer" title="qsarkit.validation.make_scorer"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_scorer()</span></code></a> when it
+needs probabilities or is a loss. Pass several metrics and every score in the
+result becomes an array in the order given, so one pass reports them all:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CrossValidator</span><span class="p">(</span><span class="n">scoring</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;roc_auc&quot;</span><span class="p">,</span> <span class="s2">&quot;pr_auc&quot;</span><span class="p">,</span> <span class="s2">&quot;mcc&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
 <p class="rubric">References</p>
 <ul class="simple">
 <li><p>OECD (2007). “Guidance Document on the Validation of (Quantitative)
@@ -466,7 +571,7 @@ Variants in QSPR/QSAR.” J. Chem. Inf. Model., 47(6), 2345-2357.
 </ul>
 <dl class="py class">
 <dt class="sig sig-object py" id="qsarkit.validation.CrossValidator">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">CrossValidator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kfold'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_repeats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_cross_validation.html#CrossValidator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.CrossValidator" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">CrossValidator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'kfold'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_repeats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_cross_validation.html#CrossValidator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.CrossValidator" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Cross-validated Q^2, RMSE_CV and MAE_CV for a scikit-learn estimator.</p>
 <p>Supports the four fold-splitting schemes routinely used in QSAR
@@ -579,7 +684,7 @@ and for <code class="docutils literal notranslate"><span class="pre">&quot;leave
 
 <dl class="py class">
 <dt class="sig sig-object py" id="qsarkit.validation.YScrambling">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">YScrambling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_robustness.html#YScrambling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.YScrambling" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">YScrambling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stratify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_robustness.html#YScrambling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.YScrambling" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Test whether a model can fit randomly permuted labels as well as real ones.</p>
 <p>Also called y-randomization. Refit the model many times on shuffled
@@ -597,12 +702,30 @@ it is cheap, so there is no excuse for omitting it.</p>
 <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">/</span> <span class="pre">(n_iterations</span> <span class="pre">+</span> <span class="pre">1)</span></code>, so 100 iterations cannot report
 anything below 0.0099.</p></li>
 <li><p><strong>random_state</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Seed for the permutations.</p></li>
+<li><p><strong>scoring</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="#qsarkit.validation.Scorer" title="qsarkit.validation._scoring.Scorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scorer</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/constants.html#Ellipsis" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="#qsarkit.validation.Scorer" title="qsarkit.validation._scoring.Scorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scorer</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/constants.html#Ellipsis" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]]]</span>) – The metric to argue in. Defaults to <span class="math notranslate nohighlight">\(R^2\)</span>. Name one of
+<a class="reference internal" href="#qsarkit.validation.available_metrics" title="qsarkit.validation.available_metrics"><code class="xref py py-func docutils literal notranslate"><span class="pre">available_metrics()</span></code></a>, pass a
+<code class="docutils literal notranslate"><span class="pre">(y_true,</span> <span class="pre">y_pred)</span></code> callable, or use
+<a class="reference internal" href="#qsarkit.validation.make_scorer" title="qsarkit.validation.make_scorer"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_scorer()</span></code></a> for a metric that needs
+probabilities or is a loss. Pass several and every score in the
+result becomes an array in the order given.</p></li>
+<li><p><strong>cv</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Score out of fold over this many folds instead of on the training
+data. <strong>Strongly recommended for any flexible model, and required
+for a ranking metric to mean anything</strong>: a random forest reaches an
+in-sample ROC-AUC near 1.0 on permuted labels just as it does on real
+ones, so the in-sample comparison shows no gap and the test reports
+nothing. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code> – the apparent, in-sample fit –
+because that is what earlier releases computed.</p></li>
+<li><p><strong>stratify</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Use stratified folds when <code class="docutils literal notranslate"><span class="pre">cv</span></code> is set. Needed on an imbalanced
+classification endpoint, where an unstratified fold can contain no
+positives at all.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Variables<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>real_score</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – The model’s score on the true labels.</p></li>
-<li><p><strong>scrambled_scores</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> of <code class="xref py py-class docutils literal notranslate"><span class="pre">shape</span> <span class="pre">(n_iterations,)</span></code>) – Scores obtained on permuted labels.</p></li>
+<li><p><strong>real_score</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – The model’s score on the true labels: a float for one metric, an
+array in the given order for several.</p></li>
+<li><p><strong>scrambled_scores</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Shape <code class="docutils literal notranslate"><span class="pre">(n_iterations,)</span></code> for one metric, <code class="docutils literal notranslate"><span class="pre">(n_iterations,</span>
+<span class="pre">n_metrics)</span></code> for several.</p></li>
 </ul>
 </dd>
 </dl>
@@ -644,7 +767,7 @@ Being Earnest.” QSAR Comb. Sci., 22(1), 69-77.
 </ul>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="qsarkit.validation.YScrambling.real_score_">
-<span class="sig-name descname"><span class="pre">real_score_</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><a class="headerlink" href="#qsarkit.validation.YScrambling.real_score_" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">real_score_</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span><a class="headerlink" href="#qsarkit.validation.YScrambling.real_score_" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -665,11 +788,16 @@ Being Earnest.” QSAR Comb. Sci., 22(1), 69-77.
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">real_score</span></code>, <code class="docutils literal notranslate"><span class="pre">mean_scrambled_score</span></code>,
-<code class="docutils literal notranslate"><span class="pre">std_scrambled_score</span></code>, <code class="docutils literal notranslate"><span class="pre">max_scrambled_score</span></code>, <code class="docutils literal notranslate"><span class="pre">p_value</span></code>
-(the fraction of permutations scoring at least as well as the
-real fit, with the conventional +1 correction) and
-<code class="docutils literal notranslate"><span class="pre">n_iterations</span></code>.</p>
+<dd class="field-even"><p><p><code class="docutils literal notranslate"><span class="pre">real_score</span></code>, <code class="docutils literal notranslate"><span class="pre">mean_scrambled_score</span></code>,
+<code class="docutils literal notranslate"><span class="pre">std_scrambled_score</span></code>, <code class="docutils literal notranslate"><span class="pre">max_scrambled_score</span></code>,
+<code class="docutils literal notranslate"><span class="pre">best_scrambled_score</span></code> (the largest for a metric where more is
+better, the smallest for a loss), <code class="docutils literal notranslate"><span class="pre">p_value</span></code> (the fraction of
+permutations scoring at least as well as the real fit, with the
+conventional +1 correction), <code class="docutils literal notranslate"><span class="pre">n_iterations</span></code>, <code class="docutils literal notranslate"><span class="pre">metric</span></code> (the
+name, or the tuple of names) and <code class="docutils literal notranslate"><span class="pre">scored_out_of_fold</span></code>.</p>
+<p>Every score is a float when one metric was requested and an
+ndarray in the requested order when several were.</p>
+</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>
@@ -701,7 +829,7 @@ real fit, with the conventional +1 correction) and
 
 <dl class="py class">
 <dt class="sig sig-object py" id="qsarkit.validation.ExternalValidator">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">ExternalValidator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_robustness.html#ExternalValidator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.ExternalValidator" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">ExternalValidator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_robustness.html#ExternalValidator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.ExternalValidator" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Score a fitted model on a held-out set with QSAR-appropriate metrics.</p>
 <p>OECD principle 4’s predictivity requirement. Wraps
@@ -710,9 +838,16 @@ Golbraikh-Tropsha criteria so an external evaluation reports the same
 statistics every time, rather than whichever ones happened to look best.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>q2</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span>) – A cross-validated Q² from the training set. Supply it so that
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q2</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span>) – A cross-validated Q² from the training set. Supply it so that
 Golbraikh-Tropsha criterion 1 can be evaluated; without it that
-criterion reports <code class="docutils literal notranslate"><span class="pre">None</span></code> rather than silently passing.</p>
+criterion reports <code class="docutils literal notranslate"><span class="pre">None</span></code> rather than silently passing.</p></li>
+<li><p><strong>scoring</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/constants.html#None" title="(in Python v3.14)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="#qsarkit.validation.Scorer" title="qsarkit.validation._scoring.Scorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scorer</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/constants.html#Ellipsis" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference internal" href="#qsarkit.validation.Scorer" title="qsarkit.validation._scoring.Scorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scorer</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/constants.html#Ellipsis" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]]]]</span>) – Report these metrics instead of the regression report. The default
+(<code class="docutils literal notranslate"><span class="pre">None</span></code>) keeps the QSAR regression report and the
+Golbraikh-Tropsha criteria, which is what a regression submission
+needs; naming metrics is how a classification endpoint is validated,
+and then <code class="docutils literal notranslate"><span class="pre">score</span></code> and <code class="docutils literal notranslate"><span class="pre">metric</span></code> replace the report.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -768,7 +903,7 @@ and <code class="docutils literal notranslate"><span class="pre">golbraikh_trops
 
 <dl class="py class">
 <dt class="sig sig-object py" id="qsarkit.validation.BootstrapValidator">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">BootstrapValidator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_robustness.html#BootstrapValidator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.BootstrapValidator" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">BootstrapValidator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_robustness.html#BootstrapValidator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.BootstrapValidator" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Bootstrap the training set to estimate how stable a score is.</p>
 <p>A single cross-validated Q² is one number with no error bar. Resampling
@@ -827,9 +962,12 @@ A Tutorial.” Chemom. Intell. Lab. Syst., 54(1), 35-52.
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">mean_score</span></code>, <code class="docutils literal notranslate"><span class="pre">std_score</span></code>, <code class="docutils literal notranslate"><span class="pre">ci_lower</span></code>, <code class="docutils literal notranslate"><span class="pre">ci_upper</span></code>,
-<code class="docutils literal notranslate"><span class="pre">n_iterations</span></code> and <code class="docutils literal notranslate"><span class="pre">n_effective</span></code> (resamples that produced a
-usable out-of-bag set).</p>
+<dd class="field-even"><p><p><code class="docutils literal notranslate"><span class="pre">mean_score</span></code>, <code class="docutils literal notranslate"><span class="pre">std_score</span></code>, <code class="docutils literal notranslate"><span class="pre">ci_lower</span></code>, <code class="docutils literal notranslate"><span class="pre">ci_upper</span></code>,
+<code class="docutils literal notranslate"><span class="pre">confidence</span></code>, <code class="docutils literal notranslate"><span class="pre">n_iterations</span></code>, <code class="docutils literal notranslate"><span class="pre">n_effective</span></code> (resamples that
+produced a usable out-of-bag set) and <code class="docutils literal notranslate"><span class="pre">metric</span></code>.</p>
+<p>Every score is a float when one metric was requested and an
+ndarray in the requested order when several were.</p>
+</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>
@@ -841,6 +979,111 @@ usable out-of-bag set).</p>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="qsarkit.validation.Scorer">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">Scorer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">needs_proba</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">greater_is_better</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_scoring.html#Scorer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.Scorer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One metric, with what a validation method needs to know about it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>) – How the metric is reported.</p></li>
+<li><p><strong>func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">callable</span></code>) – <code class="docutils literal notranslate"><span class="pre">func(y_true,</span> <span class="pre">y_pred_or_score)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code>.</p></li>
+<li><p><strong>needs_proba</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether <code class="docutils literal notranslate"><span class="pre">func</span></code> wants <code class="docutils literal notranslate"><span class="pre">predict_proba(X)[:,</span> <span class="pre">1]</span></code> rather than
+<code class="docutils literal notranslate"><span class="pre">predict(X)</span></code>.</p></li>
+<li><p><strong>greater_is_better</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>) – Whether a larger value is a better model. <code class="docutils literal notranslate"><span class="pre">False</span></code> for losses such
+as RMSE, which is what keeps a permutation p-value the right way
+round.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qsarkit.validation.Scorer.name">
+<span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><a class="headerlink" href="#qsarkit.validation.Scorer.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qsarkit.validation.Scorer.func">
+<span class="sig-name descname"><span class="pre">func</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#qsarkit.validation.Scorer.func" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qsarkit.validation.Scorer.needs_proba">
+<span class="sig-name descname"><span class="pre">needs_proba</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#qsarkit.validation.Scorer.needs_proba" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qsarkit.validation.Scorer.greater_is_better">
+<span class="sig-name descname"><span class="pre">greater_is_better</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><a class="headerlink" href="#qsarkit.validation.Scorer.greater_is_better" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.validation.Scorer.is_at_least_as_good_as">
+<span class="sig-name descname"><span class="pre">is_at_least_as_good_as</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">candidate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_scoring.html#Scorer.is_at_least_as_good_as"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.Scorer.is_at_least_as_good_as" title="Link to this definition">¶</a></dt>
+<dd><p>Whether <code class="docutils literal notranslate"><span class="pre">candidate</span></code> matches or beats <code class="docutils literal notranslate"><span class="pre">reference</span></code> for this metric.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qsarkit.validation.make_scorer">
+<span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">make_scorer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">needs_proba</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">greater_is_better</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_scoring.html#make_scorer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.make_scorer" title="Link to this definition">¶</a></dt>
+<dd><p>Wrap a metric for use as <code class="docutils literal notranslate"><span class="pre">scoring=</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/constants.html#Ellipsis" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span>) – <code class="docutils literal notranslate"><span class="pre">func(y_true,</span> <span class="pre">y_pred)</span> <span class="pre">-&gt;</span> <span class="pre">float</span></code>, or <code class="docutils literal notranslate"><span class="pre">func(y_true,</span> <span class="pre">y_score)</span></code> when
+<code class="docutils literal notranslate"><span class="pre">needs_proba</span></code> is set.</p></li>
+<li><p><strong>needs_proba</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Pass the positive-class probability instead of the predicted label.</p></li>
+<li><p><strong>greater_is_better</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Set <code class="docutils literal notranslate"><span class="pre">False</span></code> for a loss, so that “at least as good” compares the
+right way round.</p></li>
+<li><p><strong>name</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Defaults to the function’s <code class="docutils literal notranslate"><span class="pre">__name__</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#qsarkit.validation.Scorer" title="qsarkit.validation._scoring.Scorer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Scorer</span></code></a></span></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>A metric a validation method can use directly:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">average_precision_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_scorer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scorer</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">average_precision_score</span><span class="p">,</span> <span class="n">needs_proba</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scorer</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;average_precision_score&#39;</span>
+</pre></div>
+</div>
+<p>A loss, declared as one:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">rmse</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">make_scorer</span><span class="p">(</span><span class="n">rmse</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">greater_is_better</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qsarkit.validation.available_metrics">
+<span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">available_metrics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_scoring.html#available_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.available_metrics" title="Link to this definition">¶</a></dt>
+<dd><p>The metric names <code class="docutils literal notranslate"><span class="pre">scoring=</span></code> accepts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">available_metrics</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">names</span> <span class="o">=</span> <span class="n">available_metrics</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;r2&quot;</span> <span class="ow">in</span> <span class="n">names</span><span class="p">,</span> <span class="s2">&quot;roc_auc&quot;</span> <span class="ow">in</span> <span class="n">names</span><span class="p">,</span> <span class="s2">&quot;rmse&quot;</span> <span class="ow">in</span> <span class="n">names</span>
+<span class="go">(True, True, True)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -931,6 +1174,10 @@ Cross-Validation for Model Selection.” <em>BMC Bioinformatics</em>, 7, 91.
 <li><a class="reference internal" href="#robustness-y-scrambling">Robustness: y-scrambling</a></li>
 <li><a class="reference internal" href="#precision-the-bootstrap">Precision: the bootstrap</a></li>
 <li><a class="reference internal" href="#predictivity-external-validation">Predictivity: external validation</a></li>
+<li><a class="reference internal" href="#choosing-the-metric">Choosing the metric</a><ul>
+<li><a class="reference internal" href="#classification-metrics-see-probabilities">Classification metrics see probabilities</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-qsarkit.validation">API</a><ul>
 <li><a class="reference internal" href="#qsarkit.validation.CrossValidator"><code class="docutils literal notranslate"><span class="pre">CrossValidator</span></code></a><ul>
 <li><a class="reference internal" href="#qsarkit.validation.CrossValidator.method"><code class="docutils literal notranslate"><span class="pre">CrossValidator.method</span></code></a></li>
@@ -956,6 +1203,16 @@ Cross-Validation for Model Selection.” <em>BMC Bioinformatics</em>, 7, 91.
 <li><a class="reference internal" href="#qsarkit.validation.BootstrapValidator.run"><code class="docutils literal notranslate"><span class="pre">BootstrapValidator.run()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#qsarkit.validation.Scorer"><code class="docutils literal notranslate"><span class="pre">Scorer</span></code></a><ul>
+<li><a class="reference internal" href="#qsarkit.validation.Scorer.name"><code class="docutils literal notranslate"><span class="pre">Scorer.name</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.validation.Scorer.func"><code class="docutils literal notranslate"><span class="pre">Scorer.func</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.validation.Scorer.needs_proba"><code class="docutils literal notranslate"><span class="pre">Scorer.needs_proba</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.validation.Scorer.greater_is_better"><code class="docutils literal notranslate"><span class="pre">Scorer.greater_is_better</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.validation.Scorer.is_at_least_as_good_as"><code class="docutils literal notranslate"><span class="pre">Scorer.is_at_least_as_good_as()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qsarkit.validation.make_scorer"><code class="docutils literal notranslate"><span class="pre">make_scorer()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.validation.available_metrics"><code class="docutils literal notranslate"><span class="pre">available_metrics()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#references">References</a></li>
@@ -970,7 +1227,7 @@ Cross-Validation for Model Selection.” <em>BMC Bioinformatics</em>, 7, 91.
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=bd778e0b"></script>
+</div><script src="../_static/documentation_options.js?v=70f82a29"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

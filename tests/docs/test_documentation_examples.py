@@ -15,6 +15,7 @@ file that went stale.
 from __future__ import annotations
 
 import doctest
+import math
 import importlib
 import pkgutil
 import re
@@ -34,6 +35,59 @@ DOCS_SOURCE = ROOT / "docs-sphinx" / "source"
 # several lines for readability; ELLIPSIS lets an example show the shape of a
 # long repr without pinning every character of it.
 OPTIONFLAGS = doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS | doctest.IGNORE_EXCEPTION_DETAIL
+
+
+class _FloatTolerantChecker(doctest.OutputChecker):
+    """Compare decimals with a tolerance; everything else exactly.
+
+    The examples print real numbers out of real fits, and the last digits of
+    those depend on the platform as much as on the code: the same seed and
+    the same scikit-learn give ``q2`` 0.686 on macOS/arm64 and 0.685 on
+    Linux/x86_64, because the wheels are built against different BLAS
+    implementations and the summation order differs. Comparing the printed
+    strings therefore fails on a machine other than the author's while
+    nothing is actually wrong, and the pressure that creates -- round
+    everything to one decimal -- makes the documentation less informative
+    than the code deserves.
+
+    So decimals are compared numerically, within
+    ``rel_tol=2e-2`` / ``abs_tol=1e-3``, and the rest of the output must
+    still match character for character: shapes, dtypes, orderings, keys,
+    exception text, and every integer. Integers are excluded from the
+    tolerance deliberately -- a count, a length or a shape that moved is a
+    real change, not rounding, and ``(1117, 2048)`` against ``(1118, 2048)``
+    must fail.
+    """
+
+    #: A decimal or exponential literal. Plain integers are not matched, so
+    #: they fall through to the exact comparison.
+    _DECIMAL = re.compile(r"[-+]?(?:\d+\.\d*|\.\d+)(?:[eE][-+]?\d+)?")
+    _REL_TOL = 2e-2
+    _ABS_TOL = 1e-3
+
+    def check_output(self, want: str, got: str, optionflags: int) -> bool:
+        if super().check_output(want, got, optionflags):
+            return True
+
+        want_numbers = self._DECIMAL.findall(want)
+        got_numbers = self._DECIMAL.findall(got)
+        if not want_numbers or len(want_numbers) != len(got_numbers):
+            return False
+
+        # The text around the numbers has to be identical, so a tolerance can
+        # never paper over a changed shape, key or type.
+        if self._DECIMAL.sub("~", want) != self._DECIMAL.sub("~", got):
+            return False
+
+        for expected, actual in zip(want_numbers, got_numbers):
+            if not math.isclose(
+                float(expected),
+                float(actual),
+                rel_tol=self._REL_TOL,
+                abs_tol=self._ABS_TOL,
+            ):
+                return False
+        return True
 
 
 class _Runner(doctest.DocTestRunner):
@@ -109,7 +163,9 @@ def test_documentation_example(path: Path) -> None:
     if not test.examples:
         pytest.skip("no examples in this page")
 
-    runner = _Runner(optionflags=OPTIONFLAGS, verbose=False)
+    runner = _Runner(
+        checker=_FloatTolerantChecker(), optionflags=OPTIONFLAGS, verbose=False
+    )
     runner._run(test)
     result = runner.summarize(verbose=False)
     if runner.missing_dependency and not result.failed:
@@ -136,7 +192,9 @@ def test_docstring_example(module_name: str) -> None:
         pytest.skip("no examples in this module")
 
     globs = _globs()
-    runner = _Runner(optionflags=OPTIONFLAGS, verbose=False)
+    runner = _Runner(
+        checker=_FloatTolerantChecker(), optionflags=OPTIONFLAGS, verbose=False
+    )
     for test in tests:
         test.globs.update(globs)
         runner._run(test)

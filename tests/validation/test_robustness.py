@@ -52,7 +52,8 @@ class TestYScrambling:
         result = YScrambling(n_iterations=10, random_state=0).run(Ridge(), X, y)
         assert set(result) == {
             "real_score", "mean_scrambled_score", "std_scrambled_score",
-            "max_scrambled_score", "p_value", "n_iterations",
+            "max_scrambled_score", "best_scrambled_score", "p_value",
+            "n_iterations", "metric", "scored_out_of_fold",
         }
 
     def test_p_value_is_never_zero(self, signal):
@@ -152,7 +153,7 @@ class TestBootstrapValidator:
         result = BootstrapValidator(n_iterations=10, random_state=0).run(Ridge(), X, y)
         assert set(result) == {
             "mean_score", "std_score", "ci_lower", "ci_upper",
-            "confidence", "n_iterations", "n_effective",
+            "confidence", "n_iterations", "n_effective", "metric",
         }
 
     def test_confidence_widens_the_interval(self, signal):

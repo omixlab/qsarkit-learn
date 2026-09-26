@@ -44,6 +44,21 @@ _VALID_NAMES: Tuple[str, ...] = (
 )
 
 
+def _with_defaults(params: Dict[str, Any], **defaults: Any) -> Dict[str, Any]:
+    """The facade's defaults, overridable by the caller's ``model_params``.
+
+    ``model_params`` is the documented way to configure a backend, so passing
+    a keyword the facade also sets has to work. Splatting both into the
+    constructor instead raises ``TypeError: got multiple values for keyword
+    argument``, which is a confusing way to reject a documented use --
+    ``QSARClassifier("rf", model_params={"n_estimators": 100})`` hit exactly
+    that. The caller's value wins.
+    """
+    merged = dict(defaults)
+    merged.update(params)
+    return merged
+
+
 def _invalid_name_error(name: str) -> ValueError:
     return ValueError(f"name must be one of {_VALID_NAMES}, got {name!r}.")
 
@@ -400,11 +415,13 @@ class QSARRegressor(_CustomEstimatorMixin, RegressorMixin, BaseEstimator):
         name = self.name
 
         if name == "rf":
-            return RandomForestQSAR(random_state=self.random_state, **params)
+            return RandomForestQSAR(**_with_defaults(params, random_state=self.random_state))
         if name == "svm":
             return SVMQSAR(**params)
         if name == "gbm":
-            return HistGradientBoostingRegressor(random_state=self.random_state, **params)
+            return HistGradientBoostingRegressor(
+                **_with_defaults(params, random_state=self.random_state)
+            )
         if name == "xgboost":
             try:
                 import xgboost as xgb
@@ -416,9 +433,9 @@ class QSARRegressor(_CustomEstimatorMixin, RegressorMixin, BaseEstimator):
                     stacklevel=2,
                 )
                 return HistGradientBoostingRegressor(
-                    random_state=self.random_state, **params
+                    **_with_defaults(params, random_state=self.random_state)
                 )
-            return xgb.XGBRegressor(random_state=self.random_state, **params)
+            return xgb.XGBRegressor(**_with_defaults(params, random_state=self.random_state))
         if name == "lightgbm":
             try:
                 import lightgbm as lgb
@@ -430,23 +447,23 @@ class QSARRegressor(_CustomEstimatorMixin, RegressorMixin, BaseEstimator):
                     stacklevel=2,
                 )
                 return HistGradientBoostingRegressor(
-                    random_state=self.random_state, **params
+                    **_with_defaults(params, random_state=self.random_state)
                 )
-            return lgb.LGBMRegressor(random_state=self.random_state, **params)
+            return lgb.LGBMRegressor(**_with_defaults(params, random_state=self.random_state))
         if name == "knn":
             return JaccardKNeighborsRegressor(**params)
         if name == "pls":
             return PLSRegressor(**params)
         if name == "ridge":
-            return Ridge(random_state=self.random_state, **params)
+            return Ridge(**_with_defaults(params, random_state=self.random_state))
         if name == "lasso":
-            return Lasso(random_state=self.random_state, **params)
+            return Lasso(**_with_defaults(params, random_state=self.random_state))
         if name == "elasticnet":
-            return ElasticNet(random_state=self.random_state, **params)
+            return ElasticNet(**_with_defaults(params, random_state=self.random_state))
         if name == "mlp":
-            return NeuralNetworkQSAR(random_state=self.random_state, **params)
+            return NeuralNetworkQSAR(**_with_defaults(params, random_state=self.random_state))
         if name == "gp":
-            return GaussianProcessQSAR(random_state=self.random_state, **params)
+            return GaussianProcessQSAR(**_with_defaults(params, random_state=self.random_state))
         raise _invalid_name_error(name)
 
     def fit(self, X: npt.ArrayLike, y: npt.ArrayLike) -> "QSARRegressor":
@@ -651,13 +668,13 @@ solver="saga")`` — L1/L2 compromise (Zou & Hastie 2005).
 
         if name == "rf":
             return RandomForestClassifier(
-                n_estimators=500, random_state=self.random_state, **params
+                **_with_defaults(params, n_estimators=500, random_state=self.random_state)
             )
         if name == "svm":
-            return SVC(kernel="rbf", probability=True, **params)
+            return SVC(**_with_defaults(params, kernel="rbf", probability=True))
         if name == "gbm":
             return HistGradientBoostingClassifier(
-                random_state=self.random_state, **params
+                **_with_defaults(params, random_state=self.random_state)
             )
         if name == "xgboost":
             try:
@@ -670,9 +687,9 @@ solver="saga")`` — L1/L2 compromise (Zou & Hastie 2005).
                     stacklevel=2,
                 )
                 return HistGradientBoostingClassifier(
-                    random_state=self.random_state, **params
+                    **_with_defaults(params, random_state=self.random_state)
                 )
-            return xgb.XGBClassifier(random_state=self.random_state, **params)
+            return xgb.XGBClassifier(**_with_defaults(params, random_state=self.random_state))
         if name == "lightgbm":
             try:
                 import lightgbm as lgb
@@ -684,15 +701,15 @@ solver="saga")`` — L1/L2 compromise (Zou & Hastie 2005).
                     stacklevel=2,
                 )
                 return HistGradientBoostingClassifier(
-                    random_state=self.random_state, **params
+                    **_with_defaults(params, random_state=self.random_state)
                 )
-            return lgb.LGBMClassifier(random_state=self.random_state, **params)
+            return lgb.LGBMClassifier(**_with_defaults(params, random_state=self.random_state))
         if name == "knn":
             return JaccardKNeighborsClassifier(**params)
         if name == "pls":
             return _PLSDAClassifier(**params)
         if name == "ridge":
-            return RidgeClassifier(random_state=self.random_state, **params)
+            return RidgeClassifier(**_with_defaults(params, random_state=self.random_state))
         if name == "lasso":
             return LogisticRegression(
                 penalty="l1",

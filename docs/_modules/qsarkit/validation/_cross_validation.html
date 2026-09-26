@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.validation._cross_validation - qsarkit 0.4.1</title>
+        <title>qsarkit.validation._cross_validation - qsarkit 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.4.1</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.4.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -295,6 +295,14 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">KFold</span><span class="p">,</span> <span class="n">LeaveOneGroupOut</span><span class="p">,</span> <span class="n">LeaveOneOut</span><span class="p">,</span> <span class="n">RepeatedKFold</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mae</span><span class="p">,</span> <span class="n">r2_score</span><span class="p">,</span> <span class="n">rmse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation._scoring</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Scoring</span><span class="p">,</span>
+    <span class="n">metric_names</span><span class="p">,</span>
+    <span class="n">positive_class_scores</span><span class="p">,</span>
+    <span class="n">resolve_scoring</span><span class="p">,</span>
+    <span class="n">score_all</span><span class="p">,</span>
+    <span class="n">unwrap</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CrossValidator&quot;</span><span class="p">]</span>
 
@@ -359,11 +367,13 @@
         <span class="n">n_splits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
         <span class="n">n_repeats</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">scoring</span><span class="p">:</span> <span class="n">Scoring</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">=</span> <span class="n">method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_splits</span> <span class="o">=</span> <span class="n">n_splits</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_repeats</span> <span class="o">=</span> <span class="n">n_repeats</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="o">=</span> <span class="n">scoring</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_splitter_and_args</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -454,34 +464,68 @@
         <span class="n">X_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">X_arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;X must be 2-dimensional, got shape </span><span class="si">{</span><span class="n">X_arr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="n">y_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">y_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="c1"># The float view is what the regression statistics are computed from;</span>
+        <span class="c1"># the original dtype is what the estimator is fitted on, so class</span>
+        <span class="c1"># labels are not silently turned into floats.</span>
+        <span class="n">y_arr</span> <span class="o">=</span> <span class="n">y_labels</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span>
+            <span class="n">y_labels</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="s2">&quot;biufc&quot;</span>
+        <span class="p">)</span> <span class="k">else</span> <span class="n">y_labels</span>
         <span class="n">groups_arr</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">groups</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
 
         <span class="n">splitter</span><span class="p">,</span> <span class="n">split_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_splitter_and_args</span><span class="p">(</span><span class="n">X_arr</span><span class="p">,</span> <span class="n">y_arr</span><span class="p">,</span> <span class="n">groups_arr</span><span class="p">)</span>
 
+        <span class="n">scorers</span><span class="p">,</span> <span class="n">single</span> <span class="o">=</span> <span class="n">resolve_scoring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring</span><span class="p">)</span>
+        <span class="n">needs_proba</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">needs_proba</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scorers</span><span class="p">)</span>
+        <span class="n">needs_pred</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">needs_proba</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">scorers</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="ow">is</span> <span class="kc">None</span>
+
         <span class="n">n</span> <span class="o">=</span> <span class="n">X_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">pred_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">pred_count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">score_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="c1"># Report the number of folds actually run, not the constructor</span>
         <span class="c1"># argument: LOO runs one fold per sample and leave-group-out one</span>
         <span class="c1"># per group, so echoing self.n_splits would describe a different</span>
         <span class="c1"># experiment from the one performed.</span>
         <span class="n">n_splits_run</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">splitter</span><span class="o">.</span><span class="n">get_n_splits</span><span class="p">(</span><span class="o">*</span><span class="n">split_args</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">train_idx</span><span class="p">,</span> <span class="n">test_idx</span> <span class="ow">in</span> <span class="n">splitter</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="o">*</span><span class="n">split_args</span><span class="p">):</span>
-            <span class="n">fitted</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_arr</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">y_arr</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
-            <span class="n">preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">fitted</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_arr</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-            <span class="n">pred_sum</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">preds</span>
+            <span class="n">fitted</span> <span class="o">=</span> <span class="n">clone</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_arr</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span> <span class="n">y_labels</span><span class="p">[</span><span class="n">train_idx</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">needs_pred</span><span class="p">:</span>
+                <span class="n">preds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">fitted</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_arr</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                <span class="n">pred_sum</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">preds</span>
+            <span class="k">if</span> <span class="n">needs_proba</span><span class="p">:</span>
+                <span class="n">score_sum</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">positive_class_scores</span><span class="p">(</span><span class="n">fitted</span><span class="p">,</span> <span class="n">X_arr</span><span class="p">[</span><span class="n">test_idx</span><span class="p">])</span>
             <span class="n">pred_count</span><span class="p">[</span><span class="n">test_idx</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
 
-        <span class="n">y_pred_cv</span> <span class="o">=</span> <span class="n">pred_sum</span> <span class="o">/</span> <span class="n">pred_count</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;q2&quot;</span><span class="p">:</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_arr</span><span class="p">,</span> <span class="n">y_pred_cv</span><span class="p">),</span>
-            <span class="s2">&quot;rmse_cv&quot;</span><span class="p">:</span> <span class="n">rmse</span><span class="p">(</span><span class="n">y_arr</span><span class="p">,</span> <span class="n">y_pred_cv</span><span class="p">),</span>
-            <span class="s2">&quot;mae_cv&quot;</span><span class="p">:</span> <span class="n">mae</span><span class="p">(</span><span class="n">y_arr</span><span class="p">,</span> <span class="n">y_pred_cv</span><span class="p">),</span>
-            <span class="s2">&quot;y_pred_cv&quot;</span><span class="p">:</span> <span class="n">y_pred_cv</span><span class="p">,</span>
+        <span class="n">y_pred_cv</span> <span class="o">=</span> <span class="n">pred_sum</span> <span class="o">/</span> <span class="n">pred_count</span> <span class="k">if</span> <span class="n">needs_pred</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">y_score_cv</span> <span class="o">=</span> <span class="n">score_sum</span> <span class="o">/</span> <span class="n">pred_count</span> <span class="k">if</span> <span class="n">needs_proba</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">,</span>
             <span class="s2">&quot;n_splits&quot;</span><span class="p">:</span> <span class="n">n_splits_run</span><span class="p">,</span>
-        <span class="p">}</span></div>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">y_pred_cv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">&quot;y_pred_cv&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_pred_cv</span>
+        <span class="k">if</span> <span class="n">y_score_cv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">&quot;y_score_cv&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_score_cv</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scoring</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Unchanged default: the three statistics a regression QSAR is</span>
+            <span class="c1"># reported with, so existing callers see exactly what they did.</span>
+            <span class="c1"># Recomputed from the sums rather than reusing `y_pred_cv`, which</span>
+            <span class="c1"># is Optional for the scoring path; with no `scoring` the</span>
+            <span class="c1"># predictions were always collected.</span>
+            <span class="n">default_pred</span> <span class="o">=</span> <span class="n">pred_sum</span> <span class="o">/</span> <span class="n">pred_count</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">&quot;q2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">y_arr</span><span class="p">,</span> <span class="n">default_pred</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">&quot;rmse_cv&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rmse</span><span class="p">(</span><span class="n">y_arr</span><span class="p">,</span> <span class="n">default_pred</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">&quot;mae_cv&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mae</span><span class="p">(</span><span class="n">y_arr</span><span class="p">,</span> <span class="n">default_pred</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unwrap</span><span class="p">(</span>
+            <span class="n">score_all</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">y_labels</span><span class="p">,</span> <span class="n">y_pred_cv</span><span class="p">,</span> <span class="n">y_score_cv</span><span class="p">),</span> <span class="n">single</span>
+        <span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;metric&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metric_names</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">single</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
 </div>
 
 </pre></div>
@@ -517,7 +561,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=bd778e0b"></script>
+</div><script src="../../../_static/documentation_options.js?v=70f82a29"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
