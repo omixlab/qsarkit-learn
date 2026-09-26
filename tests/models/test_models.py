@@ -463,3 +463,86 @@ class TestModelParamsOverrideFacadeDefaults:
             "rf", random_state=0, model_params={"n_estimators": 10}
         ).fit(X, y)
         assert model.predict_proba(X).shape == (40, 2)
+
+
+class TestFacadeExposesItsBackendAttributes:
+    """Consumers introspect a model; the facade must not hide the backend.
+
+    ``BorutaSelector`` and scikit-learn's ``RFE`` both reject an estimator
+    without ``feature_importances_`` or ``coef_``, so qsarkit's own default
+    model was refused by qsarkit's own feature selectors.
+    ``EnsembleUncertainty`` looks for ``estimators_`` and, not finding it,
+    silently refitted a bagging ensemble instead of reusing the forest.
+    """
+
+    @pytest.fixture(scope="class")
+    def data(self):
+        rng = np.random.default_rng(0)
+        X = rng.normal(size=(60, 10))
+        return X, X[:, 0] * 2 + rng.normal(scale=0.2, size=60)
+
+    def test_tree_attributes_are_visible(self, data):
+        X, y = data
+        model = QSARRegressor(
+            "rf", random_state=0, model_params={"n_estimators": 7}
+        ).fit(X, y)
+        assert model.feature_importances_.shape == (10,)
+        assert len(model.estimators_) == 7
+
+    def test_linear_attributes_are_visible(self, data):
+        X, y = data
+        assert QSARRegressor("ridge").fit(X, y).coef_.shape == (10,)
+
+    def test_an_unfitted_facade_raises_attribute_error(self):
+        """`hasattr` must stay False before fit rather than exploding."""
+        model = QSARRegressor("rf", random_state=0)
+        assert not hasattr(model, "feature_importances_")
+        with pytest.raises(AttributeError, match="not fitted"):
+            model.feature_importances_
+
+    def test_an_attribute_on_neither_raises(self, data):
+        X, y = data
+        model = QSARRegressor("rf", random_state=0).fit(X, y)
+        with pytest.raises(AttributeError, match="neither"):
+            model.no_such_attribute
+
+    def test_private_names_are_not_forwarded(self, data):
+        """copy and pickle probe for dunders; answering them breaks cloning."""
+        import copy
+        import pickle
+
+        X, y = data
+        model = QSARRegressor(
+            "rf", random_state=0, model_params={"n_estimators": 5}
+        ).fit(X, y)
+        assert np.allclose(copy.deepcopy(model).predict(X), model.predict(X))
+        assert np.allclose(pickle.loads(pickle.dumps(model)).predict(X), model.predict(X))
+        assert type(clone(QSARRegressor("rf", random_state=0))).__name__ == "QSARRegressor"
+
+    def test_the_feature_selectors_accept_a_facade(self, data):
+        from qsarkit.feature_selection import BorutaSelector, RFESelector
+
+        X, y = data
+        boruta = BorutaSelector(
+            estimator=QSARRegressor(
+                "rf", random_state=0, model_params={"n_estimators": 10}
+            ),
+            n_iterations=3,
+            random_state=0,
+        ).fit(X, y)
+        assert boruta.get_support().shape == (10,)
+
+        rfe = RFESelector(
+            estimator=QSARRegressor("ridge"), n_features_to_select=3
+        ).fit(X, y)
+        assert int(rfe.get_support().sum()) == 3
+
+    def test_ensemble_uncertainty_reuses_the_forest(self, data):
+        from qsarkit.uncertainty import EnsembleUncertainty
+
+        X, y = data
+        estimator = EnsembleUncertainty(
+            QSARRegressor("rf", random_state=0, model_params={"n_estimators": 7})
+        ).fit(X, y)
+        # The forest's own seven trees, not a refitted bag of forests.
+        assert len(estimator.estimators_) == 7

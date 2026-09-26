@@ -79,24 +79,33 @@ Is the error bar meaningful?
    >>> calibration = UncertaintyCalibration(n_bins=3)
    >>> report = calibration.report(y[test], mean, sigma)
    >>> round(report["ence"], 1)
-   2.9
+   0.3
    >>> round(report["spearman_error_correlation"], 2)
-   -0.54
+   -0.14
 
-Both numbers say the ensemble spread is not a usable error bar here.
-ENCE (expected normalized calibration error) should be near 0; 2.9 means
-the predicted σ is badly mis-scaled. The Spearman correlation between σ
-and actual error should be *positive* — a model should be least certain
-where it is most wrong. At −0.54 it is anti-correlated: this ensemble is
-most confident precisely where it errs.
+The two numbers answer different questions, and they disagree here. ENCE
+(expected normalized calibration error) should be near 0, and 0.3 says the
+*scale* of the predicted σ is roughly right. The Spearman correlation
+between σ and the actual error should be *positive* — a model ought to be
+least certain where it is most wrong — and at −0.14 it is slightly
+anti-correlated instead. So the error bars are about the right size on
+average while carrying almost no information about which predictions to
+distrust, which is the more common failure and the harder one to notice.
 
-That is a useful thing to discover before shipping predictions, and it is
-invisible if you only look at RMSE:
+Both are invisible if you only look at RMSE:
 
 .. doctest::
 
    >>> round(report["rmse"], 3)
-   0.496
+   0.483
+
+.. note::
+
+   On a :class:`~qsarkit.models.QSARRegressor` wrapping a forest,
+   :class:`~qsarkit.uncertainty.EnsembleUncertainty` reuses that forest's own
+   trees. Before version 0.8.0 the facade did not expose ``estimators_``, so
+   it silently refitted a bagging ensemble *of forests* instead: slower, and
+   worse calibrated (ENCE 2.9 rather than 0.3 on this example).
 
 API
 ---

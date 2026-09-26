@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.explainability._importance - qsarkit 0.5.0</title>
+        <title>qsarkit.explainability._importance - qsarkit 0.8.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.5.0</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.8.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.8.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -542,11 +542,35 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_background</span> <span class="o">=</span> <span class="n">n_background</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_underlying</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The estimator SHAP should actually inspect.</span>
+
+<span class="sd">        ``QSARRegressor`` and ``QSARClassifier`` are facades: they hold the</span>
+<span class="sd">        fitted backend in ``estimator_`` and delegate to it. SHAP&#39;s tree and</span>
+<span class="sd">        linear explainers read a model&#39;s internal structure, so handing them</span>
+<span class="sd">        the facade fails outright -- ``shap.TreeExplainer`` raises</span>
+<span class="sd">        ``InvalidModelError`` on a ``QSARClassifier`` wrapping a random forest</span>
+<span class="sd">        -- and ``auto`` would classify the facade by its own class name and</span>
+<span class="sd">        fall back to the kernel explainer, which is orders of magnitude slower</span>
+<span class="sd">        and needs a background set. Unwrapping makes SHAP work on the</span>
+<span class="sd">        package&#39;s own estimators, which is the common case.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Only qsarkit&#39;s facades are unwrapped, checked by type rather than by</span>
+        <span class="c1"># looking for an `estimator_` attribute: scikit-learn&#39;s ensembles carry</span>
+        <span class="c1"># one too, holding the *unfitted* template of their base estimator, so</span>
+        <span class="c1"># a duck-typed check turns a fitted random forest into a bare</span>
+        <span class="c1"># DecisionTreeRegressor. Imported here to avoid an import cycle.</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">QSARClassifier</span><span class="p">,</span> <span class="n">QSARRegressor</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="p">(</span><span class="n">QSARClassifier</span><span class="p">,</span> <span class="n">QSARRegressor</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;estimator_&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Pick an explainer from the model class when set to auto.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">explainer_type</span> <span class="o">!=</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">explainer_type</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_underlying</span><span class="p">())</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;forest&quot;</span><span class="p">,</span> <span class="s2">&quot;tree&quot;</span><span class="p">,</span> <span class="s2">&quot;boost&quot;</span><span class="p">,</span> <span class="s2">&quot;xgb&quot;</span><span class="p">,</span> <span class="s2">&quot;lgbm&quot;</span><span class="p">,</span> <span class="s2">&quot;gradient&quot;</span><span class="p">)):</span>
             <span class="k">return</span> <span class="s2">&quot;tree&quot;</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">k</span> <span class="ow">in</span> <span class="n">name</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;ridge&quot;</span><span class="p">,</span> <span class="s2">&quot;lasso&quot;</span><span class="p">,</span> <span class="s2">&quot;elastic&quot;</span><span class="p">,</span> <span class="s2">&quot;logistic&quot;</span><span class="p">)):</span>
@@ -570,10 +594,25 @@
 
         <span class="n">shap</span> <span class="o">=</span> <span class="n">require</span><span class="p">(</span><span class="s2">&quot;shap&quot;</span><span class="p">)</span>
         <span class="n">kind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_type</span><span class="p">()</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_underlying</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;tree&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">background</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Tree-path-dependent perturbation, which needs no background</span>
+                <span class="c1"># data. It is the cheaper estimator and the right default, but</span>
+                <span class="c1"># on a large sparse forest its additivity check can fail with</span>
+                <span class="c1"># an error that says nothing actionable.</span>
+                <span class="k">return</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="c1"># With a background sample, interventional perturbation is both</span>
+            <span class="c1"># better defined -- it estimates the effect of intervening on a</span>
+            <span class="c1"># feature rather than conditioning on the tree&#39;s own splits -- and</span>
+            <span class="c1"># numerically better behaved on wide fingerprint matrices.</span>
+            <span class="k">return</span> <span class="n">shap</span><span class="o">.</span><span class="n">TreeExplainer</span><span class="p">(</span>
+                <span class="n">model</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample_background</span><span class="p">(),</span>
+                <span class="n">feature_perturbation</span><span class="o">=</span><span class="s2">&quot;interventional&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;linear&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">shap</span><span class="o">.</span><span class="n">LinearExplainer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_background</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">shap</span><span class="o">.</span><span class="n">LinearExplainer</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_background</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;kernel&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">shap</span><span class="o">.</span><span class="n">KernelExplainer</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_background</span><span class="p">()</span>
@@ -997,7 +1036,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-25</div>
+              Last updated on 2026-09-26</div>
           </div>
           <div class="right-details">
             
@@ -1012,7 +1051,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=70f82a29"></script>
+</div><script src="../../../_static/documentation_options.js?v=cce5339e"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

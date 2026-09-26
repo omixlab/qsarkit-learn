@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Reporting" href="reporting.html"><link rel="prev" title="Explainability" href="explainability.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Chemical space - qsarkit 0.5.0</title>
+        <title>Chemical space - qsarkit 0.8.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.5.0</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.8.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.8.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -301,6 +301,58 @@ between-cluster distances in those plots are <strong>not</strong> meaningful.
 Reading them as chemical distance is the commonest misuse of the
 technique.</p>
 </div>
+<p>UMAP needs the <code class="docutils literal notranslate"><span class="pre">embedding_viz</span></code> extra; the other three methods need nothing
+beyond the core dependencies.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ChemicalSpaceAnalyzer</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;umap&quot;</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Keyword arguments are forwarded to the underlying estimator, so
+<code class="docutils literal notranslate"><span class="pre">n_neighbors</span></code>, <code class="docutils literal notranslate"><span class="pre">min_dist</span></code> and <code class="docutils literal notranslate"><span class="pre">perplexity</span></code> are set where they belong.</p>
+<section id="how-much-of-the-projection-is-real">
+<h3>How much of the projection is real<a class="headerlink" href="#how-much-of-the-projection-is-real" title="Link to this heading">¶</a></h3>
+<p>A projection that destroyed the neighbourhood structure produces a figure that
+looks exactly like one that preserved it. Trustworthiness is the difference:
+the fraction of each point’s projected neighbours that were also its
+neighbours in fingerprint space, penalised by how far away they really were.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">trustworthiness</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">0.96</span>
+</pre></div>
+</div>
+<p>Report it with any t-SNE or UMAP figure. Several neighbourhood sizes can be
+asked at once, because the answer depends on the scale: a projection can
+preserve a compound’s nearest analogues while misplacing its series.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">trustworthiness</span><span class="p">(</span><span class="n">demo_mols</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">array([0.96, 0.96, 0.94])</span>
+</pre></div>
+</div>
+<p>The same convention as <a class="reference internal" href="validation.html#module-qsarkit.validation" title="qsarkit.validation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qsarkit.validation</span></code></a>: one size returns a float,
+an iterable returns an array in the order given.</p>
+<p><a class="reference internal" href="#qsarkit.chemspace.projection_trustworthiness" title="qsarkit.chemspace.projection_trustworthiness"><code class="xref py py-func docutils literal notranslate"><span class="pre">projection_trustworthiness()</span></code></a> scores an embedding
+computed anywhere, including one produced outside qsarkit:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemspace</span><span class="w"> </span><span class="kn">import</span> <span class="n">projection_trustworthiness</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">demo_fingerprints</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">projection_trustworthiness</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">X</span><span class="p">,</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">embedding_</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;jaccard&quot;</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">0.96</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Trustworthiness needs the full pairwise distance matrix of the original
+space, which is <span class="math notranslate nohighlight">\(O(n^2)\)</span> in memory — 20 000 compounds is 3.2 GB in
+float64. Pass <code class="docutils literal notranslate"><span class="pre">subsample</span></code> to score a seeded random subset, which
+estimates the same quantity:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">analyzer</span><span class="o">.</span><span class="n">trustworthiness</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">demo_mols</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">subsample</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">0.95</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">metric</span></code> must match the one the projection was built with, or the
+score compares answers to two different questions. The analyzer’s method
+uses its own <code class="docutils literal notranslate"><span class="pre">metric</span></code> automatically.</p>
+</div>
+</section>
 </section>
 <section id="diversity">
 <h2>Diversity<a class="headerlink" href="#diversity" title="Link to this heading">¶</a></h2>
@@ -468,6 +520,48 @@ Representations of Chemical Space.” Expert Opin. Drug Discov.,
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#tuple" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/constants.html#Ellipsis" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code></a>], <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.double" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">double</span></code></a>]]</span></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="qsarkit.chemspace.ChemicalSpaceAnalyzer.trustworthiness">
+<span class="sig-name descname"><span class="pre">trustworthiness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemspace/_analyzers.html#ChemicalSpaceAnalyzer.trustworthiness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemspace.ChemicalSpaceAnalyzer.trustworthiness" title="Link to this definition">¶</a></dt>
+<dd><p>How much of the projection’s local structure is real.</p>
+<p>Report this with any t-SNE or UMAP figure. Those methods produce
+convincing islands whose between-cluster distances mean nothing, and
+the picture looks the same whether or not the neighbourhoods survived
+the projection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mols</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span>) – The same molecules or feature matrix passed to <a class="reference internal" href="#qsarkit.chemspace.ChemicalSpaceAnalyzer.fit" title="qsarkit.chemspace.ChemicalSpaceAnalyzer.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a>. They
+are not retained by <code class="docutils literal notranslate"><span class="pre">fit</span></code>, because a fingerprint matrix for a
+screening library is large enough that keeping a copy is a real
+cost.</p></li>
+<li><p><strong>n_neighbors</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Neighbourhood size, or several; several return an array in order.</p></li>
+<li><p><strong>subsample</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Score this many randomly chosen compounds. Trustworthiness needs
+the full pairwise distance matrix, so a large collection may need
+one.</p></li>
+<li><p><strong>random_state</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Seed for <code class="docutils literal notranslate"><span class="pre">subsample</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#AttributeError" title="(in Python v3.14)"><strong>AttributeError</strong></a> – If called before <a class="reference internal" href="#qsarkit.chemspace.ChemicalSpaceAnalyzer.fit" title="qsarkit.chemspace.ChemicalSpaceAnalyzer.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">smiles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CCO&quot;</span><span class="p">,</span> <span class="s2">&quot;CCN&quot;</span><span class="p">,</span> <span class="s2">&quot;CCC&quot;</span><span class="p">,</span> <span class="s2">&quot;c1ccccc1&quot;</span><span class="p">,</span> <span class="s2">&quot;c1ccccc1O&quot;</span><span class="p">,</span> <span class="s2">&quot;CCCl&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">smiles</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">analyzer</span> <span class="o">=</span> <span class="n">ChemicalSpaceAnalyzer</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;pca&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">score</span> <span class="o">=</span> <span class="n">analyzer</span><span class="o">.</span><span class="n">trustworthiness</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1160,6 +1254,67 @@ cyclic skeleton (“graph framework”).</p></li>
 </ul>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="qsarkit.chemspace.projection_trustworthiness">
+<span class="sig-prename descclassname"><span class="pre">qsarkit.chemspace.</span></span><span class="sig-name descname"><span class="pre">projection_trustworthiness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embedding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'jaccard'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/chemspace/_quality.html#projection_trustworthiness"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.chemspace.projection_trustworthiness" title="Link to this definition">¶</a></dt>
+<dd><p>How well <code class="docutils literal notranslate"><span class="pre">embedding</span></code> preserves the neighbourhoods of <code class="docutils literal notranslate"><span class="pre">X</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Buffer" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Buffer</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_SupportsArray</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">_NestedSequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">_SupportsArray</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]], <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#complex" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_NestedSequence</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#complex" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – The original space – a fingerprint or descriptor matrix.</p></li>
+<li><p><strong>embedding</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Buffer" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Buffer</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_SupportsArray</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">_NestedSequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">_SupportsArray</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]], <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#complex" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_NestedSequence</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#complex" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – The projected coordinates, as returned by
+<a class="reference internal" href="#qsarkit.chemspace.ChemicalSpaceAnalyzer.fit_transform" title="qsarkit.chemspace.ChemicalSpaceAnalyzer.fit_transform"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_transform()</span></code></a>.</p></li>
+<li><p><strong>n_neighbors</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]</span>) – The neighbourhood size to score. Pass several and an array is
+returned in the order given, because trustworthiness is a function of
+the scale you ask about: a projection can preserve a compound’s five
+nearest analogues while misplacing its series.</p></li>
+<li><p><strong>metric</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Distance in the <em>original</em> space. Jaccard/Tanimoto is correct for
+binary fingerprints; pass <code class="docutils literal notranslate"><span class="pre">&quot;euclidean&quot;</span></code> for descriptors. This must
+match the metric the projection was built with, or the score measures
+agreement between two different questions.</p></li>
+<li><p><strong>subsample</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Score a random subset of this many samples. Trustworthiness needs the
+full pairwise distance matrix, which is O(n^2) in memory – 20 000
+compounds is 3.2 GB in float64 – so a subsample is often the only
+way to compute it at all. It is an estimate of the same quantity, and
+seeding it with <code class="docutils literal notranslate"><span class="pre">random_state</span></code> makes it reproducible.</p></li>
+<li><p><strong>random_state</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Seed for <code class="docutils literal notranslate"><span class="pre">subsample</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A float for one neighbourhood size, an array in the requested order
+for several.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the two inputs disagree on the sample count, if a neighbourhood
+    size is not at least 1, or if it is too large for the sample –
+    trustworthiness is undefined once <code class="docutils literal notranslate"><span class="pre">n_neighbors</span></code> reaches half the
+    samples, since every point is then a neighbour of every other.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>A projection of a small set, scored at two scales:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemspace</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="n">ChemicalSpaceAnalyzer</span><span class="p">,</span> <span class="n">projection_trustworthiness</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">60</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">0.7</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">embedding</span> <span class="o">=</span> <span class="n">ChemicalSpaceAnalyzer</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;pca&quot;</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">score</span> <span class="o">=</span> <span class="n">projection_trustworthiness</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">X</span><span class="p">,</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span> <span class="o">=</span> <span class="n">projection_trustworthiness</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">X</span><span class="p">,</span> <span class="n">embedding</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span><span class="o">.</span><span class="n">shape</span>
+<span class="go">(2,)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
@@ -1215,7 +1370,7 @@ Inf. Comput. Sci., 44(6), 1912-1928. <a class="extlink-doi reference external" h
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-25</div>
+              Last updated on 2026-09-26</div>
           </div>
           <div class="right-details">
             
@@ -1237,7 +1392,10 @@ Inf. Comput. Sci., 44(6), 1912-1928. <a class="extlink-doi reference external" h
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Chemical space</a><ul>
-<li><a class="reference internal" href="#embedding">Embedding</a></li>
+<li><a class="reference internal" href="#embedding">Embedding</a><ul>
+<li><a class="reference internal" href="#how-much-of-the-projection-is-real">How much of the projection is real</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#diversity">Diversity</a></li>
 <li><a class="reference internal" href="#scaffolds">Scaffolds</a></li>
 <li><a class="reference internal" href="#novelty-and-coverage">Novelty and coverage</a></li>
@@ -1246,6 +1404,7 @@ Inf. Comput. Sci., 44(6), 1912-1928. <a class="extlink-doi reference external" h
 <li><a class="reference internal" href="#qsarkit.chemspace.ChemicalSpaceAnalyzer.embedding_"><code class="docutils literal notranslate"><span class="pre">ChemicalSpaceAnalyzer.embedding_</span></code></a></li>
 <li><a class="reference internal" href="#qsarkit.chemspace.ChemicalSpaceAnalyzer.fit"><code class="docutils literal notranslate"><span class="pre">ChemicalSpaceAnalyzer.fit()</span></code></a></li>
 <li><a class="reference internal" href="#qsarkit.chemspace.ChemicalSpaceAnalyzer.fit_transform"><code class="docutils literal notranslate"><span class="pre">ChemicalSpaceAnalyzer.fit_transform()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemspace.ChemicalSpaceAnalyzer.trustworthiness"><code class="docutils literal notranslate"><span class="pre">ChemicalSpaceAnalyzer.trustworthiness()</span></code></a></li>
 <li><a class="reference internal" href="#qsarkit.chemspace.ChemicalSpaceAnalyzer.plot"><code class="docutils literal notranslate"><span class="pre">ChemicalSpaceAnalyzer.plot()</span></code></a></li>
 </ul>
 </li>
@@ -1288,6 +1447,7 @@ Inf. Comput. Sci., 44(6), 1912-1928. <a class="extlink-doi reference external" h
 <li><a class="reference internal" href="#qsarkit.chemspace.fingerprints_to_array"><code class="docutils literal notranslate"><span class="pre">fingerprints_to_array()</span></code></a></li>
 <li><a class="reference internal" href="#qsarkit.chemspace.tanimoto_matrix"><code class="docutils literal notranslate"><span class="pre">tanimoto_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#qsarkit.chemspace.bemis_murcko_smiles"><code class="docutils literal notranslate"><span class="pre">bemis_murcko_smiles()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.chemspace.projection_trustworthiness"><code class="docutils literal notranslate"><span class="pre">projection_trustworthiness()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#references">References</a></li>
@@ -1302,12 +1462,14 @@ Inf. Comput. Sci., 44(6), 1912-1928. <a class="extlink-doi reference external" h
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=70f82a29"></script>
+</div><script src="../_static/documentation_options.js?v=cce5339e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>window.MathJax = {"tex": {"packages": {"[+]": ["ams", "boldsymbol"]}, "inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "macros": {"Tanimoto": "T", "Rsq": "R^{2}", "Qsq": ["Q^{2}_{\\mathrm{#1}}", 1], "RMSE": "\\mathrm{RMSE}", "ECE": "\\mathrm{ECE}", "argmax": "\\operatorname*{arg\\,max}", "argmin": "\\operatorname*{arg\\,min}"}}, "options": {"ignoreHtmlClass": "highlight|no-mathjax", "processHtmlClass": "math|tex2jax_process"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     </body>
 </html>

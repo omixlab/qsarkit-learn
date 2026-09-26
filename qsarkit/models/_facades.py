@@ -162,6 +162,42 @@ class _CustomEstimatorMixin:
         return not isinstance(self.name, str)
 
 
+
+    def __getattr__(self, name: str) -> Any:
+        """Expose the fitted backend's attributes on the facade.
+
+        Called only when normal lookup fails. The facade holds the real
+        estimator in ``estimator_`` and delegates ``fit``/``predict`` to it,
+        but everything a *consumer* introspects lived only on the backend:
+        ``BorutaSelector`` and scikit-learn's ``RFE`` both reject an estimator
+        without ``feature_importances_`` or ``coef_``, so qsarkit's own default
+        model was refused by qsarkit's own feature selectors. ``EnsembleUncertainty``
+        similarly missed ``estimators_`` and silently refitted a bagging
+        ensemble instead of reusing the forest's trees.
+
+        Names beginning with an underscore are not forwarded. ``copy`` and
+        ``pickle`` probe for dunders such as ``__deepcopy__`` and
+        ``__getstate__`` with ``getattr``, and answering those from the
+        backend would corrupt cloning.
+        """
+        if name.startswith("_"):
+            raise AttributeError(name)
+        # __dict__ directly, so a lookup before fit cannot recurse.
+        estimator = self.__dict__.get("estimator_")
+        if estimator is None:
+            raise AttributeError(
+                f"{type(self).__name__!r} object has no attribute {name!r}; "
+                "it is not fitted yet, so the backend's attributes are not "
+                "available."
+            )
+        try:
+            return getattr(estimator, name)
+        except AttributeError:
+            raise AttributeError(
+                f"neither {type(self).__name__!r} nor its backend "
+                f"{type(estimator).__name__!r} has an attribute {name!r}."
+            ) from None
+
 class _PLSDAClassifier(ClassifierMixin, BaseEstimator):
     """Binary partial least squares discriminant analysis (PLS-DA).
 

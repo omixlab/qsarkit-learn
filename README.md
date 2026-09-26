@@ -158,6 +158,27 @@ BootstrapValidator(n_iterations=100).run(model, X_train, y_train)         # prec
 
 y-randomization is the check that catches the classic QSAR failure — a few dozen compounds described by thousands of descriptors, where something will always correlate. It is cheap, so there is no excuse for omitting it.
 
+All four validators take `scoring`, so none of them is tied to R². Pass a list and every score comes back as an array in that order, from one pass over the folds:
+
+```python
+from qsarkit.validation import CrossValidator, available_metrics, make_scorer
+
+CrossValidator(scoring=["roc_auc", "pr_auc", "mcc", "brier"]).evaluate(model, X, y)["score"]
+available_metrics()                                  # the 18 named ones
+
+# Anything else, including a metric that needs probabilities:
+from sklearn.metrics import average_precision_score
+make_scorer(average_precision_score, needs_proba=True)
+```
+
+`roc_auc`, `pr_auc` and `brier` are handed `predict_proba`'s positive column, never a thresholded label — scoring a hard label with ROC-AUC throws away the ranking the metric exists to measure. A loss declares `greater_is_better=False`, which is what keeps a y-randomization p-value on RMSE from coming out backwards.
+
+> **Score y-randomization out of fold.** The default scores the apparent, in-sample fit. A random forest separates *permuted* labels in-sample as perfectly as real ones, so an in-sample ROC-AUC comparison reads 1.000 against 0.999 and detects nothing. Pass `cv` — and `stratify=True` on an imbalanced endpoint:
+>
+> ```python
+> YScrambling(n_iterations=100, scoring="roc_auc", cv=5, stratify=True).run(model, X, y)
+> ```
+
 For classification, three traps worth knowing about:
 
 ```python
@@ -181,6 +202,22 @@ from qsarkit.metrics import qq_data, residual_normality
 residual_normality(y_test, y_pred)       # skew, kurtosis, heteroscedasticity
 qq_data(y_test - y_pred)                 # the data behind a normal Q-Q plot
 ```
+
+## Looking at the Chemical Space First
+
+Before modelling: does this library cover one region or several, does the test set sit inside the training set's cloud, is this hit an outlier.
+
+```python
+from qsarkit.chemspace import ChemicalSpaceAnalyzer, projection_trustworthiness
+
+space = ChemicalSpaceAnalyzer(method="umap", metric="jaccard", random_state=0).fit(X)
+space.embedding_                        # (n_molecules, 2)
+
+# How much of the picture can be believed:
+space.trustworthiness(X, n_neighbors=[5, 15, 30])
+```
+
+t-SNE and UMAP produce convincing islands whose *between*-cluster distances mean nothing, and a projection that destroyed the neighbourhood structure looks exactly like one that preserved it. Trustworthiness is the difference, and it is worth reporting with the figure. UMAP needs the `embedding_viz` extra; PCA, t-SNE and MDS need nothing extra.
 
 ## Applicability Domain
 

@@ -261,11 +261,35 @@ class SHAPExplainer:
         self.n_background = n_background
         self.random_state = random_state
 
+    def _underlying(self) -> Any:
+        """The estimator SHAP should actually inspect.
+
+        ``QSARRegressor`` and ``QSARClassifier`` are facades: they hold the
+        fitted backend in ``estimator_`` and delegate to it. SHAP's tree and
+        linear explainers read a model's internal structure, so handing them
+        the facade fails outright -- ``shap.TreeExplainer`` raises
+        ``InvalidModelError`` on a ``QSARClassifier`` wrapping a random forest
+        -- and ``auto`` would classify the facade by its own class name and
+        fall back to the kernel explainer, which is orders of magnitude slower
+        and needs a background set. Unwrapping makes SHAP work on the
+        package's own estimators, which is the common case.
+        """
+        # Only qsarkit's facades are unwrapped, checked by type rather than by
+        # looking for an `estimator_` attribute: scikit-learn's ensembles carry
+        # one too, holding the *unfitted* template of their base estimator, so
+        # a duck-typed check turns a fitted random forest into a bare
+        # DecisionTreeRegressor. Imported here to avoid an import cycle.
+        from qsarkit.models import QSARClassifier, QSARRegressor
+
+        if isinstance(self.model, (QSARClassifier, QSARRegressor)):
+            return getattr(self.model, "estimator_", self.model)
+        return self.model
+
     def _resolve_type(self) -> str:
         """Pick an explainer from the model class when set to auto."""
         if self.explainer_type != "auto":
             return self.explainer_type
-        name = type(self.model).__name__.lower()
+        name = type(self._underlying()).__name__.lower()
         if any(k in name for k in ("forest", "tree", "boost", "xgb", "lgbm", "gradient")):
             return "tree"
         if any(k in name for k in ("linear", "ridge", "lasso", "elastic", "logistic")):
@@ -289,10 +313,25 @@ class SHAPExplainer:
 
         shap = require("shap")
         kind = self._resolve_type()
+        model = self._underlying()
         if kind == "tree":
-            return shap.TreeExplainer(self.model)
+            if self.background is None:
+                # Tree-path-dependent perturbation, which needs no background
+                # data. It is the cheaper estimator and the right default, but
+                # on a large sparse forest its additivity check can fail with
+                # an error that says nothing actionable.
+                return shap.TreeExplainer(model)
+            # With a background sample, interventional perturbation is both
+            # better defined -- it estimates the effect of intervening on a
+            # feature rather than conditioning on the tree's own splits -- and
+            # numerically better behaved on wide fingerprint matrices.
+            return shap.TreeExplainer(
+                model,
+                data=self._sample_background(),
+                feature_perturbation="interventional",
+            )
         if kind == "linear":
-            return shap.LinearExplainer(self.model, self._sample_background())
+            return shap.LinearExplainer(model, self._sample_background())
         if kind == "kernel":
             return shap.KernelExplainer(
                 self.model.predict, self._sample_background()

@@ -46,7 +46,7 @@ from __future__ import annotations
 import importlib
 from typing import TYPE_CHECKING, Any, List
 
-__version__ = "0.5.0"
+__version__ = "0.8.0"
 
 # Every public subpackage. Kept explicit (rather than scanned from the
 # filesystem) so that `dir(qsarkit)` and tab-completion are stable and

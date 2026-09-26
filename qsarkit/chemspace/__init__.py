@@ -18,6 +18,7 @@ from qsarkit.chemspace._analyzers import (
     NearestNeighborAnalyzer,
     ScaffoldAnalyzer,
 )
+from qsarkit.chemspace._quality import projection_trustworthiness
 from qsarkit.chemspace._fingerprints import (
     bemis_murcko_smiles,
     compute_fingerprints,
@@ -38,4 +39,5 @@ __all__ = [
     "fingerprints_to_array",
     "tanimoto_matrix",
     "bemis_murcko_smiles",
+    "projection_trustworthiness",
 ]

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.models._facades - qsarkit 0.5.0</title>
+        <title>qsarkit.models._facades - qsarkit 0.8.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.5.0</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.8.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.8.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -428,6 +428,42 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_uses_custom_estimator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
 
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Expose the fitted backend&#39;s attributes on the facade.</span>
+
+<span class="sd">        Called only when normal lookup fails. The facade holds the real</span>
+<span class="sd">        estimator in ``estimator_`` and delegates ``fit``/``predict`` to it,</span>
+<span class="sd">        but everything a *consumer* introspects lived only on the backend:</span>
+<span class="sd">        ``BorutaSelector`` and scikit-learn&#39;s ``RFE`` both reject an estimator</span>
+<span class="sd">        without ``feature_importances_`` or ``coef_``, so qsarkit&#39;s own default</span>
+<span class="sd">        model was refused by qsarkit&#39;s own feature selectors. ``EnsembleUncertainty``</span>
+<span class="sd">        similarly missed ``estimators_`` and silently refitted a bagging</span>
+<span class="sd">        ensemble instead of reusing the forest&#39;s trees.</span>
+
+<span class="sd">        Names beginning with an underscore are not forwarded. ``copy`` and</span>
+<span class="sd">        ``pickle`` probe for dunders such as ``__deepcopy__`` and</span>
+<span class="sd">        ``__getstate__`` with ``getattr``, and answering those from the</span>
+<span class="sd">        backend would corrupt cloning.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="c1"># __dict__ directly, so a lookup before fit cannot recurse.</span>
+        <span class="n">estimator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;estimator_&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">estimator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> object has no attribute </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">; &quot;</span>
+                <span class="s2">&quot;it is not fitted yet, so the backend&#39;s attributes are not &quot;</span>
+                <span class="s2">&quot;available.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;neither </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> nor its backend &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">estimator</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">!r}</span><span class="s2"> has an attribute </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">_PLSDAClassifier</span><span class="p">(</span><span class="n">ClassifierMixin</span><span class="p">,</span> <span class="n">BaseEstimator</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Binary partial least squares discriminant analysis (PLS-DA).</span>
@@ -1134,7 +1170,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-25</div>
+              Last updated on 2026-09-26</div>
           </div>
           <div class="right-details">
             
@@ -1149,7 +1185,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=70f82a29"></script>
+</div><script src="../../../_static/documentation_options.js?v=cce5339e"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

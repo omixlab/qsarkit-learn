@@ -7,6 +7,7 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.linear_model import Ridge
 
 from qsarkit.base import ModelNotFittedError
+from qsarkit.models import QSARClassifier, QSARRegressor
 from qsarkit.explainability import (
     AtomicContributionMap,
     CounterfactualExplainer,
@@ -461,3 +462,54 @@ class TestLIMEExplainer:
             model, X, mode="classification", n_samples=200, random_state=0
         )
         assert len(explainer.explain_one(X[0], top_n=2)) == 2
+
+
+class TestSHAPUnwrapsQsarkitFacades:
+    """SHAP must work on the package's own estimators.
+
+    ``QSARRegressor`` and ``QSARClassifier`` hold the fitted backend in
+    ``estimator_`` and delegate to it. Passing the facade straight to SHAP
+    failed two ways: ``shap.TreeExplainer`` raised ``InvalidModelError`` on a
+    ``QSARClassifier``, and ``explainer_type="auto"`` classified the facade by
+    its own class name and silently chose the kernel explainer, which is far
+    slower and needs a background set.
+    """
+
+    @pytest.fixture(scope="class")
+    def binary(self):
+        rng = np.random.default_rng(0)
+        X = (rng.random((80, 12)) > 0.6).astype(float)
+        y = (X[:, 0] + X[:, 1] > 1).astype(int)
+        return X, y
+
+    def test_auto_sees_through_the_classifier_facade(self, binary):
+        X, y = binary
+        model = QSARClassifier(
+            "rf", random_state=0, model_params={"n_estimators": 10}
+        ).fit(X, y)
+        assert SHAPExplainer(model)._resolve_type() == "tree"
+
+    def test_auto_sees_through_the_regressor_facade(self, binary):
+        X, y = binary
+        model = QSARRegressor("ridge").fit(X, y.astype(float))
+        assert SHAPExplainer(model)._resolve_type() == "linear"
+
+    def test_a_facade_wrapped_forest_explains(self, binary):
+        pytest.importorskip("shap")
+        X, y = binary
+        model = QSARClassifier(
+            "rf", random_state=0, model_params={"n_estimators": 10}
+        ).fit(X, y)
+        values = np.asarray(SHAPExplainer(model).shap_values(X[:5]))
+        # Either (n, features) or (n, features, classes) depending on the
+        # shap version; both must cover every feature.
+        assert values.shape[0] == 5
+        assert values.shape[1] == X.shape[1]
+
+    def test_a_bare_estimator_still_works(self, binary):
+        """Unwrapping must not break the case that already worked."""
+        from sklearn.ensemble import RandomForestClassifier
+
+        X, y = binary
+        model = RandomForestClassifier(n_estimators=10, random_state=0).fit(X, y)
+        assert SHAPExplainer(model)._resolve_type() == "tree"

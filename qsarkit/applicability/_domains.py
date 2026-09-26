@@ -397,8 +397,15 @@ class KNNApplicabilityDomain(BaseApplicabilityDomain):
     def _pairwise(self, arr: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         if self.metric == "tanimoto":
             return 1.0 - tanimoto_similarity_matrix(arr, self._X_train)
-        diff = arr[:, None, :] - self._X_train[None, :, :]
-        return np.asarray(np.linalg.norm(diff, axis=2), dtype=np.float64)
+        # cdist, not a broadcast subtraction. Materialising
+        # `arr[:, None, :] - X_train[None, :, :]` allocates
+        # (n_query, n_train, n_features) floats: on 5000 training compounds
+        # described by 2048-bit fingerprints that is over 100 TB for a single
+        # call, so the domain died on any realistic dataset while working
+        # fine on the two dozen molecules in the documentation.
+        from scipy.spatial.distance import cdist
+
+        return np.asarray(cdist(arr, self._X_train, metric="euclidean"), dtype=np.float64)
 
     def _mean_knn_distance(
         self, arr: npt.NDArray[np.float64], exclude_self: bool = False

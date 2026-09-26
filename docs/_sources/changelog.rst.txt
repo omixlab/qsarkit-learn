@@ -1,9 +1,9 @@
 Changelog
 =========
 
-.. _changelog-0-5-0:
+.. _changelog-0-8-0:
 
-0.5.0 (unreleased)
+0.8.0 (unreleased)
 ------------------
 
 Narrowed the package back to the QSAR workflow proper, and filled the gaps
@@ -26,8 +26,59 @@ trustworthy. 29 subpackages became 21.
   scikit-learn upgrade and can be inspected before it is loaded. Carries
   the provenance OECD principle 2 asks for.
 
+**Fixed**
+
+- ``QSARRegressor`` and ``QSARClassifier`` now expose their fitted backend's
+  attributes. The facades delegate ``fit`` and ``predict`` but hid everything
+  a *consumer* introspects, so ``BorutaSelector`` and scikit-learn's ``RFE``
+  rejected qsarkit's own default estimator for lacking
+  ``feature_importances_`` or ``coef_``, and ``EnsembleUncertainty`` missed
+  ``estimators_`` and silently refitted a bagging ensemble of forests instead
+  of reusing the forest's trees --- slower, and markedly worse calibrated
+  (ENCE 2.9 against 0.3 on the example in :doc:`api/uncertainty`). Names
+  beginning with an underscore are not forwarded, so cloning, copying and
+  pickling are unaffected.
+- ``ChemicalSpaceAnalyzer.fit`` consumed entries from ``self.kwargs`` with
+  ``pop()``, mutating a constructor argument. A user's ``perplexity`` was
+  honoured by the first ``fit()`` and silently forgotten by the second, so two
+  identical calls on one object returned different embeddings. The options are
+  now copied before use.
+
+- ``KNNApplicabilityDomain`` with the default ``metric="euclidean"`` computed
+  distances by materialising an ``(n_query, n_train, n_features)`` array. On
+  5000 training compounds described by 2048-bit fingerprints that is over
+  100 TB, so the domain was killed by the operating system on any realistic
+  dataset while working fine on the two dozen molecules in the documentation.
+  It now uses ``scipy.spatial.distance.cdist``: the same distances in
+  :math:`O(n \times m)` memory, 19 s and 0.6 GB for that case.
+- ``SHAPExplainer`` could not explain qsarkit's own estimators.
+  ``shap.TreeExplainer`` rejects a ``QSARClassifier`` outright, and
+  ``explainer_type="auto"`` classified the facade by its own class name and
+  fell back to the kernel explainer, which is far slower and needs a
+  background set. The facade is now unwrapped to its fitted backend --- by
+  type, since scikit-learn's ensembles also carry an ``estimator_`` attribute
+  holding an *unfitted* base-estimator template.
+- ``SHAPExplainer`` now uses interventional perturbation when a ``background``
+  sample is supplied. It is the better-defined estimator and avoids the
+  additivity-check failure that tree-path-dependent perturbation hits on wide
+  fingerprint matrices.
+- ``QSARRegressor`` and ``QSARClassifier`` raised
+  ``TypeError: got multiple values for keyword argument`` when
+  ``model_params`` set a keyword the facade also sets, so
+  ``QSARClassifier("rf", model_params={"n_estimators": 100})`` --- the
+  package's default estimator --- failed outright. The caller's value now
+  wins.
+
 **New functionality**
 
+- ``chemspace`` gained ``projection_trustworthiness`` and
+  ``ChemicalSpaceAnalyzer.trustworthiness``, which measure how much of a
+  2D projection's local structure survived the embedding. A t-SNE or UMAP
+  figure that destroyed the neighbourhood structure looks exactly like one
+  that preserved it, so the score belongs with the figure. One neighbourhood
+  size returns a float and an iterable returns an array in the order given,
+  matching the convention the validators use; ``subsample`` makes the
+  :math:`O(n^2)` distance matrix tractable on a screening library.
 - Every validator in ``validation`` -- ``CrossValidator``, ``YScrambling``,
   ``ExternalValidator`` and ``BootstrapValidator`` -- now takes a
   ``scoring`` argument instead of being fixed to :math:`R^2`. Name a metric

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="References" href="references.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Changelog - qsarkit 0.5.0</title>
+        <title>Changelog - qsarkit 0.8.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">qsarkit 0.5.0</div></a>
+      <a href="index.html"><div class="brand">qsarkit 0.8.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.8.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -278,7 +278,7 @@
           <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
 <section id="unreleased">
-<span id="changelog-0-5-0"></span><h2>0.5.0 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
+<span id="changelog-0-8-0"></span><h2>0.8.0 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
 <p>Narrowed the package back to the QSAR workflow proper, and filled the gaps
 that narrowing exposed.</p>
 <p><strong>Scope</strong></p>
@@ -296,8 +296,58 @@ representation of the estimator, so a saved model survives a
 scikit-learn upgrade and can be inspected before it is loaded. Carries
 the provenance OECD principle 2 asks for.</p></li>
 </ul>
+<p><strong>Fixed</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">QSARRegressor</span></code> and <code class="docutils literal notranslate"><span class="pre">QSARClassifier</span></code> now expose their fitted backend’s
+attributes. The facades delegate <code class="docutils literal notranslate"><span class="pre">fit</span></code> and <code class="docutils literal notranslate"><span class="pre">predict</span></code> but hid everything
+a <em>consumer</em> introspects, so <code class="docutils literal notranslate"><span class="pre">BorutaSelector</span></code> and scikit-learn’s <code class="docutils literal notranslate"><span class="pre">RFE</span></code>
+rejected qsarkit’s own default estimator for lacking
+<code class="docutils literal notranslate"><span class="pre">feature_importances_</span></code> or <code class="docutils literal notranslate"><span class="pre">coef_</span></code>, and <code class="docutils literal notranslate"><span class="pre">EnsembleUncertainty</span></code> missed
+<code class="docutils literal notranslate"><span class="pre">estimators_</span></code> and silently refitted a bagging ensemble of forests instead
+of reusing the forest’s trees — slower, and markedly worse calibrated
+(ENCE 2.9 against 0.3 on the example in <a class="reference internal" href="api/uncertainty.html"><span class="doc">Uncertainty</span></a>). Names
+beginning with an underscore are not forwarded, so cloning, copying and
+pickling are unaffected.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ChemicalSpaceAnalyzer.fit</span></code> consumed entries from <code class="docutils literal notranslate"><span class="pre">self.kwargs</span></code> with
+<code class="docutils literal notranslate"><span class="pre">pop()</span></code>, mutating a constructor argument. A user’s <code class="docutils literal notranslate"><span class="pre">perplexity</span></code> was
+honoured by the first <code class="docutils literal notranslate"><span class="pre">fit()</span></code> and silently forgotten by the second, so two
+identical calls on one object returned different embeddings. The options are
+now copied before use.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KNNApplicabilityDomain</span></code> with the default <code class="docutils literal notranslate"><span class="pre">metric=&quot;euclidean&quot;</span></code> computed
+distances by materialising an <code class="docutils literal notranslate"><span class="pre">(n_query,</span> <span class="pre">n_train,</span> <span class="pre">n_features)</span></code> array. On
+5000 training compounds described by 2048-bit fingerprints that is over
+100 TB, so the domain was killed by the operating system on any realistic
+dataset while working fine on the two dozen molecules in the documentation.
+It now uses <code class="docutils literal notranslate"><span class="pre">scipy.spatial.distance.cdist</span></code>: the same distances in
+<span class="math notranslate nohighlight">\(O(n \times m)\)</span> memory, 19 s and 0.6 GB for that case.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SHAPExplainer</span></code> could not explain qsarkit’s own estimators.
+<code class="docutils literal notranslate"><span class="pre">shap.TreeExplainer</span></code> rejects a <code class="docutils literal notranslate"><span class="pre">QSARClassifier</span></code> outright, and
+<code class="docutils literal notranslate"><span class="pre">explainer_type=&quot;auto&quot;</span></code> classified the facade by its own class name and
+fell back to the kernel explainer, which is far slower and needs a
+background set. The facade is now unwrapped to its fitted backend — by
+type, since scikit-learn’s ensembles also carry an <code class="docutils literal notranslate"><span class="pre">estimator_</span></code> attribute
+holding an <em>unfitted</em> base-estimator template.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SHAPExplainer</span></code> now uses interventional perturbation when a <code class="docutils literal notranslate"><span class="pre">background</span></code>
+sample is supplied. It is the better-defined estimator and avoids the
+additivity-check failure that tree-path-dependent perturbation hits on wide
+fingerprint matrices.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QSARRegressor</span></code> and <code class="docutils literal notranslate"><span class="pre">QSARClassifier</span></code> raised
+<code class="docutils literal notranslate"><span class="pre">TypeError:</span> <span class="pre">got</span> <span class="pre">multiple</span> <span class="pre">values</span> <span class="pre">for</span> <span class="pre">keyword</span> <span class="pre">argument</span></code> when
+<code class="docutils literal notranslate"><span class="pre">model_params</span></code> set a keyword the facade also sets, so
+<code class="docutils literal notranslate"><span class="pre">QSARClassifier(&quot;rf&quot;,</span> <span class="pre">model_params={&quot;n_estimators&quot;:</span> <span class="pre">100})</span></code> — the
+package’s default estimator — failed outright. The caller’s value now
+wins.</p></li>
+</ul>
 <p><strong>New functionality</strong></p>
 <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">chemspace</span></code> gained <code class="docutils literal notranslate"><span class="pre">projection_trustworthiness</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ChemicalSpaceAnalyzer.trustworthiness</span></code>, which measure how much of a
+2D projection’s local structure survived the embedding. A t-SNE or UMAP
+figure that destroyed the neighbourhood structure looks exactly like one
+that preserved it, so the score belongs with the figure. One neighbourhood
+size returns a float and an iterable returns an array in the order given,
+matching the convention the validators use; <code class="docutils literal notranslate"><span class="pre">subsample</span></code> makes the
+<span class="math notranslate nohighlight">\(O(n^2)\)</span> distance matrix tractable on a screening library.</p></li>
 <li><p>Every validator in <code class="docutils literal notranslate"><span class="pre">validation</span></code> – <code class="docutils literal notranslate"><span class="pre">CrossValidator</span></code>, <code class="docutils literal notranslate"><span class="pre">YScrambling</span></code>,
 <code class="docutils literal notranslate"><span class="pre">ExternalValidator</span></code> and <code class="docutils literal notranslate"><span class="pre">BootstrapValidator</span></code> – now takes a
 <code class="docutils literal notranslate"><span class="pre">scoring</span></code> argument instead of being fixed to <span class="math notranslate nohighlight">\(R^2\)</span>. Name a metric
@@ -452,7 +502,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-25</div>
+              Last updated on 2026-09-26</div>
           </div>
           <div class="right-details">
             
@@ -474,7 +524,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#unreleased">0.5.0 (unreleased)</a></li>
+<li><a class="reference internal" href="#unreleased">0.8.0 (unreleased)</a></li>
 <li><a class="reference internal" href="#changelog-0-2-0">0.2.0</a></li>
 <li><a class="reference internal" href="#changelog-0-1-0">0.1.0</a></li>
 </ul>
@@ -488,7 +538,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=70f82a29"></script>
+</div><script src="_static/documentation_options.js?v=cce5339e"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

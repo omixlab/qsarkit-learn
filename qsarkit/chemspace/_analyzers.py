@@ -148,13 +148,19 @@ class ChemicalSpaceAnalyzer:
                 f"Need at least 2 molecules to embed, got {len(X)}."
             )
 
+        # A copy, because the branches below consume entries with pop(). Popping
+        # from self.kwargs mutates a constructor argument: the user's
+        # `perplexity` was honoured by the first fit() and silently forgotten by
+        # the second, so two identical calls on one object disagreed.
+        options = dict(self.kwargs)
+
         if self.method == "pca":
             from sklearn.decomposition import PCA
 
             model = PCA(
                 n_components=min(self.n_components, *X.shape),
                 random_state=self.random_state,
-                **self.kwargs,
+                **options,
             )
             self.embedding_ = np.asarray(model.fit_transform(X), dtype=np.float64)
             self.explained_variance_ratio_ = model.explained_variance_ratio_
@@ -162,7 +168,7 @@ class ChemicalSpaceAnalyzer:
             from sklearn.manifold import TSNE
 
             # Perplexity must stay below the sample count or sklearn raises.
-            perplexity = self.kwargs.pop(
+            perplexity = options.pop(
                 "perplexity", min(30.0, max(2.0, (len(X) - 1) / 3.0))
             )
             model = TSNE(
@@ -171,7 +177,7 @@ class ChemicalSpaceAnalyzer:
                 init="random",
                 perplexity=perplexity,
                 random_state=self.random_state,
-                **self.kwargs,
+                **options,
             )
             self.embedding_ = np.asarray(
                 model.fit_transform(self._distances(X)), dtype=np.float64
@@ -185,10 +191,10 @@ class ChemicalSpaceAnalyzer:
             model = MDS(
                 n_components=self.n_components,
                 dissimilarity="precomputed",
-                n_init=self.kwargs.pop("n_init", 4),
-                init=self.kwargs.pop("init", "random"),
+                n_init=options.pop("n_init", 4),
+                init=options.pop("init", "random"),
                 random_state=self.random_state,
-                **self.kwargs,
+                **options,
             )
             self.embedding_ = np.asarray(
                 model.fit_transform(self._distances(X)), dtype=np.float64
@@ -201,7 +207,7 @@ class ChemicalSpaceAnalyzer:
                 n_components=self.n_components,
                 metric="jaccard" if self.metric == "jaccard" else "euclidean",
                 random_state=self.random_state,
-                **self.kwargs,
+                **options,
             )
             self.embedding_ = np.asarray(model.fit_transform(X), dtype=np.float64)
         else:
@@ -226,6 +232,72 @@ class ChemicalSpaceAnalyzer:
     ) -> npt.NDArray[np.float64]:
         """Project and return the coordinates."""
         return self.fit(mols, y).embedding_
+
+    def trustworthiness(
+        self,
+        mols: Sequence[Any],
+        n_neighbors: Any = 5,
+        subsample: Optional[int] = None,
+        random_state: Optional[int] = None,
+    ) -> Any:
+        """How much of the projection's local structure is real.
+
+        Report this with any t-SNE or UMAP figure. Those methods produce
+        convincing islands whose between-cluster distances mean nothing, and
+        the picture looks the same whether or not the neighbourhoods survived
+        the projection.
+
+        Parameters
+        ----------
+        mols : sequence of Mol or array-like
+            The same molecules or feature matrix passed to :meth:`fit`. They
+            are not retained by ``fit``, because a fingerprint matrix for a
+            screening library is large enough that keeping a copy is a real
+            cost.
+        n_neighbors : int or iterable of int, default 5
+            Neighbourhood size, or several; several return an array in order.
+        subsample : int, optional
+            Score this many randomly chosen compounds. Trustworthiness needs
+            the full pairwise distance matrix, so a large collection may need
+            one.
+        random_state : int, optional
+            Seed for ``subsample``.
+
+        Returns
+        -------
+        float or ndarray
+
+        Raises
+        ------
+        AttributeError
+            If called before :meth:`fit`.
+
+        Examples
+        --------
+        >>> from rdkit import Chem
+        >>> smiles = ["CCO", "CCN", "CCC", "c1ccccc1", "c1ccccc1O", "CCCl"]
+        >>> mols = [Chem.MolFromSmiles(s) for s in smiles]
+        >>> analyzer = ChemicalSpaceAnalyzer(
+        ...     method="pca", random_state=0).fit(mols)
+        >>> score = analyzer.trustworthiness(mols, n_neighbors=2)
+        >>> 0.0 <= score <= 1.0
+        True
+        """
+        if not hasattr(self, "embedding_"):
+            raise AttributeError(
+                "Call fit() before trustworthiness(): there is no projection "
+                "to score yet."
+            )
+        from qsarkit.chemspace._quality import projection_trustworthiness
+
+        return projection_trustworthiness(
+            self._featurize(mols),
+            self.embedding_,
+            n_neighbors=n_neighbors,
+            metric=self.metric,
+            subsample=subsample,
+            random_state=random_state,
+        )
 
     def plot(
         self,

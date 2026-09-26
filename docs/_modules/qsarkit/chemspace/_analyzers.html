@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.chemspace._analyzers - qsarkit 0.5.0</title>
+        <title>qsarkit.chemspace._analyzers - qsarkit 0.8.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.5.0</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.8.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.8.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -419,13 +419,19 @@
                 <span class="sa">f</span><span class="s2">&quot;Need at least 2 molecules to embed, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
+        <span class="c1"># A copy, because the branches below consume entries with pop(). Popping</span>
+        <span class="c1"># from self.kwargs mutates a constructor argument: the user&#39;s</span>
+        <span class="c1"># `perplexity` was honoured by the first fit() and silently forgotten by</span>
+        <span class="c1"># the second, so two identical calls on one object disagreed.</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;pca&quot;</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
 
             <span class="n">model</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span>
                 <span class="n">n_components</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span> <span class="o">*</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
                 <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
-                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">options</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">embedding_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">explained_variance_ratio_</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">explained_variance_ratio_</span>
@@ -433,7 +439,7 @@
             <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.manifold</span><span class="w"> </span><span class="kn">import</span> <span class="n">TSNE</span>
 
             <span class="c1"># Perplexity must stay below the sample count or sklearn raises.</span>
-            <span class="n">perplexity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
+            <span class="n">perplexity</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span>
                 <span class="s2">&quot;perplexity&quot;</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="mf">30.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">))</span>
             <span class="p">)</span>
             <span class="n">model</span> <span class="o">=</span> <span class="n">TSNE</span><span class="p">(</span>
@@ -442,7 +448,7 @@
                 <span class="n">init</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">,</span>
                 <span class="n">perplexity</span><span class="o">=</span><span class="n">perplexity</span><span class="p">,</span>
                 <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
-                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">options</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">embedding_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
                 <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
@@ -456,10 +462,10 @@
             <span class="n">model</span> <span class="o">=</span> <span class="n">MDS</span><span class="p">(</span>
                 <span class="n">n_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span>
                 <span class="n">dissimilarity</span><span class="o">=</span><span class="s2">&quot;precomputed&quot;</span><span class="p">,</span>
-                <span class="n">n_init</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;n_init&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-                <span class="n">init</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;init&quot;</span><span class="p">,</span> <span class="s2">&quot;random&quot;</span><span class="p">),</span>
+                <span class="n">n_init</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;n_init&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+                <span class="n">init</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;init&quot;</span><span class="p">,</span> <span class="s2">&quot;random&quot;</span><span class="p">),</span>
                 <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
-                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">options</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">embedding_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
                 <span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distances</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span>
@@ -472,7 +478,7 @@
                 <span class="n">n_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span>
                 <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;jaccard&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;jaccard&quot;</span> <span class="k">else</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">,</span>
                 <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
-                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">options</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">embedding_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -500,6 +506,75 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Project and return the coordinates.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">embedding_</span></div>
+
+
+<div class="viewcode-block" id="ChemicalSpaceAnalyzer.trustworthiness">
+<a class="viewcode-back" href="../../../api/chemspace.html#qsarkit.chemspace.ChemicalSpaceAnalyzer.trustworthiness">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">trustworthiness</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">mols</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">n_neighbors</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">subsample</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;How much of the projection&#39;s local structure is real.</span>
+
+<span class="sd">        Report this with any t-SNE or UMAP figure. Those methods produce</span>
+<span class="sd">        convincing islands whose between-cluster distances mean nothing, and</span>
+<span class="sd">        the picture looks the same whether or not the neighbourhoods survived</span>
+<span class="sd">        the projection.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mols : sequence of Mol or array-like</span>
+<span class="sd">            The same molecules or feature matrix passed to :meth:`fit`. They</span>
+<span class="sd">            are not retained by ``fit``, because a fingerprint matrix for a</span>
+<span class="sd">            screening library is large enough that keeping a copy is a real</span>
+<span class="sd">            cost.</span>
+<span class="sd">        n_neighbors : int or iterable of int, default 5</span>
+<span class="sd">            Neighbourhood size, or several; several return an array in order.</span>
+<span class="sd">        subsample : int, optional</span>
+<span class="sd">            Score this many randomly chosen compounds. Trustworthiness needs</span>
+<span class="sd">            the full pairwise distance matrix, so a large collection may need</span>
+<span class="sd">            one.</span>
+<span class="sd">        random_state : int, optional</span>
+<span class="sd">            Seed for ``subsample``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or ndarray</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        AttributeError</span>
+<span class="sd">            If called before :meth:`fit`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from rdkit import Chem</span>
+<span class="sd">        &gt;&gt;&gt; smiles = [&quot;CCO&quot;, &quot;CCN&quot;, &quot;CCC&quot;, &quot;c1ccccc1&quot;, &quot;c1ccccc1O&quot;, &quot;CCCl&quot;]</span>
+<span class="sd">        &gt;&gt;&gt; mols = [Chem.MolFromSmiles(s) for s in smiles]</span>
+<span class="sd">        &gt;&gt;&gt; analyzer = ChemicalSpaceAnalyzer(</span>
+<span class="sd">        ...     method=&quot;pca&quot;, random_state=0).fit(mols)</span>
+<span class="sd">        &gt;&gt;&gt; score = analyzer.trustworthiness(mols, n_neighbors=2)</span>
+<span class="sd">        &gt;&gt;&gt; 0.0 &lt;= score &lt;= 1.0</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;embedding_&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="s2">&quot;Call fit() before trustworthiness(): there is no projection &quot;</span>
+                <span class="s2">&quot;to score yet.&quot;</span>
+            <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.chemspace._quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">projection_trustworthiness</span>
+
+        <span class="k">return</span> <span class="n">projection_trustworthiness</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_featurize</span><span class="p">(</span><span class="n">mols</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embedding_</span><span class="p">,</span>
+            <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="p">,</span>
+            <span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">,</span>
+            <span class="n">subsample</span><span class="o">=</span><span class="n">subsample</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ChemicalSpaceAnalyzer.plot">
@@ -1354,7 +1429,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-25</div>
+              Last updated on 2026-09-26</div>
           </div>
           <div class="right-details">
             
@@ -1369,7 +1444,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=70f82a29"></script>
+</div><script src="../../../_static/documentation_options.js?v=cce5339e"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

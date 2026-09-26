@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="SAR interpretation" href="sar.html"><link rel="prev" title="Applicability domain" href="applicability.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Uncertainty - qsarkit 0.5.0</title>
+        <title>Uncertainty - qsarkit 0.8.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.5.0</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.8.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.5.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.8.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -340,22 +340,31 @@ calibration diagnostics below matter.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">calibration</span> <span class="o">=</span> <span class="n">UncertaintyCalibration</span><span class="p">(</span><span class="n">n_bins</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">calibration</span><span class="o">.</span><span class="n">report</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">test</span><span class="p">],</span> <span class="n">mean</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;ence&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
-<span class="go">2.9</span>
+<span class="go">0.3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;spearman_error_correlation&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">-0.54</span>
+<span class="go">-0.14</span>
 </pre></div>
 </div>
-<p>Both numbers say the ensemble spread is not a usable error bar here.
-ENCE (expected normalized calibration error) should be near 0; 2.9 means
-the predicted σ is badly mis-scaled. The Spearman correlation between σ
-and actual error should be <em>positive</em> — a model should be least certain
-where it is most wrong. At −0.54 it is anti-correlated: this ensemble is
-most confident precisely where it errs.</p>
-<p>That is a useful thing to discover before shipping predictions, and it is
-invisible if you only look at RMSE:</p>
+<p>The two numbers answer different questions, and they disagree here. ENCE
+(expected normalized calibration error) should be near 0, and 0.3 says the
+<em>scale</em> of the predicted σ is roughly right. The Spearman correlation
+between σ and the actual error should be <em>positive</em> — a model ought to be
+least certain where it is most wrong — and at −0.14 it is slightly
+anti-correlated instead. So the error bars are about the right size on
+average while carrying almost no information about which predictions to
+distrust, which is the more common failure and the harder one to notice.</p>
+<p>Both are invisible if you only look at RMSE:</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;rmse&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.496</span>
+<span class="go">0.483</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On a <a class="reference internal" href="models.html#qsarkit.models.QSARRegressor" title="qsarkit.models.QSARRegressor"><code class="xref py py-class docutils literal notranslate"><span class="pre">QSARRegressor</span></code></a> wrapping a forest,
+<a class="reference internal" href="#qsarkit.uncertainty.EnsembleUncertainty" title="qsarkit.uncertainty.EnsembleUncertainty"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnsembleUncertainty</span></code></a> reuses that forest’s own
+trees. Before version 0.8.0 the facade did not expose <code class="docutils literal notranslate"><span class="pre">estimators_</span></code>, so
+it silently refitted a bagging ensemble <em>of forests</em> instead: slower, and
+worse calibrated (ENCE 2.9 rather than 0.3 on this example).</p>
 </div>
 </section>
 <section id="module-qsarkit.uncertainty">
@@ -1403,7 +1412,7 @@ Networks for Molecular Property Prediction.” J. Chem. Inf. Model.,
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-25</div>
+              Last updated on 2026-09-26</div>
           </div>
           <div class="right-details">
             
@@ -1502,7 +1511,7 @@ Networks for Molecular Property Prediction.” J. Chem. Inf. Model.,
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=70f82a29"></script>
+</div><script src="../_static/documentation_options.js?v=cce5339e"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
