@@ -1,5 +1,10 @@
 # qsarkit-learn
 
+[![Publish to PyPI](https://github.com/omixlab/qsarkit-learn/actions/workflows/python-publish.yml/badge.svg)](https://github.com/omixlab/qsarkit-learn/actions/workflows/python-publish.yml)
+
+![PyPI Version](https://img.shields.io/pypi/v/qsarkit-learn)
+
+
 A focused, open-source Python library for QSAR (Quantitative Structure-Activity Relationship) modeling.
 
 **[Documentation](https://omixlab.github.io/qsarkit-learn/)** | **[Package reference](package.md)** | **[Notebooks](notebooks/)** | **[Source Code](https://github.com/omixlab/qsarkit-learn)**
