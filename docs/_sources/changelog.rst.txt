@@ -1,10 +1,10 @@
 Changelog
 =========
 
-.. _changelog-0-9-1:
+.. _changelog-0-10-0:
 
-0.9.1 (unreleased)
-------------------
+0.10.0 (unreleased)
+-------------------
 
 Narrowed the package back to the QSAR workflow proper, and filled the gaps
 that narrowing exposed.
@@ -25,6 +25,21 @@ trustworthy. 29 subpackages became 21.
   representation of the estimator, so a saved model survives a
   scikit-learn upgrade and can be inspected before it is loaded. Carries
   the provenance OECD principle 2 asks for.
+
+**Changed**
+
+- ``YScrambling`` now scores **out of fold by default** (``cv=5``), with
+  ``stratify="auto"`` choosing stratified folds when the target looks
+  categorical. The previous default scored the apparent in-sample fit, which
+  is uninformative for any flexible model: a random forest fits permuted
+  labels almost as well as real ones on its own training data, so the test
+  reported a passing p-value on an effect size of 0.001. Pass ``cv=None`` for
+  the old behaviour, which remains the right choice for a low-capacity model
+  on a small descriptor set.
+
+  Scores reported by this class will change. The documented examples moved
+  from :math:`R^2` 0.95 against 0.84 on permuted labels to 0.69 against
+  -0.26; the second pair is what the model does on compounds it has not seen.
 
 **New functionality**
 

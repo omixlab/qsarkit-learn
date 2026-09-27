@@ -1,15 +1,35 @@
 # qsarkit-learn
 
+[![CI](https://github.com/omixlab/qsarkit-learn/actions/workflows/ci.yml/badge.svg)](https://github.com/omixlab/qsarkit-learn/actions/workflows/ci.yml)
+[![Coverage](https://raw.githubusercontent.com/omixlab/qsarkit-learn/main/.github/badges/coverage.svg)](https://github.com/omixlab/qsarkit-learn/actions/workflows/ci.yml)
 [![Publish to PyPI](https://github.com/omixlab/qsarkit-learn/actions/workflows/python-publish.yml/badge.svg)](https://github.com/omixlab/qsarkit-learn/actions/workflows/python-publish.yml)
+[![PyPI Version](https://img.shields.io/pypi/v/qsarkit-learn)](https://pypi.org/project/qsarkit-learn/)
+[![Python versions](https://img.shields.io/pypi/pyversions/qsarkit-learn)](https://pypi.org/project/qsarkit-learn/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-![PyPI Version](https://img.shields.io/pypi/v/qsarkit-learn)
 
+**The statistics that expose a fragile QSAR model are harder to compute than the ones that flatter it.** Scaffold splitting lives in one library, Q²F1–F3 in another, applicability domains in a third, conformal prediction in a fourth, and calibration in a general ML toolkit that knows nothing about molecules. The path of least resistance ends at `train_test_split` and `r2_score` — one import away, and neither answers the question a regulator asks.
 
-A focused, open-source Python library for QSAR (Quantitative Structure-Activity Relationship) modeling.
+`qsarkit-learn` puts that layer in one place, behind the scikit-learn API you already use, and makes the defensible choice the default one.
 
 **[Documentation](https://omixlab.github.io/qsarkit-learn/)** | **[Package reference](package.md)** | **[Notebooks](notebooks/)** | **[Source Code](https://github.com/omixlab/qsarkit-learn)**
 
-`qsarkit-learn` covers the QSAR workflow proper — curating structures, turning them into features, fitting and validating a model, defining where it applies, and interpreting what it learned. It deliberately stops there: it is not a literature-mining, database-retrieval, docking or de-novo design toolkit, and does not pretend to be.
+```python
+# y-randomization is cross-validated and stratified unless you say otherwise,
+# because the in-sample alternative reports a passing p-value on an
+# effect size of 0.001.
+YScrambling(scoring="roc_auc").run(model, X, y)
+
+# A domain is only useful if what it keeps is predicted better than what it
+# rejects, so the analyzer measures that rather than asserting it.
+ADAnalyzer(TanimotoSimilarityAD()).fit(X_train).report(X_test, y_test, y_pred)
+
+# Saved models record the versions they were built with and refuse to
+# execute arbitrary code on load.
+save_model(model, "model.qsar", pipeline=pipeline)
+```
+
+It covers the QSAR workflow proper — curating structures, turning them into features, fitting and validating a model, defining where it applies, interpreting what it learned, and shipping it — and deliberately stops there. It is not a literature-mining, database-retrieval, docking or de-novo design toolkit, and does not pretend to be.
 
 ## The Workflow
 
@@ -178,11 +198,7 @@ make_scorer(average_precision_score, needs_proba=True)
 
 `roc_auc`, `pr_auc` and `brier` are handed `predict_proba`'s positive column, never a thresholded label — scoring a hard label with ROC-AUC throws away the ranking the metric exists to measure. A loss declares `greater_is_better=False`, which is what keeps a y-randomization p-value on RMSE from coming out backwards.
 
-> **Score y-randomization out of fold.** The default scores the apparent, in-sample fit. A random forest separates *permuted* labels in-sample as perfectly as real ones, so an in-sample ROC-AUC comparison reads 1.000 against 0.999 and detects nothing. Pass `cv` — and `stratify=True` on an imbalanced endpoint:
->
-> ```python
-> YScrambling(n_iterations=100, scoring="roc_auc", cv=5, stratify=True).run(model, X, y)
-> ```
+> **y-randomization is scored out of fold by default**, with folds stratified automatically when the target looks categorical. That matters: a random forest separates *permuted* labels on its own training data as perfectly as real ones, so an in-sample ROC-AUC comparison reads 1.000 against 0.999 and detects nothing. `cv=None` restores that in-sample behaviour if you want it, which is a considered choice for a low-capacity model and a mistake everywhere else.
 
 For classification, three traps worth knowing about:
 
@@ -316,7 +332,12 @@ pytest -m slow                      # plus executing the notebooks
 pytest --cov=qsarkit --cov-branch   # with coverage
 mypy qsarkit                        # strict type check
 ruff check qsarkit                  # lint
+
+pytest --cov=qsarkit --cov-branch --cov-report=xml
+python tools/coverage_badge.py      # refresh .github/badges/coverage.svg
 ```
+
+CI runs the suite on Python 3.9 and 3.13, type-checks, builds the documentation with warnings as errors, and regenerates the coverage badge on `main`. The badge is rendered in this repository rather than fetched from a coverage service, so it needs no account and no token.
 
 Building the documentation. `docs-sphinx/` is the source; `docs/` is the
 built site served by GitHub Pages, and it is committed, so rebuilding it is

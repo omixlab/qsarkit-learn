@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Applicability domain" href="applicability.html"><link rel="prev" title="Metrics" href="metrics.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Validation - qsarkit 0.9.1</title>
+        <title>Validation - qsarkit 0.10.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.9.1</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.10.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.9.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -351,22 +351,34 @@ structure-activity relationship.</p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">YScrambling</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scramble</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.953</span>
+<span class="go">0.686</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.839</span>
+<span class="go">-0.263</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;p_value&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
 <span class="go">True</span>
 </pre></div>
 </div>
+<p>Scoring is out of fold by default (<code class="docutils literal notranslate"><span class="pre">cv=5</span></code>), which is what makes the gap
+mean anything.</p>
 <div class="admonition danger">
 <p class="admonition-title">Danger</p>
-<p>Read those numbers again. The model fits <strong>randomly permuted
-activities</strong> to <span class="math notranslate nohighlight">\(R^2 = 0.84\)</span> on average, against 0.95 on the real
-ones. The p-value clears 0.05, but the honest reading is that most of
-this model’s apparent fit is capacity: 24 compounds described by 512
-features will fit almost anything.</p>
-<p>This is exactly the failure y-scrambling exists to expose, and it is
-invisible in the training <span class="math notranslate nohighlight">\(R^2\)</span> that would otherwise be reported.</p>
+<p>Score the <em>training</em> data instead and the same test says something else
+entirely:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">apparent</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">n_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">apparent</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.953</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">apparent</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.839</span>
+</pre></div>
+</div>
+<p>The model fits <strong>randomly permuted activities</strong> to <span class="math notranslate nohighlight">\(R^2 = 0.84\)</span>,
+against 0.95 on the real ones. Nearly all of the apparent fit is capacity:
+24 compounds described by 512 features will fit almost anything. Out of
+fold the permuted models score −0.26, which is what a model that has
+learned nothing looks like when it is asked about data it has not seen.</p>
+<p>Both numbers come from the same estimator and the same permutations. Only
+the second pair is evidence, which is why <code class="docutils literal notranslate"><span class="pre">cv=None</span></code> is not the default.</p>
 </div>
 <p>The p-value can never be exactly zero — a permutation test cannot
 distinguish “very unlikely” from “impossible”, so reporting 0 would claim
@@ -517,26 +529,26 @@ computed on RMSE is not reported backwards.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p><strong>Score out of fold before reading anything into a ranking metric.</strong>
-<a class="reference internal" href="#qsarkit.validation.YScrambling" title="qsarkit.validation.YScrambling"><code class="xref py py-class docutils literal notranslate"><span class="pre">YScrambling</span></code></a> scores the apparent, in-sample fit
-by default, which is what earlier releases did and what makes the classic
-over-fitting demonstration work for <span class="math notranslate nohighlight">\(R^2\)</span>. It cannot work for
-ROC-AUC: a random forest separates <em>permuted</em> labels in-sample as perfectly
-as real ones, so both sides read near 1.0 and the test reports nothing.</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">in_sample</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-<span class="gp">... </span>                        <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;roc_auc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">in_sample</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">in_sample</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
-<span class="go">(1.0, 1.0)</span>
-</pre></div>
-</div>
-<p>Pass <code class="docutils literal notranslate"><span class="pre">cv</span></code> — and <code class="docutils literal notranslate"><span class="pre">stratify=True</span></code> on an imbalanced endpoint — and the
-same test becomes informative:</p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">honest</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;roc_auc&quot;</span><span class="p">,</span>
-<span class="gp">... </span>                     <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<p><strong>A ranking metric needs out-of-fold scoring to mean anything</strong>, which is
+why <a class="reference internal" href="#qsarkit.validation.YScrambling" title="qsarkit.validation.YScrambling"><code class="xref py py-class docutils literal notranslate"><span class="pre">YScrambling</span></code></a> does it by default:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">honest</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">... </span>                     <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;roc_auc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">honest</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">honest</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
 <span class="go">(0.93, 0.43)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">honest</span><span class="p">[</span><span class="s2">&quot;scored_out_of_fold&quot;</span><span class="p">]</span>
 <span class="go">True</span>
+</pre></div>
+</div>
+<p>Folds are stratified automatically when the target looks categorical, so
+an imbalanced endpoint does not need special handling to avoid a fold with
+no positives in it.</p>
+<p>Asking for the in-sample fit instead reports nothing at all, because a
+random forest separates <em>permuted</em> labels on its own training data as
+perfectly as real ones:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">in_sample</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="gp">... </span>                        <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;roc_auc&quot;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">in_sample</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">in_sample</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">(1.0, 1.0)</span>
 </pre></div>
 </div>
 </div>
@@ -684,7 +696,7 @@ and for <code class="docutils literal notranslate"><span class="pre">&quot;leave
 
 <dl class="py class">
 <dt class="sig sig-object py" id="qsarkit.validation.YScrambling">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">YScrambling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stratify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_robustness.html#YScrambling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.YScrambling" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.validation.</span></span><span class="sig-name descname"><span class="pre">YScrambling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stratify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/validation/_robustness.html#YScrambling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.validation.YScrambling" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Test whether a model can fit randomly permuted labels as well as real ones.</p>
 <p>Also called y-randomization. Refit the model many times on shuffled
@@ -708,16 +720,21 @@ anything below 0.0099.</p></li>
 <a class="reference internal" href="#qsarkit.validation.make_scorer" title="qsarkit.validation.make_scorer"><code class="xref py py-func docutils literal notranslate"><span class="pre">make_scorer()</span></code></a> for a metric that needs
 probabilities or is a loss. Pass several and every score in the
 result becomes an array in the order given.</p></li>
-<li><p><strong>cv</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Score out of fold over this many folds instead of on the training
-data. <strong>Strongly recommended for any flexible model, and required
-for a ranking metric to mean anything</strong>: a random forest reaches an
-in-sample ROC-AUC near 1.0 on permuted labels just as it does on real
-ones, so the in-sample comparison shows no gap and the test reports
-nothing. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code> – the apparent, in-sample fit –
-because that is what earlier releases computed.</p></li>
-<li><p><strong>stratify</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Use stratified folds when <code class="docutils literal notranslate"><span class="pre">cv</span></code> is set. Needed on an imbalanced
-classification endpoint, where an unstratified fold can contain no
-positives at all.</p></li>
+<li><p><strong>cv</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – <p>Score out of fold over this many folds. Scoring the <em>training</em> data
+instead makes the test uninformative for any flexible model: a random
+forest reaches an in-sample <span class="math notranslate nohighlight">\(R^2\)</span> near 1 on permuted labels just
+as it does on real ones, and an in-sample ROC-AUC near 1.0 on both, so
+the comparison shows no gap whatever the data says.</p>
+<p>Pass <code class="docutils literal notranslate"><span class="pre">cv=None</span></code> for that in-sample behaviour, which is what releases
+before 0.10.0 computed by default. Doing so is a considered choice for
+a low-capacity model on a small descriptor set, and a mistake
+everywhere else.</p>
+</p></li>
+<li><p><strong>stratify</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]</span>) – Use stratified folds. <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> stratifies when the target looks
+categorical – few distinct values, integer or boolean – which is
+what makes the <code class="docutils literal notranslate"><span class="pre">cv</span></code> default safe on an imbalanced endpoint, where an
+unstratified fold can contain no positives at all and leave a ranking
+metric undefined.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Variables<span class="colon">:</span></dt>
@@ -1148,7 +1165,7 @@ Cross-Validation for Model Selection.” <em>BMC Bioinformatics</em>, 7, 91.
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-26</div>
+              Last updated on 2026-09-27</div>
           </div>
           <div class="right-details">
             
@@ -1227,7 +1244,7 @@ Cross-Validation for Model Selection.” <em>BMC Bioinformatics</em>, 7, 91.
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=016a97bc"></script>
+</div><script src="../_static/documentation_options.js?v=7e54ce6f"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

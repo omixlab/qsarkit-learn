@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Saving and sharing a model" href="deployment.html"><link rel="prev" title="SAR interpretation" href="sar.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>OECD validation - qsarkit 0.9.1</title>
+        <title>OECD validation - qsarkit 0.10.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.9.1</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.10.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.9.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -352,26 +352,39 @@ size, not from a structure-activity relationship:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scramble</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.921</span>
+<span class="go">0.225</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.837</span>
+<span class="go">-0.3</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;max_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="go">0.907</span>
+<span class="go">0.285</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scramble</span><span class="p">[</span><span class="s2">&quot;p_value&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
 <span class="go">True</span>
 </pre></div>
 </div>
+<p>Scoring is out of fold by default, so those numbers are what the model does
+on compounds it has not seen: 0.23 on the real activities against −0.30 on
+permuted ones. The gap is the evidence, and it is much smaller than the
+apparent fit below would suggest.</p>
 <div class="admonition danger">
 <p class="admonition-title">Danger</p>
-<p>Read those numbers again. The model fits <strong>randomly permuted
-activities</strong> to R² = 0.84 on average, and one permutation reached
-0.907 against the real model’s 0.921. The p-value technically clears
-0.05, but the honest reading is that almost all of this model’s
-apparent fit is capacity, not chemistry: 18 compounds described by 256
-features will fit essentially anything.</p>
-<p>This is precisely the failure y-scrambling exists to expose, and it is
-invisible in the training R² that would otherwise be reported. It is
-also cheap to run, so there is no excuse for omitting it.</p>
+<p>The same test scored on the training data says the opposite:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">apparent</span> <span class="o">=</span> <span class="n">YScrambling</span><span class="p">(</span><span class="n">n_iterations</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">QSARRegressor</span><span class="p">(</span><span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">X</span><span class="p">[</span><span class="n">train</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">train</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">apparent</span><span class="p">[</span><span class="s2">&quot;real_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.921</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">apparent</span><span class="p">[</span><span class="s2">&quot;mean_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.835</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">apparent</span><span class="p">[</span><span class="s2">&quot;max_scrambled_score&quot;</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.9</span>
+</pre></div>
+</div>
+<p>The model fits <strong>randomly permuted activities</strong> to R² = 0.84 on average,
+and one permutation reached 0.90 against the real model’s 0.92. Almost all
+of that apparent fit is capacity, not chemistry: 18 compounds described by
+256 features will fit essentially anything.</p>
+<p>Releases before 0.10.0 scored this way by default, which made the test
+report a passing p-value on a gap of 0.12. It is now <code class="docutils literal notranslate"><span class="pre">cv=None</span></code>, and
+reaching for it is a considered choice rather than an accident.</p>
 </div>
 <p>The bootstrap gives the same score an error bar, which is what tells you
 whether a difference between two models means anything:</p>
@@ -656,7 +669,7 @@ Being Earnest.” <em>QSAR Comb. Sci.</em>, 22(1), 69-77.
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-26</div>
+              Last updated on 2026-09-27</div>
           </div>
           <div class="right-details">
             
@@ -695,7 +708,7 @@ Being Earnest.” <em>QSAR Comb. Sci.</em>, 22(1), 69-77.
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=016a97bc"></script>
+</div><script src="../_static/documentation_options.js?v=7e54ce6f"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

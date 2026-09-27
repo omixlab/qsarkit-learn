@@ -181,11 +181,12 @@ class TestOutOfFoldScrambling:
     """Why ``cv`` exists: in-sample scoring cannot see a ranking gap."""
 
     def test_in_sample_roc_auc_hides_the_signal(self, classification):
+        """Why ``cv=None`` is no longer the default."""
         X, y = classification
         model = QSARClassifier("rf", random_state=0)
-        result = YScrambling(n_iterations=5, random_state=0, scoring="roc_auc").run(
-            model, X, y
-        )
+        result = YScrambling(
+            n_iterations=5, random_state=0, scoring="roc_auc", cv=None
+        ).run(model, X, y)
         # A forest separates permuted labels in-sample just as well as real
         # ones, so the test reports no gap even though the signal is real.
         assert result["real_score"] > 0.99
@@ -193,10 +194,11 @@ class TestOutOfFoldScrambling:
         assert result["scored_out_of_fold"] is False
 
     def test_out_of_fold_recovers_it(self, classification):
+        """And it is what happens by default, without asking."""
         X, y = classification
         model = QSARClassifier("rf", random_state=0)
         result = YScrambling(
-            n_iterations=5, random_state=0, scoring="roc_auc", cv=5, stratify=True
+            n_iterations=5, random_state=0, scoring="roc_auc"
         ).run(model, X, y)
 
         assert result["scored_out_of_fold"] is True
@@ -242,3 +244,40 @@ class TestBackwardsCompatibility:
             n_iterations=10, random_state=0, scoring="r2"
         ).run(Ridge(), X, y)
         assert explicit["mean_score"] == pytest.approx(default["mean_score"])
+
+
+class TestStratifyAuto:
+    """``stratify="auto"`` is what makes the ``cv`` default safe.
+
+    An unstratified fold of an imbalanced endpoint can contain no positives,
+    leaving a ranking metric undefined; with stratification the default works
+    without the caller having to know that.
+    """
+
+    def test_an_imbalanced_endpoint_scores_without_being_told(self):
+        rng = np.random.default_rng(0)
+        X = rng.normal(size=(160, 10))
+        y = np.zeros(160, dtype=int)
+        y[rng.choice(160, size=12, replace=False)] = 1   # 7.5% positive
+
+        result = YScrambling(
+            n_iterations=3, random_state=0, scoring="roc_auc"
+        ).run(QSARClassifier("rf", random_state=0), X, y)
+        assert 0.0 <= result["real_score"] <= 1.0
+
+    def test_a_continuous_target_is_not_stratified(self):
+        from qsarkit.validation._robustness import _looks_categorical
+
+        rng = np.random.default_rng(0)
+        assert _looks_categorical(np.array([0, 1, 1, 0])) is True
+        assert _looks_categorical(np.array(["a", "b"])) is True
+        assert _looks_categorical(rng.normal(size=50)) is False
+
+    def test_explicit_stratify_overrides_the_guess(self):
+        rng = np.random.default_rng(0)
+        X = rng.normal(size=(80, 6))
+        y = X[:, 0] * 2 + rng.normal(scale=0.2, size=80)
+        result = YScrambling(
+            n_iterations=3, random_state=0, stratify=False
+        ).run(Ridge(), X, y)
+        assert result["scored_out_of_fold"] is True

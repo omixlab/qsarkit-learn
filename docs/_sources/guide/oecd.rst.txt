@@ -73,26 +73,42 @@ size, not from a structure-activity relationship:
    >>> scramble = YScrambling(n_iterations=50, random_state=0).run(
    ...     QSARRegressor("rf", random_state=0), X[train], y[train])
    >>> round(scramble["real_score"], 3)
-   0.921
+   0.225
    >>> round(scramble["mean_scrambled_score"], 3)
-   0.837
+   -0.3
    >>> round(scramble["max_scrambled_score"], 3)
-   0.907
+   0.285
    >>> scramble["p_value"] < 0.05
    True
 
+Scoring is out of fold by default, so those numbers are what the model does
+on compounds it has not seen: 0.23 on the real activities against −0.30 on
+permuted ones. The gap is the evidence, and it is much smaller than the
+apparent fit below would suggest.
+
 .. danger::
 
-   Read those numbers again. The model fits **randomly permuted
-   activities** to R² = 0.84 on average, and one permutation reached
-   0.907 against the real model's 0.921. The p-value technically clears
-   0.05, but the honest reading is that almost all of this model's
-   apparent fit is capacity, not chemistry: 18 compounds described by 256
-   features will fit essentially anything.
+   The same test scored on the training data says the opposite:
 
-   This is precisely the failure y-scrambling exists to expose, and it is
-   invisible in the training R² that would otherwise be reported. It is
-   also cheap to run, so there is no excuse for omitting it.
+   .. doctest::
+
+      >>> apparent = YScrambling(n_iterations=50, random_state=0, cv=None).run(
+      ...     QSARRegressor("rf", random_state=0), X[train], y[train])
+      >>> round(apparent["real_score"], 3)
+      0.921
+      >>> round(apparent["mean_scrambled_score"], 3)
+      0.835
+      >>> round(apparent["max_scrambled_score"], 3)
+      0.9
+
+   The model fits **randomly permuted activities** to R² = 0.84 on average,
+   and one permutation reached 0.90 against the real model's 0.92. Almost all
+   of that apparent fit is capacity, not chemistry: 18 compounds described by
+   256 features will fit essentially anything.
+
+   Releases before 0.10.0 scored this way by default, which made the test
+   report a passing p-value on a gap of 0.12. It is now ``cv=None``, and
+   reaching for it is a considered choice rather than an accident.
 
 The bootstrap gives the same score an error bar, which is what tells you
 whether a difference between two models means anything:

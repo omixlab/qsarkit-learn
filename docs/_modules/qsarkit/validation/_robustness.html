@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.validation._robustness - qsarkit 0.9.1</title>
+        <title>qsarkit.validation._robustness - qsarkit 0.10.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.9.1</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.10.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.9.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -289,7 +289,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
@@ -369,6 +369,23 @@
     <span class="k">return</span> <span class="n">score_all</span><span class="p">(</span><span class="n">scorers</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pooled_pred</span><span class="p">,</span> <span class="n">pooled_score</span><span class="p">)</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_looks_categorical</span><span class="p">(</span><span class="n">y</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Whether stratified folds are the right choice for this target.</span>
+
+<span class="sd">    Used by ``stratify=&quot;auto&quot;``. Integer, boolean or string labels taking few</span>
+<span class="sd">    distinct values are a classification target; anything else is treated as</span>
+<span class="sd">    continuous. The threshold is deliberately generous -- a 20-class problem</span>
+<span class="sd">    still benefits from stratification, while a continuous endpoint rounded to</span>
+<span class="sd">    20 distinct values is rare enough that the occasional false positive costs</span>
+<span class="sd">    only a slightly different fold assignment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="s2">&quot;OUSb&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="s2">&quot;iu&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">20</span>
+
+
 <div class="viewcode-block" id="YScrambling">
 <a class="viewcode-back" href="../../../api/validation.html#qsarkit.validation.YScrambling">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">YScrambling</span><span class="p">:</span>
@@ -399,18 +416,23 @@
 <span class="sd">        :func:`~qsarkit.validation.make_scorer` for a metric that needs</span>
 <span class="sd">        probabilities or is a loss. Pass several and every score in the</span>
 <span class="sd">        result becomes an array in the order given.</span>
-<span class="sd">    cv : int, optional</span>
-<span class="sd">        Score out of fold over this many folds instead of on the training</span>
-<span class="sd">        data. **Strongly recommended for any flexible model, and required</span>
-<span class="sd">        for a ranking metric to mean anything**: a random forest reaches an</span>
-<span class="sd">        in-sample ROC-AUC near 1.0 on permuted labels just as it does on real</span>
-<span class="sd">        ones, so the in-sample comparison shows no gap and the test reports</span>
-<span class="sd">        nothing. The default is ``None`` -- the apparent, in-sample fit --</span>
-<span class="sd">        because that is what earlier releases computed.</span>
-<span class="sd">    stratify : bool, default False</span>
-<span class="sd">        Use stratified folds when ``cv`` is set. Needed on an imbalanced</span>
-<span class="sd">        classification endpoint, where an unstratified fold can contain no</span>
-<span class="sd">        positives at all.</span>
+<span class="sd">    cv : int or None, default 5</span>
+<span class="sd">        Score out of fold over this many folds. Scoring the *training* data</span>
+<span class="sd">        instead makes the test uninformative for any flexible model: a random</span>
+<span class="sd">        forest reaches an in-sample :math:`R^2` near 1 on permuted labels just</span>
+<span class="sd">        as it does on real ones, and an in-sample ROC-AUC near 1.0 on both, so</span>
+<span class="sd">        the comparison shows no gap whatever the data says.</span>
+
+<span class="sd">        Pass ``cv=None`` for that in-sample behaviour, which is what releases</span>
+<span class="sd">        before 0.10.0 computed by default. Doing so is a considered choice for</span>
+<span class="sd">        a low-capacity model on a small descriptor set, and a mistake</span>
+<span class="sd">        everywhere else.</span>
+<span class="sd">    stratify : bool or &quot;auto&quot;, default &quot;auto&quot;</span>
+<span class="sd">        Use stratified folds. ``&quot;auto&quot;`` stratifies when the target looks</span>
+<span class="sd">        categorical -- few distinct values, integer or boolean -- which is</span>
+<span class="sd">        what makes the ``cv`` default safe on an imbalanced endpoint, where an</span>
+<span class="sd">        unstratified fold can contain no positives at all and leave a ranking</span>
+<span class="sd">        metric undefined.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -467,8 +489,8 @@
         <span class="n">n_iterations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
         <span class="n">random_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">scoring</span><span class="p">:</span> <span class="n">Scoring</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">cv</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">stratify</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">cv</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">stratify</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_iterations</span> <span class="o">=</span> <span class="n">n_iterations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
@@ -526,6 +548,10 @@
         <span class="c1"># other than what the caller passed.</span>
         <span class="n">y_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
+        <span class="n">stratify</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_looks_categorical</span><span class="p">(</span><span class="n">y_arr</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stratify</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span> <span class="k">else</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stratify</span><span class="p">)</span>
+        <span class="p">)</span>
+
         <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">labels</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[Any]&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">_fit_and_score</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">X_arr</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">scorers</span><span class="p">)</span>
@@ -536,7 +562,7 @@
                 <span class="n">scorers</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cv</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">stratify</span><span class="p">,</span>
+                <span class="n">stratify</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="n">real</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">y_arr</span><span class="p">)</span>
@@ -913,7 +939,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-26</div>
+              Last updated on 2026-09-27</div>
           </div>
           <div class="right-details">
             
@@ -928,7 +954,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=016a97bc"></script>
+</div><script src="../../../_static/documentation_options.js?v=7e54ce6f"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

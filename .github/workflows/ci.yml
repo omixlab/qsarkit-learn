@@ -1,0 +1,166 @@
+# Tests, type checking and coverage on every push and pull request.
+#
+# The release workflow (python-publish.yml) gates a PyPI upload; this one is
+# the day-to-day signal, and it owns the coverage badge in .github/badges/.
+#
+# The badge is generated here rather than fetched from a coverage service:
+# it needs no account, no token and no third party, and the SVG is committed
+# so the README renders it straight from the repository.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+    # Rebuilt documentation and manuscript artefacts cannot change the tests.
+    paths-ignore:
+      - "docs/**"
+      - "paper/**"
+      - "**/*.md"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The lowest and highest interpreters the package claims to support.
+        python-version: ["3.9", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install
+        run: python -m pip install -e ".[dev,persistence,balancing]"
+
+      - name: Run the tests with coverage
+        # The floor is deliberately below the current figure. Locally, with
+        # every optional extra installed, the suite covers 92%; this job
+        # installs only dev, persistence and balancing, so the paths behind
+        # shap, xgboost, lightgbm and reportlab are skipped and the number is
+        # lower here. Tighten this once a few runs have shown what CI actually
+        # reports -- a threshold set above the real value fails every build.
+        run: |
+          python -m pytest -q \
+            --cov=qsarkit --cov-branch \
+            --cov-report=xml --cov-report=html --cov-report=term-missing \
+            --cov-fail-under=80
+
+      - name: Report the total in the run summary
+        if: always()
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import sys, xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          report = Path("coverage.xml")
+          if not report.is_file():
+              print("### Coverage\n\nNo report produced; the tests did not finish.")
+              sys.exit(0)
+          root = ET.parse(report).getroot()
+          lines_valid = float(root.get("lines-valid") or 0)
+          lines_covered = float(root.get("lines-covered") or 0)
+          branches_valid = float(root.get("branches-valid") or 0)
+          branches_covered = float(root.get("branches-covered") or 0)
+          total = lines_valid + branches_valid
+          overall = 100 * (lines_covered + branches_covered) / total if total else 0
+          print("### Coverage\n")
+          print("| | Covered | Total | % |")
+          print("|---|---:|---:|---:|")
+          print(f"| Lines | {lines_covered:.0f} | {lines_valid:.0f} | "
+                f"{100 * lines_covered / lines_valid if lines_valid else 0:.1f} |")
+          print(f"| Branches | {branches_covered:.0f} | {branches_valid:.0f} | "
+                f"{100 * branches_covered / branches_valid if branches_valid else 0:.1f} |")
+          print(f"| **Overall** | | | **{overall:.1f}** |")
+          PY
+
+      - name: Keep the HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html-py${{ matrix.python-version }}
+          path: htmlcov/
+          retention-days: 14
+
+  types:
+    name: Type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - run: python -m pip install -e ".[dev,persistence,balancing]"
+      # typings/ shadows the RDKit stubs; see the note in the README.
+      - run: python -m mypy qsarkit
+
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - run: python -m pip install -e ".[dev,docs,persistence,balancing]"
+      # Warnings are errors: a broken cross-reference must not reach the
+      # published site.
+      - run: make -C docs-sphinx strict
+
+  badge:
+    name: Coverage badge
+    needs: test
+    # Only for the main line, and never for a pull request from a fork, where
+    # the token is read-only.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - run: python -m pip install -e ".[dev,persistence,balancing]"
+
+      - name: Measure coverage
+        run: python -m pytest -q --cov=qsarkit --cov-branch --cov-report=xml
+
+      - name: Render the badge
+        run: python tools/coverage_badge.py
+
+      - name: Commit it if it moved
+        run: |
+          if git diff --quiet -- .github/badges/coverage.svg; then
+            echo "coverage unchanged; nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/badges/coverage.svg
+          # [skip ci] so committing the badge cannot trigger this workflow again.
+          git commit -m "chore: update coverage badge [skip ci]"
+          git push

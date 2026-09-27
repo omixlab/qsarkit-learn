@@ -38,14 +38,35 @@ class TestYScrambling:
         assert result["p_value"] > 0.05
 
     def test_an_overfitting_model_on_noise_is_still_caught(self, noise):
-        # The point of the test: a deep tree fits noise perfectly, so its
-        # real score is high — but so are its scrambled scores, and the
-        # p-value is what exposes it.
+        """In-sample scoring: the apparent fit is perfect and means nothing.
+
+        Scored on the training data (``cv=None``, the default before 0.10.0) a
+        deep tree fits noise perfectly, so its real score is high — but so are
+        its scrambled scores, and only the p-value exposes it.
+        """
         X, y = noise
-        result = YScrambling(n_iterations=30, random_state=0).run(
+        result = YScrambling(n_iterations=30, random_state=0, cv=None).run(
             DecisionTreeRegressor(random_state=0), X, y)
         assert result["real_score"] > 0.9        # looks excellent
         assert result["p_value"] > 0.05          # but is meaningless
+
+    def test_the_default_scores_out_of_fold(self, noise):
+        """The current default reports the truth directly, not via a p-value."""
+        X, y = noise
+        result = YScrambling(n_iterations=10, random_state=0).run(
+            DecisionTreeRegressor(random_state=0), X, y)
+
+        assert result["scored_out_of_fold"] is True
+        # Out of fold there is nothing to find in noise, so the real score is
+        # no better than the permuted ones and the gap is what says so.
+        assert result["real_score"] < 0.5
+        assert result["p_value"] > 0.05
+
+    def test_the_in_sample_behaviour_is_still_reachable(self, signal):
+        X, y = signal
+        assert YScrambling(n_iterations=5, random_state=0, cv=None).run(
+            Ridge(), X, y
+        )["scored_out_of_fold"] is False
 
     def test_reports_every_documented_key(self, signal):
         X, y = signal

@@ -22,7 +22,7 @@ References
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -102,6 +102,23 @@ def _cross_val_score(
     return score_all(scorers, y, pooled_pred, pooled_score)
 
 
+def _looks_categorical(y: "npt.NDArray[Any]") -> bool:
+    """Whether stratified folds are the right choice for this target.
+
+    Used by ``stratify="auto"``. Integer, boolean or string labels taking few
+    distinct values are a classification target; anything else is treated as
+    continuous. The threshold is deliberately generous -- a 20-class problem
+    still benefits from stratification, while a continuous endpoint rounded to
+    20 distinct values is rare enough that the occasional false positive costs
+    only a slightly different fold assignment.
+    """
+    if y.dtype.kind in "OUSb":
+        return True
+    if y.dtype.kind not in "iu":
+        return False
+    return len(np.unique(y)) <= 20
+
+
 class YScrambling:
     """Test whether a model can fit randomly permuted labels as well as real ones.
 
@@ -130,18 +147,23 @@ class YScrambling:
         :func:`~qsarkit.validation.make_scorer` for a metric that needs
         probabilities or is a loss. Pass several and every score in the
         result becomes an array in the order given.
-    cv : int, optional
-        Score out of fold over this many folds instead of on the training
-        data. **Strongly recommended for any flexible model, and required
-        for a ranking metric to mean anything**: a random forest reaches an
-        in-sample ROC-AUC near 1.0 on permuted labels just as it does on real
-        ones, so the in-sample comparison shows no gap and the test reports
-        nothing. The default is ``None`` -- the apparent, in-sample fit --
-        because that is what earlier releases computed.
-    stratify : bool, default False
-        Use stratified folds when ``cv`` is set. Needed on an imbalanced
-        classification endpoint, where an unstratified fold can contain no
-        positives at all.
+    cv : int or None, default 5
+        Score out of fold over this many folds. Scoring the *training* data
+        instead makes the test uninformative for any flexible model: a random
+        forest reaches an in-sample :math:`R^2` near 1 on permuted labels just
+        as it does on real ones, and an in-sample ROC-AUC near 1.0 on both, so
+        the comparison shows no gap whatever the data says.
+
+        Pass ``cv=None`` for that in-sample behaviour, which is what releases
+        before 0.10.0 computed by default. Doing so is a considered choice for
+        a low-capacity model on a small descriptor set, and a mistake
+        everywhere else.
+    stratify : bool or "auto", default "auto"
+        Use stratified folds. ``"auto"`` stratifies when the target looks
+        categorical -- few distinct values, integer or boolean -- which is
+        what makes the ``cv`` default safe on an imbalanced endpoint, where an
+        unstratified fold can contain no positives at all and leave a ranking
+        metric undefined.
 
     Attributes
     ----------
@@ -198,8 +220,8 @@ class YScrambling:
         n_iterations: int = 100,
         random_state: Optional[int] = None,
         scoring: Scoring = None,
-        cv: Optional[int] = None,
-        stratify: bool = False,
+        cv: Optional[int] = 5,
+        stratify: Union[bool, str] = "auto",
     ) -> None:
         self.n_iterations = n_iterations
         self.random_state = random_state
@@ -255,6 +277,10 @@ class YScrambling:
         # other than what the caller passed.
         y_arr = np.asarray(y).ravel()
 
+        stratify = (
+            _looks_categorical(y_arr) if self.stratify == "auto" else bool(self.stratify)
+        )
+
         def evaluate(labels: "npt.NDArray[Any]") -> "npt.NDArray[np.float64]":
             if self.cv is None:
                 return _fit_and_score(estimator, X_arr, labels, scorers)
@@ -265,7 +291,7 @@ class YScrambling:
                 scorers,
                 self.cv,
                 self.random_state,
-                self.stratify,
+                stratify,
             )
 
         real = evaluate(y_arr)

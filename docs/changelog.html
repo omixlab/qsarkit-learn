@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="References" href="references.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Changelog - qsarkit 0.9.1</title>
+        <title>Changelog - qsarkit 0.10.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">qsarkit 0.9.1</div></a>
+      <a href="index.html"><div class="brand">qsarkit 0.10.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.9.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -278,7 +278,7 @@
           <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
 <section id="unreleased">
-<span id="changelog-0-9-1"></span><h2>0.9.1 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
+<span id="changelog-0-10-0"></span><h2>0.10.0 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
 <p>Narrowed the package back to the QSAR workflow proper, and filled the gaps
 that narrowing exposed.</p>
 <p><strong>Scope</strong></p>
@@ -295,6 +295,21 @@ JSON metadata beside a <a class="reference external" href="https://skops.readthe
 representation of the estimator, so a saved model survives a
 scikit-learn upgrade and can be inspected before it is loaded. Carries
 the provenance OECD principle 2 asks for.</p></li>
+</ul>
+<p><strong>Changed</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">YScrambling</span></code> now scores <strong>out of fold by default</strong> (<code class="docutils literal notranslate"><span class="pre">cv=5</span></code>), with
+<code class="docutils literal notranslate"><span class="pre">stratify=&quot;auto&quot;</span></code> choosing stratified folds when the target looks
+categorical. The previous default scored the apparent in-sample fit, which
+is uninformative for any flexible model: a random forest fits permuted
+labels almost as well as real ones on its own training data, so the test
+reported a passing p-value on an effect size of 0.001. Pass <code class="docutils literal notranslate"><span class="pre">cv=None</span></code> for
+the old behaviour, which remains the right choice for a low-capacity model
+on a small descriptor set.</p>
+<p>Scores reported by this class will change. The documented examples moved
+from <span class="math notranslate nohighlight">\(R^2\)</span> 0.95 against 0.84 on permuted labels to 0.69 against
+-0.26; the second pair is what the model does on compounds it has not seen.</p>
+</li>
 </ul>
 <p><strong>New functionality</strong></p>
 <ul class="simple">
@@ -526,7 +541,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-26</div>
+              Last updated on 2026-09-27</div>
           </div>
           <div class="right-details">
             
@@ -548,7 +563,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#unreleased">0.9.1 (unreleased)</a></li>
+<li><a class="reference internal" href="#unreleased">0.10.0 (unreleased)</a></li>
 <li><a class="reference internal" href="#changelog-0-2-0">0.2.0</a></li>
 <li><a class="reference internal" href="#changelog-0-1-0">0.1.0</a></li>
 </ul>
@@ -562,7 +577,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=016a97bc"></script>
+</div><script src="_static/documentation_options.js?v=7e54ce6f"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

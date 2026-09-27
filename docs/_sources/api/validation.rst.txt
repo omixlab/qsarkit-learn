@@ -76,22 +76,37 @@ structure-activity relationship.
    >>> from qsarkit.validation import YScrambling
    >>> scramble = YScrambling(n_iterations=50, random_state=0).run(model, X, y)
    >>> round(scramble["real_score"], 3)
-   0.953
+   0.686
    >>> round(scramble["mean_scrambled_score"], 3)
-   0.839
+   -0.263
    >>> scramble["p_value"] < 0.05
    True
 
+Scoring is out of fold by default (``cv=5``), which is what makes the gap
+mean anything.
+
 .. danger::
 
-   Read those numbers again. The model fits **randomly permuted
-   activities** to :math:`R^2 = 0.84` on average, against 0.95 on the real
-   ones. The p-value clears 0.05, but the honest reading is that most of
-   this model's apparent fit is capacity: 24 compounds described by 512
-   features will fit almost anything.
+   Score the *training* data instead and the same test says something else
+   entirely:
 
-   This is exactly the failure y-scrambling exists to expose, and it is
-   invisible in the training :math:`R^2` that would otherwise be reported.
+   .. doctest::
+
+      >>> apparent = YScrambling(
+      ...     n_iterations=50, random_state=0, cv=None).run(model, X, y)
+      >>> round(apparent["real_score"], 3)
+      0.953
+      >>> round(apparent["mean_scrambled_score"], 3)
+      0.839
+
+   The model fits **randomly permuted activities** to :math:`R^2 = 0.84`,
+   against 0.95 on the real ones. Nearly all of the apparent fit is capacity:
+   24 compounds described by 512 features will fit almost anything. Out of
+   fold the permuted models score −0.26, which is what a model that has
+   learned nothing looks like when it is asked about data it has not seen.
+
+   Both numbers come from the same estimator and the same permutations. Only
+   the second pair is evidence, which is why ``cv=None`` is not the default.
 
 The p-value can never be exactly zero — a permutation test cannot
 distinguish "very unlikely" from "impossible", so reporting 0 would claim
@@ -267,31 +282,32 @@ computed on RMSE is not reported backwards.
 
 .. warning::
 
-   **Score out of fold before reading anything into a ranking metric.**
-   :class:`~qsarkit.validation.YScrambling` scores the apparent, in-sample fit
-   by default, which is what earlier releases did and what makes the classic
-   over-fitting demonstration work for :math:`R^2`. It cannot work for
-   ROC-AUC: a random forest separates *permuted* labels in-sample as perfectly
-   as real ones, so both sides read near 1.0 and the test reports nothing.
+   **A ranking metric needs out-of-fold scoring to mean anything**, which is
+   why :class:`~qsarkit.validation.YScrambling` does it by default:
 
    .. doctest::
 
-      >>> in_sample = YScrambling(n_iterations=20, random_state=0,
-      ...                         scoring="roc_auc").run(model, X, labels)
-      >>> round(in_sample["real_score"], 2), round(in_sample["mean_scrambled_score"], 2)
-      (1.0, 1.0)
-
-   Pass ``cv`` — and ``stratify=True`` on an imbalanced endpoint — and the
-   same test becomes informative:
-
-   .. doctest::
-
-      >>> honest = YScrambling(n_iterations=20, random_state=0, scoring="roc_auc",
-      ...                      cv=5, stratify=True).run(model, X, labels)
+      >>> honest = YScrambling(n_iterations=20, random_state=0,
+      ...                      scoring="roc_auc").run(model, X, labels)
       >>> round(honest["real_score"], 2), round(honest["mean_scrambled_score"], 2)
       (0.93, 0.43)
       >>> honest["scored_out_of_fold"]
       True
+
+   Folds are stratified automatically when the target looks categorical, so
+   an imbalanced endpoint does not need special handling to avoid a fold with
+   no positives in it.
+
+   Asking for the in-sample fit instead reports nothing at all, because a
+   random forest separates *permuted* labels on its own training data as
+   perfectly as real ones:
+
+   .. doctest::
+
+      >>> in_sample = YScrambling(n_iterations=20, random_state=0,
+      ...                         scoring="roc_auc", cv=None).run(model, X, labels)
+      >>> round(in_sample["real_score"], 2), round(in_sample["mean_scrambled_score"], 2)
+      (1.0, 1.0)
 
 See :doc:`../guide/oecd` for how these fit together into a reportable
 validation, and :doc:`metrics` for the statistics they compute.
