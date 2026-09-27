@@ -84,8 +84,18 @@ class NeuralNetworkQSAR(MLPRegressor):
         n_iter_no_change: int = 10,
         max_fun: int = 15000,
     ) -> None:
+        from qsarkit.base import forward_supported
+        from sklearn.neural_network import MLPRegressor
+
+        # `loss` reached MLPRegressor in a release that requires Python 3.10,
+        # and this package supports 3.9. Forwarded only where it exists; a
+        # caller asking for a non-default loss on an older scikit-learn gets a
+        # clear error rather than a silently different model.
+        optional = forward_supported(
+            MLPRegressor, {"loss": loss}, {"loss": "squared_error"}
+        )
         super().__init__(
-            loss=loss,
+            **optional,
             hidden_layer_sizes=hidden_layer_sizes,
             activation=activation,
             solver=solver,

@@ -188,12 +188,20 @@ class ChemicalSpaceAnalyzer:
             # `n_init` and `init` are passed explicitly because sklearn is
             # changing both defaults; pinning them keeps results stable
             # across versions rather than shifting under the user.
+            from qsarkit.base import forward_supported
+
+            # `init` reached MDS in a release requiring Python 3.10; this
+            # package supports 3.9, so it is forwarded only where it exists.
+            requested_init = options.pop("init", "random")
+            optional = forward_supported(
+                MDS, {"init": requested_init}, {"init": "random"}
+            )
             model = MDS(
                 n_components=self.n_components,
                 dissimilarity="precomputed",
                 n_init=options.pop("n_init", 4),
-                init=options.pop("init", "random"),
                 random_state=self.random_state,
+                **optional,
                 **options,
             )
             self.embedding_ = np.asarray(

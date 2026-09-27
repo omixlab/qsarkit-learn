@@ -15,7 +15,11 @@ from qsarkit.base.transformer import (
     ensure_mol_list,
 )
 
+from qsarkit.base._compat import accepts_parameter, forward_supported
+
 __all__ = [
+    "accepts_parameter",
+    "forward_supported",
     "QsarkitError",
     "RDKIT_MOLECULE_ERRORS",
     "InvalidMoleculeError",
