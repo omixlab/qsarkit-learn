@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Representation" href="representation.html"><link rel="prev" title="Functional pipe API" href="functional.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Data quality - qsarkit 0.8.0</title>
+        <title>Data quality - qsarkit 0.9.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.8.0</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.9.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.8.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.9.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -304,6 +304,58 @@ merged — it is a data problem to be investigated:</p>
 <span class="go">(3.3, False)</span>
 </pre></div>
 </div>
+</section>
+<section id="what-the-representation-makes-impossible">
+<h2>What the representation makes impossible<a class="headerlink" href="#what-the-representation-makes-impossible" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="#qsarkit.data_quality.DuplicateDetector" title="qsarkit.data_quality.DuplicateDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">DuplicateDetector</span></code></a> finds duplicate <em>structures</em>.
+Two distinct structures can still collide in <em>feature</em> space, and when they
+carry different activities no model reading that matrix can be right about
+both. The error is irreducible and belongs to the descriptor choice, not to
+the learner.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.data_quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">representation_conflicts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">representation_conflicts</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="o">.</span><span class="n">n_conflicting_groups</span><span class="p">,</span> <span class="n">report</span><span class="o">.</span><span class="n">n_irreducible_errors</span>
+<span class="go">(1, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="o">.</span><span class="n">max_accuracy</span>
+<span class="go">0.75</span>
+</pre></div>
+</div>
+<p>Rows 0 and 1 are the same point with opposite labels, so the best any model
+can do is 3 of 4. Report that ceiling beside the score: a balanced accuracy of
+0.62 against an attainable 0.64 is a different result from 0.62 against 1.00,
+and only the first says the model is nearly done.</p>
+<p>The commonest cause on fingerprints is not a mistake in the data. A topological
+fingerprint does not encode geometry, so <em>cis</em>- and <em>trans</em>-stilbene are the
+same vector, and it does not count repeats, so homologues differing by several
+methylene units are too:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.representation</span><span class="w"> </span><span class="kn">import</span> <span class="n">MorganFingerprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pair</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span>
+<span class="gp">... </span>    <span class="sa">r</span><span class="s2">&quot;C(=C/c1ccccc1)\c1ccccc1&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;C(=C\c1ccccc1)\c1ccccc1&quot;</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bits</span> <span class="o">=</span> <span class="n">MorganFingerprint</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">bits</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bits</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>On a continuous endpoint the floor is an RMSE rather than a count, and
+<code class="docutils literal notranslate"><span class="pre">tolerance</span></code> lets the assay’s own error count as agreement:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">representation_conflicts</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s2">&quot;regression&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">irreducible_rmse</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.816</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">representation_conflicts</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s2">&quot;regression&quot;</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span><span class="o">.</span><span class="n">n_conflicting_groups</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">max_balanced_accuracy</span></code> is computed separately, because the label that
+minimises errors is not the one that maximises balanced accuracy when the
+classes are unequal: a conflicting group is better answered with the rare
+class if the recall it buys outweighs what it costs.</p>
 </section>
 <section id="outliers">
 <h2>Outliers<a class="headerlink" href="#outliers" title="Link to this heading">¶</a></h2>
@@ -1109,6 +1161,121 @@ the indices it removed.</p></li>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="qsarkit.data_quality.RepresentationConflict">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.data_quality.</span></span><span class="sig-name descname"><span class="pre">RepresentationConflict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_distinct_labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">majority_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_misassigned</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/data_quality/_representation.html#RepresentationConflict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.data_quality.RepresentationConflict" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>One group of compounds the representation cannot tell apart.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indices</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Rows sharing a feature vector.</p></li>
+<li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>) – Their activities, in the same order.</p></li>
+<li><p><strong>n_distinct_labels</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – How many different activities the group carries. A group with one is
+a harmless collision; more than one is irreducible error.</p></li>
+<li><p><strong>spread</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>) – For a continuous endpoint, <code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">-</span> <span class="pre">min</span></code> within the group. <code class="docutils literal notranslate"><span class="pre">0.0</span></code>
+when every member agrees.</p></li>
+<li><p><strong>majority_label</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Any</span></code>) – The label a model minimising error would have to predict for the whole
+group.</p></li>
+<li><p><strong>n_misassigned</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – Members that prediction necessarily gets wrong.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qsarkit.data_quality.RepresentationConflict.indices">
+<span class="sig-name descname"><span class="pre">indices</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#qsarkit.data_quality.RepresentationConflict.indices" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qsarkit.data_quality.RepresentationConflict.labels">
+<span class="sig-name descname"><span class="pre">labels</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#qsarkit.data_quality.RepresentationConflict.labels" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qsarkit.data_quality.RepresentationConflict.n_distinct_labels">
+<span class="sig-name descname"><span class="pre">n_distinct_labels</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><a class="headerlink" href="#qsarkit.data_quality.RepresentationConflict.n_distinct_labels" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qsarkit.data_quality.RepresentationConflict.spread">
+<span class="sig-name descname"><span class="pre">spread</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><a class="headerlink" href="#qsarkit.data_quality.RepresentationConflict.spread" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qsarkit.data_quality.RepresentationConflict.majority_label">
+<span class="sig-name descname"><span class="pre">majority_label</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span><a class="headerlink" href="#qsarkit.data_quality.RepresentationConflict.majority_label" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="qsarkit.data_quality.RepresentationConflict.n_misassigned">
+<span class="sig-name descname"><span class="pre">n_misassigned</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><a class="headerlink" href="#qsarkit.data_quality.RepresentationConflict.n_misassigned" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qsarkit.data_quality.representation_conflicts">
+<span class="sig-prename descclassname"><span class="pre">qsarkit.data_quality.</span></span><span class="sig-name descname"><span class="pre">representation_conflicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'classification'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_conflicts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/data_quality/_representation.html#representation_conflicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.data_quality.representation_conflicts" title="Link to this definition">¶</a></dt>
+<dd><p>Find compounds the features cannot distinguish but the labels do.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Buffer" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Buffer</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_SupportsArray</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">_NestedSequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">_SupportsArray</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]], <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#complex" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_NestedSequence</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#complex" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – The feature matrix a model would be fitted on.</p></li>
+<li><p><strong>y</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Buffer" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Buffer</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_SupportsArray</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">_NestedSequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">_SupportsArray</span></code>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v2.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dtype</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]]], <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#complex" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_NestedSequence</span></code>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#complex" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#bytes" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> | <a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]]</span>) – Activities.</p></li>
+<li><p><strong>task</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'classification'</span></code>, <code class="docutils literal notranslate"><span class="pre">'regression'</span></code>]</span>) – Classification compares labels exactly and reports an attainable
+accuracy; regression treats a group as conflicting when its spread
+exceeds <code class="docutils literal notranslate"><span class="pre">tolerance</span></code> and reports an attainable RMSE.</p></li>
+<li><p><strong>tolerance</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></span>) – Regression only: activity differences at or below this are treated as
+agreement. Set it to the assay’s experimental error, below which a
+disagreement is noise rather than signal.</p></li>
+<li><p><strong>max_conflicts</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Keep at most this many conflicting groups in <code class="docutils literal notranslate"><span class="pre">conflicts</span></code>, largest
+first. <code class="docutils literal notranslate"><span class="pre">None</span></code> keeps all of them. The summary counts are unaffected.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">RepresentationConflictReport</span></code></span></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">X</span></code> is not 2-dimensional, the lengths disagree, <code class="docutils literal notranslate"><span class="pre">task</span></code> is
+    unknown, or <code class="docutils literal notranslate"><span class="pre">tolerance</span></code> is negative.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Rows are grouped by exact equality, which is the right test for
+fingerprints and for descriptor matrices that have not been scaled.
+Two descriptor vectors differing in the last floating-point digit are
+<em>not</em> grouped, so on continuous descriptors this reports a lower bound on
+the ambiguity rather than all of it.</p>
+<p class="rubric">Examples</p>
+<p>Two compounds share a feature vector and disagree, so one of them must be
+predicted wrongly whatever the model:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.data_quality</span><span class="w"> </span><span class="kn">import</span> <span class="n">representation_conflicts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">representation_conflicts</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="o">.</span><span class="n">n_conflicting_groups</span><span class="p">,</span> <span class="n">report</span><span class="o">.</span><span class="n">n_irreducible_errors</span>
+<span class="go">(1, 1)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">max_accuracy</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">0.75</span>
+</pre></div>
+</div>
+<p>A dataset with no collisions has no ceiling below 1:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">clean</span> <span class="o">=</span> <span class="n">representation_conflicts</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">clean</span><span class="o">.</span><span class="n">n_conflicting_groups</span><span class="p">,</span> <span class="n">clean</span><span class="o">.</span><span class="n">max_accuracy</span>
+<span class="go">(0, 1.0)</span>
+</pre></div>
+</div>
+<p>On a continuous endpoint the floor is an RMSE rather than an error count:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span> <span class="o">=</span> <span class="n">representation_conflicts</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="s2">&quot;regression&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report</span><span class="o">.</span><span class="n">n_conflicting_groups</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="o">.</span><span class="n">irreducible_rmse</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">(1, 0.816)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
@@ -1184,6 +1351,7 @@ PLoS ONE, 8(4), e61007. <a class="extlink-doi reference external" href="https://
             <ul>
 <li><a class="reference internal" href="#">Data quality</a><ul>
 <li><a class="reference internal" href="#duplicates">Duplicates</a></li>
+<li><a class="reference internal" href="#what-the-representation-makes-impossible">What the representation makes impossible</a></li>
 <li><a class="reference internal" href="#outliers">Outliers</a></li>
 <li><a class="reference internal" href="#structure-validation">Structure validation</a></li>
 <li><a class="reference internal" href="#the-whole-pipeline">The whole pipeline</a></li>
@@ -1240,6 +1408,16 @@ PLoS ONE, 8(4), e61007. <a class="extlink-doi reference external" href="https://
 <li><a class="reference internal" href="#qsarkit.data_quality.CurationReport.summary"><code class="docutils literal notranslate"><span class="pre">CurationReport.summary()</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#qsarkit.data_quality.RepresentationConflict"><code class="docutils literal notranslate"><span class="pre">RepresentationConflict</span></code></a><ul>
+<li><a class="reference internal" href="#qsarkit.data_quality.RepresentationConflict.indices"><code class="docutils literal notranslate"><span class="pre">RepresentationConflict.indices</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.data_quality.RepresentationConflict.labels"><code class="docutils literal notranslate"><span class="pre">RepresentationConflict.labels</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.data_quality.RepresentationConflict.n_distinct_labels"><code class="docutils literal notranslate"><span class="pre">RepresentationConflict.n_distinct_labels</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.data_quality.RepresentationConflict.spread"><code class="docutils literal notranslate"><span class="pre">RepresentationConflict.spread</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.data_quality.RepresentationConflict.majority_label"><code class="docutils literal notranslate"><span class="pre">RepresentationConflict.majority_label</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.data_quality.RepresentationConflict.n_misassigned"><code class="docutils literal notranslate"><span class="pre">RepresentationConflict.n_misassigned</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#qsarkit.data_quality.representation_conflicts"><code class="docutils literal notranslate"><span class="pre">representation_conflicts()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#references">References</a></li>
@@ -1254,7 +1432,7 @@ PLoS ONE, 8(4), e61007. <a class="extlink-doi reference external" href="https://
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=cce5339e"></script>
+</div><script src="../_static/documentation_options.js?v=a82ae3da"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

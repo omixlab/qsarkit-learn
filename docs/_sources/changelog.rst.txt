@@ -1,9 +1,9 @@
 Changelog
 =========
 
-.. _changelog-0-8-0:
+.. _changelog-0-9-0:
 
-0.8.0 (unreleased)
+0.9.0 (unreleased)
 ------------------
 
 Narrowed the package back to the QSAR workflow proper, and filled the gaps
@@ -25,6 +25,30 @@ trustworthy. 29 subpackages became 21.
   representation of the estimator, so a saved model survives a
   scikit-learn upgrade and can be inspected before it is loaded. Carries
   the provenance OECD principle 2 asks for.
+
+**New functionality**
+
+- ``data_quality`` gained ``representation_conflicts``, which measures the
+  ceiling a feature matrix imposes before any model is fitted. Two molecules
+  mapping to the same vector with different activities are an error no
+  estimator can avoid, and the diagnostic reports the attainable accuracy,
+  balanced accuracy or RMSE so a score can be read against what was reachable.
+  It complements ``DuplicateDetector``, which finds duplicate *structures*:
+  two structures distinguishable by InChIKey can still collide under a hashed
+  fingerprint.
+- ``sar`` gained ``draw_activity_cliff``, ``draw_activity_cliffs`` and
+  ``cliff_difference_atoms``. A SAS map says how many cliffs a dataset holds;
+  these say *what changed*, rendering the pair with the atoms outside their
+  maximum common substructure highlighted. An empty highlight is itself the
+  result --- the pair differs in something a topological representation does
+  not encode.
+- ``ActivityCliffDetector``'s documentation now states what
+  ``method="fingerprint"`` computes: Tanimoto over **binary** Morgan bits. A
+  similarity of exactly 1.00 is therefore not necessarily a near-duplicate but
+  a pair the representation cannot distinguish --- homologues, because a
+  binary bit cannot record that an environment repeats, and stereoisomers,
+  because the fingerprint is topological. ``use_counts`` and ``use_chirality``
+  address the two cases respectively.
 
 **Fixed**
 

@@ -38,6 +38,10 @@ strict:
 
 # The published site.
 #
+# The doctree cache goes too, not just the HTML: Sphinx only re-parses files it
+# thinks have changed, so a warning in an untouched page is skipped on a second
+# run and -W then passes a build that would have failed from cold.
+#
 # Built from scratch, for two reasons: a page deleted from the source must not
 # linger in the output, and because the build directory is copied wholesale,
 # anything stale left in it would be copied too. -W because a broken
@@ -46,7 +50,7 @@ strict:
 # The copy happens only after a successful build, so a failure leaves the
 # committed site untouched rather than half-replaced.
 publish:
-	rm -rf "$(HTMLDIR)"
+	rm -rf "$(HTMLDIR)" "$(DOCTREES)"
 	$(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(HTMLDIR)" -d "$(DOCTREES)" -W --keep-going $(SPHINXOPTS) $(O)
 	rm -rf "$(PUBLISHDIR)"
 	mkdir -p "$(PUBLISHDIR)"

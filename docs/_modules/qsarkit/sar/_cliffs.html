@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.sar._cliffs - qsarkit 0.8.0</title>
+        <title>qsarkit.sar._cliffs - qsarkit 0.9.0</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.8.0</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.9.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.8.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.9.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -420,6 +420,27 @@
 <span class="sd">    A pair ``(i, j)`` is a cliff when</span>
 <span class="sd">    ``similarity(i, j) &gt;= similarity_threshold`` and</span>
 <span class="sd">    ``|activity_i - activity_j| &gt;= activity_threshold``.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">       With the default ``method=&quot;fingerprint&quot;``, similarity is the Tanimoto</span>
+<span class="sd">       (Jaccard) coefficient between **binary** Morgan bit vectors of the</span>
+<span class="sd">       given ``radius`` and ``n_bits`` -- the same features a model is</span>
+<span class="sd">       normally fitted on, which is what makes the result relevant to that</span>
+<span class="sd">       model rather than to chemistry in the abstract.</span>
+
+<span class="sd">       Two consequences are worth knowing before reading a similarity of</span>
+<span class="sd">       1.00 as &quot;the same molecule&quot;. A binary vector records which atom</span>
+<span class="sd">       environments occur, not how often, so homologues differing by several</span>
+<span class="sd">       methylene units score 1.00; and a Morgan fingerprint is topological,</span>
+<span class="sd">       so stereoisomers score 1.00 too. A pair at exactly 1.00 is therefore</span>
+<span class="sd">       not necessarily a near-duplicate -- it is a pair *this representation</span>
+<span class="sd">       cannot distinguish*, which no model reading it can separate. Passing</span>
+<span class="sd">       ``use_counts=True`` to</span>
+<span class="sd">       :class:`~qsarkit.representation.MorganFingerprint` resolves the first</span>
+<span class="sd">       case and ``use_chirality=True`` the second;</span>
+<span class="sd">       :func:`~qsarkit.data_quality.representation_conflicts` counts how many</span>
+<span class="sd">       such pairs a dataset contains.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1271,7 +1292,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=cce5339e"></script>
+</div><script src="../../../_static/documentation_options.js?v=a82ae3da"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

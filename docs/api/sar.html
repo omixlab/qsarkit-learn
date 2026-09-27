@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Explainability" href="explainability.html"><link rel="prev" title="Uncertainty" href="uncertainty.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>SAR interpretation - qsarkit 0.8.0</title>
+        <title>SAR interpretation - qsarkit 0.9.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">qsarkit 0.8.0</div></a>
+      <a href="../index.html"><div class="brand">qsarkit 0.9.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.8.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.9.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -313,6 +313,42 @@ large shared core. The demo set is small molecules, where a
 single-atom change alters every atom environment within the
 fingerprint radius and similarity scores run far below intuition.
 Threshold to your data, not to the paper.</p>
+</div>
+</section>
+<section id="seeing-a-cliff">
+<h2>Seeing a cliff<a class="headerlink" href="#seeing-a-cliff" title="Link to this heading">¶</a></h2>
+<p>A SAS map says how many cliffs a dataset holds and where they sit. It cannot
+say <em>what changed</em>, which is the question a chemist asks next.
+<a class="reference internal" href="#qsarkit.sar.draw_activity_cliff" title="qsarkit.sar.draw_activity_cliff"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_activity_cliff()</span></code></a> puts the pair side by side with the
+atoms outside their common core picked out:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">cliff_difference_atoms</span><span class="p">,</span> <span class="n">draw_activity_cliff</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;c1ccccc1O&quot;</span><span class="p">),</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;c1ccccc1N&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cliff_difference_atoms</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="go">([6], [6])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span> <span class="o">=</span> <span class="n">draw_activity_cliff</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">mol_a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">mol_b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">activity_a</span><span class="o">=</span><span class="mf">8.1</span><span class="p">,</span> <span class="n">activity_b</span><span class="o">=</span><span class="mf">5.2</span><span class="p">,</span> <span class="n">similarity</span><span class="o">=</span><span class="mf">0.86</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;svg&quot;</span> <span class="ow">in</span> <span class="n">svg</span><span class="p">[:</span><span class="mi">400</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>It accepts an <a class="reference internal" href="#qsarkit.sar.ActivityCliff" title="qsarkit.sar.ActivityCliff"><code class="xref py py-class docutils literal notranslate"><span class="pre">ActivityCliff</span></code></a> directly, and
+<a class="reference internal" href="#qsarkit.sar.draw_activity_cliffs" title="qsarkit.sar.draw_activity_cliffs"><code class="xref py py-func docutils literal notranslate"><span class="pre">draw_activity_cliffs()</span></code></a> renders several at once. Pass
+<code class="docutils literal notranslate"><span class="pre">fmt=&quot;png&quot;</span></code> for bytes instead of SVG.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the highlight is empty, that <em>is</em> the result. A pair whose common
+substructure covers both molecules entirely differs in something a
+topological representation does not encode:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trans</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;C(=C/c1ccccc1)\c1ccccc1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cis</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;C(=C\c1ccccc1)\c1ccccc1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cliff_difference_atoms</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="n">cis</span><span class="p">)</span>
+<span class="go">([], [])</span>
+</pre></div>
+</div>
+<p>No model reading a fingerprint of these two can separate them. See
+<a class="reference internal" href="data_quality.html#qsarkit.data_quality.representation_conflicts" title="qsarkit.data_quality.representation_conflicts"><code class="xref py py-func docutils literal notranslate"><span class="pre">representation_conflicts()</span></code></a> for the dataset-wide
+version of that measurement.</p>
 </div>
 </section>
 <section id="sali-and-the-activity-landscape">
@@ -673,6 +709,26 @@ where a model will fail and where the SAR carries real information.</p>
 <p>A pair <code class="docutils literal notranslate"><span class="pre">(i,</span> <span class="pre">j)</span></code> is a cliff when
 <code class="docutils literal notranslate"><span class="pre">similarity(i,</span> <span class="pre">j)</span> <span class="pre">&gt;=</span> <span class="pre">similarity_threshold</span></code> and
 <code class="docutils literal notranslate"><span class="pre">|activity_i</span> <span class="pre">-</span> <span class="pre">activity_j|</span> <span class="pre">&gt;=</span> <span class="pre">activity_threshold</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>With the default <code class="docutils literal notranslate"><span class="pre">method=&quot;fingerprint&quot;</span></code>, similarity is the Tanimoto
+(Jaccard) coefficient between <strong>binary</strong> Morgan bit vectors of the
+given <code class="docutils literal notranslate"><span class="pre">radius</span></code> and <code class="docutils literal notranslate"><span class="pre">n_bits</span></code> – the same features a model is
+normally fitted on, which is what makes the result relevant to that
+model rather than to chemistry in the abstract.</p>
+<p>Two consequences are worth knowing before reading a similarity of
+1.00 as “the same molecule”. A binary vector records which atom
+environments occur, not how often, so homologues differing by several
+methylene units score 1.00; and a Morgan fingerprint is topological,
+so stereoisomers score 1.00 too. A pair at exactly 1.00 is therefore
+not necessarily a near-duplicate – it is a pair <em>this representation
+cannot distinguish</em>, which no model reading it can separate. Passing
+<code class="docutils literal notranslate"><span class="pre">use_counts=True</span></code> to
+<a class="reference internal" href="representation.html#qsarkit.representation.MorganFingerprint" title="qsarkit.representation.MorganFingerprint"><code class="xref py py-class docutils literal notranslate"><span class="pre">MorganFingerprint</span></code></a> resolves the first
+case and <code class="docutils literal notranslate"><span class="pre">use_chirality=True</span></code> the second;
+<a class="reference internal" href="data_quality.html#qsarkit.data_quality.representation_conflicts" title="qsarkit.data_quality.representation_conflicts"><code class="xref py py-func docutils literal notranslate"><span class="pre">representation_conflicts()</span></code></a> counts how many
+such pairs a dataset contains.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1156,6 +1212,123 @@ J. Chem. Inf. Model., 62(23), 5938-5951.
 </ul>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="qsarkit.sar.cliff_difference_atoms">
+<span class="sig-prename descclassname"><span class="pre">qsarkit.sar.</span></span><span class="sig-name descname"><span class="pre">cliff_difference_atoms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/sar/_cliff_drawing.html#cliff_difference_atoms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.sar.cliff_difference_atoms" title="Link to this definition">¶</a></dt>
+<dd><p>Atoms of each molecule that lie outside their common core.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mol_a</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>)</p></li>
+<li><p><strong>mol_b</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>)</p></li>
+<li><p><strong>timeout</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Seconds allowed for the maximum-common-substructure search. The MCS
+problem is NP-hard, so a pathological pair is cut off rather than
+allowed to hang; on a timeout every atom is reported as differing,
+which is honest about having failed to find the core.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Indices into <code class="docutils literal notranslate"><span class="pre">mol_a</span></code> and <code class="docutils literal notranslate"><span class="pre">mol_b</span></code>. Both are empty when the two
+molecules are identical under the MCS – the case where a topological
+representation cannot distinguish them.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>], <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]]</span></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">cliff_difference_atoms</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;c1ccccc1O&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;c1ccccc1N&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">in_a</span><span class="p">,</span> <span class="n">in_b</span> <span class="o">=</span> <span class="n">cliff_difference_atoms</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">in_a</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_b</span><span class="p">)</span>
+<span class="go">(1, 1)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qsarkit.sar.draw_activity_cliff">
+<span class="sig-prename descclassname"><span class="pre">qsarkit.sar.</span></span><span class="sig-name descname"><span class="pre">draw_activity_cliff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cliff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mol_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activity_a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activity_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">similarity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(360,</span> <span class="pre">300)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'svg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/sar/_cliff_drawing.html#draw_activity_cliff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.sar.draw_activity_cliff" title="Link to this definition">¶</a></dt>
+<dd><p>Render one activity cliff as a labelled pair of structures.</p>
+<p>Pass either an <a class="reference internal" href="#qsarkit.sar.ActivityCliff" title="qsarkit.sar.ActivityCliff"><code class="xref py py-class docutils literal notranslate"><span class="pre">ActivityCliff</span></code></a> as <code class="docutils literal notranslate"><span class="pre">cliff</span></code>, or the
+two molecules and their activities directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cliff</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – As returned by <a class="reference internal" href="#qsarkit.sar.ActivityCliffDetector" title="qsarkit.sar.ActivityCliffDetector"><code class="xref py py-class docutils literal notranslate"><span class="pre">ActivityCliffDetector</span></code></a>.</p></li>
+<li><p><strong>mol_a</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Used when <code class="docutils literal notranslate"><span class="pre">cliff</span></code> is not given.</p></li>
+<li><p><strong>mol_b</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Used when <code class="docutils literal notranslate"><span class="pre">cliff</span></code> is not given.</p></li>
+<li><p><strong>activity_a</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span>) – Shown in the legends.</p></li>
+<li><p><strong>activity_b</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span>) – Shown in the legends.</p></li>
+<li><p><strong>similarity</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#float" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>]</span>) – Shown in the legend of the second structure.</p></li>
+<li><p><strong>size</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>) – Size of <em>each</em> panel; the image is twice this wide.</p></li>
+<li><p><strong>fmt</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'svg'</span></code>, <code class="docutils literal notranslate"><span class="pre">'png'</span></code>]</span>)</p></li>
+<li><p><strong>timeout</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>) – Seconds for the MCS search.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>SVG text, or PNG bytes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If neither a cliff nor a pair of molecules is given.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">draw_activity_cliff</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;c1ccccc1O&quot;</span><span class="p">),</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="s2">&quot;c1ccccc1N&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span> <span class="o">=</span> <span class="n">draw_activity_cliff</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">mol_a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">mol_b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">activity_a</span><span class="o">=</span><span class="mf">8.1</span><span class="p">,</span> <span class="n">activity_b</span><span class="o">=</span><span class="mf">5.2</span><span class="p">,</span> <span class="n">similarity</span><span class="o">=</span><span class="mf">0.86</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">svg</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&lt;?xml&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">svg</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&lt;svg&quot;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qsarkit.sar.draw_activity_cliffs">
+<span class="sig-prename descclassname"><span class="pre">qsarkit.sar.</span></span><span class="sig-name descname"><span class="pre">draw_activity_cliffs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cliffs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(320,</span> <span class="pre">260)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'svg'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/sar/_cliff_drawing.html#draw_activity_cliffs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.sar.draw_activity_cliffs" title="Link to this definition">¶</a></dt>
+<dd><p>Render the first <code class="docutils literal notranslate"><span class="pre">n</span></code> cliffs, each as its own image.</p>
+<p>Returned separately rather than tiled into one grid, so a notebook can
+display them inline and a report can lay them out as it likes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cliffs</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span>)</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>)</p></li>
+<li><p><strong>size</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></a>[<a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]</span>)</p></li>
+<li><p><strong>fmt</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Literal" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code></a>[<code class="docutils literal notranslate"><span class="pre">'svg'</span></code>, <code class="docutils literal notranslate"><span class="pre">'png'</span></code>]</span>)</p></li>
+<li><p><strong>timeout</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#int" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></span>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One drawing per cliff, at most <code class="docutils literal notranslate"><span class="pre">n</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a>]</span></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.sar</span><span class="w"> </span><span class="kn">import</span> <span class="n">ActivityCliffDetector</span><span class="p">,</span> <span class="n">draw_activity_cliffs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">smiles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;c1ccccc1O&quot;</span><span class="p">,</span> <span class="s2">&quot;c1ccccc1N&quot;</span><span class="p">,</span> <span class="s2">&quot;c1ccccc1C&quot;</span><span class="p">,</span> <span class="s2">&quot;c1ccccc1Cl&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">smiles</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cliffs</span> <span class="o">=</span> <span class="n">ActivityCliffDetector</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">activity_threshold</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="p">[</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">8.2</span><span class="p">,</span> <span class="mf">5.1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">drawings</span> <span class="o">=</span> <span class="n">draw_activity_cliffs</span><span class="p">(</span><span class="n">cliffs</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">drawings</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="qsarkit.sar.RGroupAnalyzer">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">qsarkit.sar.</span></span><span class="sig-name descname"><span class="pre">RGroupAnalyzer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">core</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qsarkit/sar/_rgroup.html#RGroupAnalyzer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qsarkit.sar.RGroupAnalyzer" title="Link to this definition">¶</a></dt>
@@ -1555,6 +1728,7 @@ J. Chem. Inf. Model., 62(23), 5938-5951.
             <ul>
 <li><a class="reference internal" href="#">SAR interpretation</a><ul>
 <li><a class="reference internal" href="#activity-cliffs">Activity cliffs</a></li>
+<li><a class="reference internal" href="#seeing-a-cliff">Seeing a cliff</a></li>
 <li><a class="reference internal" href="#sali-and-the-activity-landscape">SALI and the activity landscape</a></li>
 <li><a class="reference internal" href="#matched-molecular-pairs">Matched molecular pairs</a></li>
 <li><a class="reference internal" href="#free-wilson">Free-Wilson</a></li>
@@ -1614,6 +1788,9 @@ J. Chem. Inf. Model., 62(23), 5938-5951.
 </ul>
 </li>
 <li><a class="reference internal" href="#qsarkit.sar.activity_cliff_report"><code class="docutils literal notranslate"><span class="pre">activity_cliff_report()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.sar.cliff_difference_atoms"><code class="docutils literal notranslate"><span class="pre">cliff_difference_atoms()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.sar.draw_activity_cliff"><code class="docutils literal notranslate"><span class="pre">draw_activity_cliff()</span></code></a></li>
+<li><a class="reference internal" href="#qsarkit.sar.draw_activity_cliffs"><code class="docutils literal notranslate"><span class="pre">draw_activity_cliffs()</span></code></a></li>
 <li><a class="reference internal" href="#qsarkit.sar.RGroupAnalyzer"><code class="docutils literal notranslate"><span class="pre">RGroupAnalyzer</span></code></a><ul>
 <li><a class="reference internal" href="#qsarkit.sar.RGroupAnalyzer.decompose"><code class="docutils literal notranslate"><span class="pre">RGroupAnalyzer.decompose()</span></code></a></li>
 <li><a class="reference internal" href="#qsarkit.sar.RGroupAnalyzer.r_group_positions"><code class="docutils literal notranslate"><span class="pre">RGroupAnalyzer.r_group_positions()</span></code></a></li>
@@ -1650,7 +1827,7 @@ J. Chem. Inf. Model., 62(23), 5938-5951.
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=cce5339e"></script>
+</div><script src="../_static/documentation_options.js?v=a82ae3da"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

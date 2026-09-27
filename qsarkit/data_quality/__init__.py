@@ -40,6 +40,11 @@ from qsarkit.data_quality._validators import (
     check_activity_units,
 )
 
+from qsarkit.data_quality._representation import (
+    RepresentationConflict,
+    representation_conflicts,
+)
+
 __all__ = [
     "DuplicateDetector",
     "DuplicateGroup",
@@ -50,4 +55,6 @@ __all__ = [
     "check_activity_units",
     "DataCurationPipeline",
     "CurationReport",
+    "RepresentationConflict",
+    "representation_conflicts",
 ]

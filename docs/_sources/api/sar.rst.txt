@@ -49,6 +49,47 @@ and the specific pairs:
    fingerprint radius and similarity scores run far below intuition.
    Threshold to your data, not to the paper.
 
+Seeing a cliff
+--------------
+
+A SAS map says how many cliffs a dataset holds and where they sit. It cannot
+say *what changed*, which is the question a chemist asks next.
+:func:`~qsarkit.sar.draw_activity_cliff` puts the pair side by side with the
+atoms outside their common core picked out:
+
+.. doctest::
+
+   >>> from rdkit import Chem
+   >>> from qsarkit.sar import cliff_difference_atoms, draw_activity_cliff
+   >>> a, b = Chem.MolFromSmiles("c1ccccc1O"), Chem.MolFromSmiles("c1ccccc1N")
+   >>> cliff_difference_atoms(a, b)
+   ([6], [6])
+   >>> svg = draw_activity_cliff(
+   ...     mol_a=a, mol_b=b, activity_a=8.1, activity_b=5.2, similarity=0.86)
+   >>> "svg" in svg[:400].lower()
+   True
+
+It accepts an :class:`~qsarkit.sar.ActivityCliff` directly, and
+:func:`~qsarkit.sar.draw_activity_cliffs` renders several at once. Pass
+``fmt="png"`` for bytes instead of SVG.
+
+.. note::
+
+   When the highlight is empty, that *is* the result. A pair whose common
+   substructure covers both molecules entirely differs in something a
+   topological representation does not encode:
+
+   .. doctest::
+
+      >>> trans = Chem.MolFromSmiles(r"C(=C/c1ccccc1)\c1ccccc1")
+      >>> cis = Chem.MolFromSmiles(r"C(=C\c1ccccc1)\c1ccccc1")
+      >>> cliff_difference_atoms(trans, cis)
+      ([], [])
+
+   No model reading a fingerprint of these two can separate them. See
+   :func:`~qsarkit.data_quality.representation_conflicts` for the dataset-wide
+   version of that measurement.
+
 SALI and the activity landscape
 -------------------------------
 

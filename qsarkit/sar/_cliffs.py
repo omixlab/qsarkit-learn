@@ -149,6 +149,27 @@ class ActivityCliffDetector:
     ``similarity(i, j) >= similarity_threshold`` and
     ``|activity_i - activity_j| >= activity_threshold``.
 
+    .. note::
+
+       With the default ``method="fingerprint"``, similarity is the Tanimoto
+       (Jaccard) coefficient between **binary** Morgan bit vectors of the
+       given ``radius`` and ``n_bits`` -- the same features a model is
+       normally fitted on, which is what makes the result relevant to that
+       model rather than to chemistry in the abstract.
+
+       Two consequences are worth knowing before reading a similarity of
+       1.00 as "the same molecule". A binary vector records which atom
+       environments occur, not how often, so homologues differing by several
+       methylene units score 1.00; and a Morgan fingerprint is topological,
+       so stereoisomers score 1.00 too. A pair at exactly 1.00 is therefore
+       not necessarily a near-duplicate -- it is a pair *this representation
+       cannot distinguish*, which no model reading it can separate. Passing
+       ``use_counts=True`` to
+       :class:`~qsarkit.representation.MorganFingerprint` resolves the first
+       case and ``use_chirality=True`` the second;
+       :func:`~qsarkit.data_quality.representation_conflicts` counts how many
+       such pairs a dataset contains.
+
     Parameters
     ----------
     similarity_threshold : float, default 0.85

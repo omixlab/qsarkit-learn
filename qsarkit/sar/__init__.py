@@ -29,6 +29,12 @@ from qsarkit.sar._cliffs import (
 from qsarkit.sar._mmp import MatchedMolecularPairs, MatchedPair, MMPAnalyzer
 from qsarkit.sar._rgroup import FreeWilsonAnalysis, RGroupAnalyzer, SARTable
 
+from qsarkit.sar._cliff_drawing import (
+    cliff_difference_atoms,
+    draw_activity_cliff,
+    draw_activity_cliffs,
+)
+
 __all__ = [
     "MatchedPair",
     "MatchedMolecularPairs",
@@ -39,6 +45,9 @@ __all__ = [
     "SARIAnalyzer",
     "ActivityLandscapePlotter",
     "activity_cliff_report",
+    "cliff_difference_atoms",
+    "draw_activity_cliff",
+    "draw_activity_cliffs",
     "RGroupAnalyzer",
     "SARTable",
     "FreeWilsonAnalysis",

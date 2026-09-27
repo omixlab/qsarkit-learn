@@ -37,6 +37,66 @@ merged — it is a data problem to be investigated:
    >>> round(groups[0].spread, 2), groups[0].consistent
    (3.3, False)
 
+What the representation makes impossible
+----------------------------------------
+
+:class:`~qsarkit.data_quality.DuplicateDetector` finds duplicate *structures*.
+Two distinct structures can still collide in *feature* space, and when they
+carry different activities no model reading that matrix can be right about
+both. The error is irreducible and belongs to the descriptor choice, not to
+the learner.
+
+.. doctest::
+
+   >>> import numpy as np
+   >>> from qsarkit.data_quality import representation_conflicts
+   >>> X = np.array([[1, 0], [1, 0], [0, 1], [0, 0]])
+   >>> y = np.array([1, 0, 1, 0])
+   >>> report = representation_conflicts(X, y)
+   >>> report.n_conflicting_groups, report.n_irreducible_errors
+   (1, 1)
+   >>> report.max_accuracy
+   0.75
+
+Rows 0 and 1 are the same point with opposite labels, so the best any model
+can do is 3 of 4. Report that ceiling beside the score: a balanced accuracy of
+0.62 against an attainable 0.64 is a different result from 0.62 against 1.00,
+and only the first says the model is nearly done.
+
+The commonest cause on fingerprints is not a mistake in the data. A topological
+fingerprint does not encode geometry, so *cis*- and *trans*-stilbene are the
+same vector, and it does not count repeats, so homologues differing by several
+methylene units are too:
+
+.. doctest::
+
+   >>> from rdkit import Chem
+   >>> from qsarkit.representation import MorganFingerprint
+   >>> pair = [Chem.MolFromSmiles(s) for s in (
+   ...     r"C(=C/c1ccccc1)\c1ccccc1", r"C(=C\c1ccccc1)\c1ccccc1")]
+   >>> bits = MorganFingerprint(radius=2, n_bits=2048).transform(pair)
+   >>> bool(np.array_equal(bits[0], bits[1]))
+   True
+
+On a continuous endpoint the floor is an RMSE rather than a count, and
+``tolerance`` lets the assay's own error count as agreement:
+
+.. doctest::
+
+   >>> X = np.array([[1.0, 0.0], [1.0, 0.0], [0.0, 1.0]])
+   >>> y = np.array([5.0, 7.0, 3.0])
+   >>> report = representation_conflicts(X, y, task="regression")
+   >>> round(report.irreducible_rmse, 3)
+   0.816
+   >>> representation_conflicts(
+   ...     X, y, task="regression", tolerance=3.0).n_conflicting_groups
+   0
+
+``max_balanced_accuracy`` is computed separately, because the label that
+minimises errors is not the one that maximises balanced accuracy when the
+classes are unequal: a conflicting group is better answered with the rare
+class if the recall it buys outweighs what it costs.
+
 Outliers
 --------
 

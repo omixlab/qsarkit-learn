@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="References" href="references.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Changelog - qsarkit 0.8.0</title>
+        <title>Changelog - qsarkit 0.9.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">qsarkit 0.8.0</div></a>
+      <a href="index.html"><div class="brand">qsarkit 0.9.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.8.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.9.0</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -278,7 +278,7 @@
           <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
 <section id="unreleased">
-<span id="changelog-0-8-0"></span><h2>0.8.0 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
+<span id="changelog-0-9-0"></span><h2>0.9.0 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
 <p>Narrowed the package back to the QSAR workflow proper, and filled the gaps
 that narrowing exposed.</p>
 <p><strong>Scope</strong></p>
@@ -295,6 +295,30 @@ JSON metadata beside a <a class="reference external" href="https://skops.readthe
 representation of the estimator, so a saved model survives a
 scikit-learn upgrade and can be inspected before it is loaded. Carries
 the provenance OECD principle 2 asks for.</p></li>
+</ul>
+<p><strong>New functionality</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data_quality</span></code> gained <code class="docutils literal notranslate"><span class="pre">representation_conflicts</span></code>, which measures the
+ceiling a feature matrix imposes before any model is fitted. Two molecules
+mapping to the same vector with different activities are an error no
+estimator can avoid, and the diagnostic reports the attainable accuracy,
+balanced accuracy or RMSE so a score can be read against what was reachable.
+It complements <code class="docutils literal notranslate"><span class="pre">DuplicateDetector</span></code>, which finds duplicate <em>structures</em>:
+two structures distinguishable by InChIKey can still collide under a hashed
+fingerprint.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sar</span></code> gained <code class="docutils literal notranslate"><span class="pre">draw_activity_cliff</span></code>, <code class="docutils literal notranslate"><span class="pre">draw_activity_cliffs</span></code> and
+<code class="docutils literal notranslate"><span class="pre">cliff_difference_atoms</span></code>. A SAS map says how many cliffs a dataset holds;
+these say <em>what changed</em>, rendering the pair with the atoms outside their
+maximum common substructure highlighted. An empty highlight is itself the
+result — the pair differs in something a topological representation does
+not encode.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ActivityCliffDetector</span></code>’s documentation now states what
+<code class="docutils literal notranslate"><span class="pre">method=&quot;fingerprint&quot;</span></code> computes: Tanimoto over <strong>binary</strong> Morgan bits. A
+similarity of exactly 1.00 is therefore not necessarily a near-duplicate but
+a pair the representation cannot distinguish — homologues, because a
+binary bit cannot record that an environment repeats, and stereoisomers,
+because the fingerprint is topological. <code class="docutils literal notranslate"><span class="pre">use_counts</span></code> and <code class="docutils literal notranslate"><span class="pre">use_chirality</span></code>
+address the two cases respectively.</p></li>
 </ul>
 <p><strong>Fixed</strong></p>
 <ul class="simple">
@@ -524,7 +548,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#unreleased">0.8.0 (unreleased)</a></li>
+<li><a class="reference internal" href="#unreleased">0.9.0 (unreleased)</a></li>
 <li><a class="reference internal" href="#changelog-0-2-0">0.2.0</a></li>
 <li><a class="reference internal" href="#changelog-0-1-0">0.1.0</a></li>
 </ul>
@@ -538,7 +562,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=cce5339e"></script>
+</div><script src="_static/documentation_options.js?v=a82ae3da"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
