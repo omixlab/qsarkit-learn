@@ -23,6 +23,8 @@ from typing import Any, List, Sequence
 
 import numpy as np
 
+from qsarkit.base.exceptions import InvalidMoleculeError
+
 #: Default ECFP4 settings (Morgan radius 2 folded to 2048 bits), the de-facto
 #: standard for activity-cliff and matched-pair analyses.
 DEFAULT_RADIUS = 2
@@ -62,6 +64,39 @@ def morgan_generator(radius: int = DEFAULT_RADIUS, n_bits: int = DEFAULT_N_BITS)
     return rdFingerprintGenerator.GetMorganGenerator(radius=radius, fpSize=n_bits)
 
 
+def _require_molecules(mols: Sequence[Any]) -> None:
+    """Fail readably when handed something other than RDKit molecules.
+
+    Everything here works on molecules, so a feature matrix is the easy
+    mistake --- a pipeline's result carries both, and ``.X`` is the more
+    obvious attribute than ``.mols``. Handed one, RDKit raises a Boost
+    ``ArgumentError`` listing a C++ signature, which says nothing about what
+    to pass instead.
+    A ``None`` is refused rather than passed through: nothing here has a
+    sensible answer for a molecule that failed to parse, and RDKit's own
+    error for it is no clearer.
+    """
+    from qsarkit.utils.validation import check_mols
+
+    # allow_none=True here only to take the type checks; the None case is
+    # reported separately, because check_mols offers `allow_none=True` as the
+    # remedy and that is not a parameter these callers expose.
+    mol_list = check_mols(mols, allow_none=True, min_size=0)
+    missing = [i for i, m in enumerate(mol_list) if m is None]
+    if missing:
+        raise InvalidMoleculeError(
+            f"{len(missing)} molecule(s) failed to parse, at "
+            f"{missing[:10]}{'...' if len(missing) > 10 else ''}. Drop or "
+            "repair them first --- these measures have no answer for a "
+            "molecule that is not there."
+        )
+
+
+def _require_molecule(mol: Any) -> None:
+    """The one-molecule form. See :func:`_require_molecules`."""
+    _require_molecules([mol])
+
+
 def compute_fingerprints(
     mols: Sequence[Any],
     radius: int = DEFAULT_RADIUS,
@@ -83,6 +118,12 @@ def compute_fingerprints(
     list of rdkit.DataStructs.ExplicitBitVect
         One fingerprint per input molecule, positionally aligned.
 
+    Raises
+    ------
+    InvalidMoleculeError
+        If ``mols`` holds anything other than molecules --- a feature
+        matrix, unparsed SMILES or a ``None``.
+
     Examples
     --------
     >>> from rdkit import Chem
@@ -90,11 +131,21 @@ def compute_fingerprints(
     >>> len(fps)
     1
 
+    A feature matrix says what went wrong rather than reporting a C++
+    signature:
+
+    >>> import numpy as np
+    >>> compute_fingerprints(np.zeros((3, 2048)))
+    Traceback (most recent call last):
+        ...
+    qsarkit.base.exceptions.InvalidMoleculeError: Expected molecules, got a 3x2048 array...
+
     References
     ----------
     - Rogers, D. & Hahn, M. (2010). J. Chem. Inf. Model., 50(5), 742-754.
       https://doi.org/10.1021/ci100050t
     """
+    _require_molecules(mols)
     gen = morgan_generator(radius=radius, n_bits=n_bits)
     return [gen.GetFingerprint(m) for m in mols]
 
@@ -207,6 +258,7 @@ def bemis_murcko_smiles(mol: Any, generic: bool = False) -> str:
     from rdkit import Chem
     from rdkit.Chem.Scaffolds import MurckoScaffold
 
+    _require_molecule(mol)
     scaffold = MurckoScaffold.GetScaffoldForMol(mol)
     if generic:
         scaffold = MurckoScaffold.MakeScaffoldGeneric(scaffold)

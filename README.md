@@ -262,11 +262,21 @@ SHAP and LIME attribute a prediction to *features*. For a fingerprint model thos
 from qsarkit.explainability import AttributionAtomMapper, draw_atom_weights
 
 mapper = AttributionAtomMapper(fingerprint)
+
 weights = mapper.from_shap(mol, explainer, X, index=0)
+weights = mapper.from_lime(mol, lime.explain_one(X[0]))   # either explainer
 
 mapper.collision_rate(mol)               # how much to trust the picture
 svg = draw_atom_weights(mol, weights)    # RDKit similarity map
 ```
+
+The mapper asks the fingerprint which atoms set each bit, via
+`MorganFingerprint.bit_info(mol)`, rather than re-deriving the bit numbering
+from `radius` and `n_bits` — `use_chirality` and feature invariants change the
+hashing, so a re-derived map can disagree with the matrix the model was fitted
+on, and the picture is then wrong while looking plausible. A fingerprint whose
+bits do not mean local atom environments (MACCS keys, path-based) is refused
+rather than guessed at.
 
 ## Saving a Model That Still Works Next Year
 

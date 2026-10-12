@@ -69,6 +69,48 @@ SHAP's ``TreeExplainer`` is exact and fast for tree ensembles;
 to subsample. LIME fits a local surrogate, which makes it cheap and
 local-only — a LIME explanation says nothing about a different molecule.
 
+From bits back to atoms
+-----------------------
+
+Both explainers attribute to *fingerprint bits*, which is not an answer a
+chemist can act on. :class:`AttributionAtomMapper` carries those
+attributions back onto the molecule, so either explainer ends in the same
+picture :func:`draw_atom_weights` draws:
+
+.. doctest::
+
+   >>> from qsarkit.explainability import AttributionAtomMapper, draw_atom_weights
+   >>> from qsarkit.representation import MorganFingerprint
+   >>> fingerprint = MorganFingerprint(radius=2, n_bits=256)
+   >>> mapper = AttributionAtomMapper(fingerprint)
+   >>> weights = mapper.from_lime(demo_mols[0], {next(iter(fingerprint.bit_info(demo_mols[0]))): 1.0})
+   >>> weights.shape
+   (9,)
+   >>> svg = draw_atom_weights(demo_mols[0], weights, fmt="svg")
+
+``from_shap`` takes a :class:`SHAPExplainer`; ``from_lime`` takes whatever
+LIME gives you — an ``explain_one`` frame, a LIME ``Explanation``, a
+``{bit: weight}`` mapping, or pairs.
+
+The mapper asks the fingerprint which atoms set each bit, through
+:meth:`~qsarkit.representation.MorganFingerprint.bit_info`, rather than
+re-deriving the bit numbering from ``radius`` and ``n_bits``. This matters
+more than it sounds: ``use_chirality``, ``use_bond_types`` and feature
+invariants all change the hashing, so a re-derived map can disagree with
+the matrix the model was fitted on, and the resulting picture is wrong
+while looking entirely plausible.
+
+.. warning::
+
+   Atom mapping needs bits that *mean* local atom environments. MACCS keys
+   and path-based fingerprints have no such correspondence, so there is
+   nothing to place on an atom; :class:`AttributionAtomMapper` refuses them
+   at construction rather than guessing.
+
+   Check ``mapper.collision_rate(mol)`` before reading a map closely. One
+   bit set by several environments bounds how specifically any attribution
+   can be assigned, however confident the colours look.
+
 Fragments and partial dependence
 --------------------------------
 

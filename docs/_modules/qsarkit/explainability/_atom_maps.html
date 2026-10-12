@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.explainability._atom_maps - qsarkit 0.10.0</title>
+        <title>qsarkit.explainability._atom_maps - qsarkit 0.10.1</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.10.0</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.10.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.10.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.1</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -311,7 +311,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
@@ -502,11 +502,34 @@
             <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">distribution</span><span class="si">!r}</span><span class="s2">.&quot;</span>
         <span class="p">)</span>
 
-    <span class="n">atom_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="n">environments</span> <span class="o">=</span> <span class="n">bit_atom_environments</span><span class="p">(</span>
         <span class="n">mol</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="n">n_bits</span><span class="p">,</span> <span class="n">use_features</span><span class="o">=</span><span class="n">use_features</span>
     <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_atom_weights_from_environments</span><span class="p">(</span>
+        <span class="n">mol</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">environments</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="n">distribution</span>
+    <span class="p">)</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_atom_weights_from_environments</span><span class="p">(</span>
+    <span class="n">mol</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">values</span><span class="p">:</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">,</span>
+    <span class="n">environments</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">]],</span>
+    <span class="n">distribution</span><span class="p">:</span> <span class="n">_Distribution</span> <span class="o">=</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Spread per-bit weights over the atoms of the environments that set them.</span>
+
+<span class="sd">    Split out so the bit provenance can come either from a standalone</span>
+<span class="sd">    recomputation (:func:`bit_atom_environments`) or from the fingerprint</span>
+<span class="sd">    object itself, without the distribution logic existing twice.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">distribution</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">,</span> <span class="s2">&quot;radius_weighted&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;distribution must be &#39;uniform&#39;, &#39;center&#39; or &#39;radius_weighted&#39;, &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;got </span><span class="si">{</span><span class="n">distribution</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">atom_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">GetNumAtoms</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">bit</span><span class="p">,</span> <span class="n">envs</span> <span class="ow">in</span> <span class="n">environments</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">weight</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">bit</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">weight</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
@@ -521,8 +544,58 @@
                 <span class="n">share</span> <span class="o">/=</span> <span class="n">env_radius</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
                 <span class="n">atom_weights</span><span class="p">[</span><span class="n">atom</span><span class="p">]</span> <span class="o">+=</span> <span class="n">share</span>
-    <span class="k">return</span> <span class="n">atom_weights</span></div>
+    <span class="k">return</span> <span class="n">atom_weights</span>
 
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_bit_index</span><span class="p">(</span><span class="n">feature</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a bit index out of whatever LIME called the feature.</span>
+
+<span class="sd">    LIME labels features ``&quot;x0&quot;``, ``&quot;x1&quot;``, ... when it is given no names,</span>
+<span class="sd">    which is how :class:`~qsarkit.explainability.LIMEExplainer` runs it. A</span>
+<span class="sd">    caller who supplied their own ``feature_names`` gets those back instead,</span>
+<span class="sd">    and names that are not bit indices cannot be placed on atoms.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">text</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">if</span> <span class="n">text</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;cannot read a fingerprint bit index from the feature label &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">feature</span><span class="si">!r}</span><span class="s2">. Atom mapping needs the explanation to refer to bits by &quot;</span>
+        <span class="s2">&quot;index; leave `feature_names` unset on LIMEExplainer so the labels &quot;</span>
+        <span class="s2">&quot;stay in the form &#39;x123&#39;.&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_lime_contributions</span><span class="p">(</span><span class="n">explanation</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalise the shapes a LIME explanation arrives in to (feature, weight).&quot;&quot;&quot;</span>
+    <span class="c1"># The frame LIMEExplainer.explain_one returns.</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">explanation</span><span class="p">,</span> <span class="s2">&quot;columns&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;feature&quot;</span> <span class="ow">in</span> <span class="n">columns</span> <span class="ow">and</span> <span class="s2">&quot;weight&quot;</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">feature</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">weight</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">explanation</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="c1"># A LIME Explanation object.</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">explanation</span><span class="p">,</span> <span class="s2">&quot;as_map&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">weight</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="n">explanation</span><span class="o">.</span><span class="n">as_map</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">pairs</span>
+        <span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">explanation</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">feature</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">weight</span><span class="p">))</span> <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">explanation</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">feature</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">weight</span><span class="p">))</span> <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">explanation</span><span class="p">]</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;cannot read a LIME explanation from </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">explanation</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="s2">&quot;Pass the frame from LIMEExplainer.explain_one, a LIME Explanation, &quot;</span>
+            <span class="s2">&quot;a {bit: weight} mapping, or (bit, weight) pairs.&quot;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
 
 <div class="viewcode-block" id="AttributionAtomMapper">
@@ -602,10 +675,23 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">fingerprint</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">distribution</span><span class="p">:</span> <span class="n">_Distribution</span> <span class="o">=</span> <span class="s2">&quot;uniform&quot;</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">,</span> <span class="s2">&quot;bit_info&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> cannot report which atoms set &quot;</span>
+                <span class="s2">&quot;each bit, so per-bit attributions cannot be placed on atoms. &quot;</span>
+                <span class="s2">&quot;Atom mapping needs a fingerprint whose bits correspond to &quot;</span>
+                <span class="s2">&quot;local atom environments and that exposes bit_info(mol) -- &quot;</span>
+                <span class="s2">&quot;MorganFingerprint and FeatureMorganFingerprint do. A MACCS &quot;</span>
+                <span class="s2">&quot;or path-based fingerprint has no such correspondence.&quot;</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint</span> <span class="o">=</span> <span class="n">fingerprint</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">distribution</span> <span class="o">=</span> <span class="n">distribution</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">,</span> <span class="s2">&quot;radius&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_bits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">,</span> <span class="s2">&quot;n_bits&quot;</span><span class="p">,</span> <span class="mi">2048</span><span class="p">))</span>
+        <span class="c1"># Kept for `repr` and for callers that read them; the mapping itself</span>
+        <span class="c1"># no longer derives from these, because re-deriving the bit numbering</span>
+        <span class="c1"># from loose parameters disagrees with the transformer whenever a</span>
+        <span class="c1"># setting such as `use_chirality` changes the hashing.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">,</span> <span class="s2">&quot;radius&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">use_features</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">,</span> <span class="s2">&quot;use_features&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
 
 <div class="viewcode-block" id="AttributionAtomMapper.atom_weights">
@@ -615,6 +701,10 @@
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;npt.NDArray[np.float64]&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Map one molecule&#39;s per-bit attributions onto its atoms.</span>
 
+<span class="sd">        The bit provenance comes from the fingerprint object itself, so the</span>
+<span class="sd">        bit numbering is the one the model was fitted on whatever the</span>
+<span class="sd">        fingerprint&#39;s settings.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        mol : Mol</span>
@@ -623,13 +713,23 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ndarray of shape (n_atoms,)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``bit_weights`` is not one-dimensional of length ``n_bits``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">bit_weights_to_atom_weights</span><span class="p">(</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">bit_weights</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">weights</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_bits</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;bit_weights has </span><span class="si">{</span><span class="n">weights</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> entries but the fingerprint &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;has </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bits</span><span class="si">}</span><span class="s2"> bits. They must describe the same feature &quot;</span>
+                <span class="s2">&quot;matrix.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">_atom_weights_from_environments</span><span class="p">(</span>
             <span class="n">mol</span><span class="p">,</span>
-            <span class="n">bit_weights</span><span class="p">,</span>
-            <span class="n">radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span>
-            <span class="n">n_bits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bits</span><span class="p">,</span>
-            <span class="n">use_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_features</span><span class="p">,</span>
+            <span class="n">weights</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint</span><span class="o">.</span><span class="n">bit_info</span><span class="p">(</span><span class="n">mol</span><span class="p">),</span>
             <span class="n">distribution</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">distribution</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -661,14 +761,18 @@
 <span class="sd">        OptionalDependencyError</span>
 <span class="sd">            If ``shap`` is not installed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="c1"># shap returns (n_samples, n_features) for regression and may return</span>
-        <span class="c1"># (n_samples, n_features, n_classes) for classification.</span>
-        <span class="n">row</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># Attribute to the positive class, the one being asked about.</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_weights</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span></div>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">explainer</span><span class="o">.</span><span class="n">shap_values</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="c1"># Reduce the class axis before picking the sample, so that a raw shap</span>
+        <span class="c1"># explainer -- which returns one array per class -- does not have its</span>
+        <span class="c1"># classes read as samples. SHAPExplainer already reduces both forms.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">values</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="c1"># (n_samples, n_features, n_classes); attribute to the positive</span>
+            <span class="c1"># class, the one being asked about.</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[:,</span> <span class="p">:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_weights</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">values</span><span class="p">[</span><span class="n">index</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="AttributionAtomMapper.from_lime">
@@ -681,22 +785,53 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        mol : Mol</span>
-<span class="sd">        explanation : object or mapping</span>
-<span class="sd">            Either a LIME ``Explanation`` (``as_map()`` is read), or any</span>
-<span class="sd">            mapping of feature index -&gt; weight.</span>
+<span class="sd">        explanation : DataFrame, Explanation, mapping or pairs</span>
+<span class="sd">            Any of the forms LIME explanations arrive in:</span>
+
+<span class="sd">            * the ``feature``/``weight`` frame returned by</span>
+<span class="sd">              :meth:`~qsarkit.explainability.LIMEExplainer.explain_one`,</span>
+<span class="sd">              whose feature labels are of the form ``&quot;x123&quot;``;</span>
+<span class="sd">            * a LIME ``Explanation`` object, whose ``as_map()`` is read;</span>
+<span class="sd">            * a mapping of bit index to weight;</span>
+<span class="sd">            * a sequence of ``(bit index, weight)`` pairs.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ndarray of shape (n_atoms,)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If a feature label cannot be read as a bit index, or an index</span>
+<span class="sd">            falls outside the fingerprint.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">        &gt;&gt;&gt; from rdkit import Chem</span>
+<span class="sd">        &gt;&gt;&gt; from qsarkit.explainability import AttributionAtomMapper</span>
+<span class="sd">        &gt;&gt;&gt; from qsarkit.representation import MorganFingerprint</span>
+<span class="sd">        &gt;&gt;&gt; mol = Chem.MolFromSmiles(&quot;CC(=O)Nc1ccc(Cl)cc1&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; fingerprint = MorganFingerprint(radius=2, n_bits=256)</span>
+<span class="sd">        &gt;&gt;&gt; mapper = AttributionAtomMapper(fingerprint)</span>
+<span class="sd">        &gt;&gt;&gt; some_bit = next(iter(fingerprint.bit_info(mol)))</span>
+<span class="sd">        &gt;&gt;&gt; weights = mapper.from_lime(mol, {some_bit: 1.0})</span>
+<span class="sd">        &gt;&gt;&gt; weights.shape == (mol.GetNumAtoms(),)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; bool(weights.sum() &gt; 0)</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bits</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">explanation</span><span class="p">,</span> <span class="s2">&quot;as_map&quot;</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">pairs</span> <span class="ow">in</span> <span class="n">explanation</span><span class="o">.</span><span class="n">as_map</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
-                    <span class="n">weights</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">feature</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">explanation</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">weights</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">feature</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="n">_lime_contributions</span><span class="p">(</span><span class="n">explanation</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">_bit_index</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_bits</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;LIME reported feature </span><span class="si">{</span><span class="n">feature</span><span class="si">!r}</span><span class="s2"> (bit </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">), which &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;is outside the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bits</span><span class="si">}</span><span class="s2">-bit fingerprint this &quot;</span>
+                    <span class="s2">&quot;mapper was built with. The explanation and the mapper &quot;</span>
+                    <span class="s2">&quot;must describe the same feature matrix.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">weights</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_weights</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span></div>
 
 
@@ -719,12 +854,7 @@
 <span class="sd">        float</span>
 <span class="sd">            In [0, 1]. ``0.0`` when the molecule sets no bits.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">environments</span> <span class="o">=</span> <span class="n">bit_atom_environments</span><span class="p">(</span>
-            <span class="n">mol</span><span class="p">,</span>
-            <span class="n">radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span>
-            <span class="n">n_bits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_bits</span><span class="p">,</span>
-            <span class="n">use_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_features</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="n">environments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fingerprint</span><span class="o">.</span><span class="n">bit_info</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">environments</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">0.0</span>
         <span class="n">collided</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">envs</span> <span class="ow">in</span> <span class="n">environments</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">envs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
@@ -868,7 +998,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-27</div>
+              Last updated on 2026-10-12</div>
           </div>
           <div class="right-details">
             
@@ -883,7 +1013,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=7e54ce6f"></script>
+</div><script src="../../../_static/documentation_options.js?v=d714ba09"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

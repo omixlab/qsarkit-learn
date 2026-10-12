@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="References" href="references.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>Changelog - qsarkit 0.10.0</title>
+        <title>Changelog - qsarkit 0.10.1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">qsarkit 0.10.0</div></a>
+      <a href="index.html"><div class="brand">qsarkit 0.10.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.10.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.1</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -278,7 +278,7 @@
           <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
 <section id="unreleased">
-<span id="changelog-0-10-0"></span><h2>0.10.0 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
+<span id="changelog-0-10-1"></span><h2>0.10.1 (unreleased)<a class="headerlink" href="#unreleased" title="Link to this heading">¶</a></h2>
 <p>Narrowed the package back to the QSAR workflow proper, and filled the gaps
 that narrowing exposed.</p>
 <p><strong>Scope</strong></p>
@@ -416,7 +416,25 @@ score with a confidence interval) and <code class="docutils literal notranslate"
 <li><p><code class="docutils literal notranslate"><span class="pre">explainability</span></code> gained <code class="docutils literal notranslate"><span class="pre">AttributionAtomMapper</span></code>, which projects
 SHAP or LIME per-bit attributions back onto atoms through the
 fingerprint’s bit-provenance map, and <code class="docutils literal notranslate"><span class="pre">draw_atom_weights</span></code>, which
-renders them as an RDKit similarity map.</p></li>
+renders them as an RDKit similarity map. <code class="docutils literal notranslate"><span class="pre">from_shap</span></code> takes a
+<code class="docutils literal notranslate"><span class="pre">SHAPExplainer</span></code>; <code class="docutils literal notranslate"><span class="pre">from_lime</span></code> takes whatever LIME produces — an
+<code class="docutils literal notranslate"><span class="pre">explain_one</span></code> frame, a LIME <code class="docutils literal notranslate"><span class="pre">Explanation</span></code>, a <code class="docutils literal notranslate"><span class="pre">{bit:</span> <span class="pre">weight}</span></code>
+mapping or pairs.</p>
+<p>The mapper asks the fingerprint which atoms set each bit rather than
+re-deriving the numbering from <code class="docutils literal notranslate"><span class="pre">radius</span></code> and <code class="docutils literal notranslate"><span class="pre">n_bits</span></code>, so the
+attribution describes the matrix the model was actually fitted on. The
+two disagree whenever another setting changes the hashing —
+<code class="docutils literal notranslate"><span class="pre">use_chirality</span></code> is the plain case — and the disagreement is
+invisible in the picture. A fingerprint that cannot report provenance is
+refused at construction: MACCS keys and path-based fingerprints have no
+bit-to-atom-environment correspondence, so there is nothing to project
+onto an atom.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">representation</span></code> gained <code class="docutils literal notranslate"><span class="pre">MorganFingerprint.bit_info</span></code> (inherited by
+<code class="docutils literal notranslate"><span class="pre">FeatureMorganFingerprint</span></code>), which reports the <code class="docutils literal notranslate"><span class="pre">{bit:</span> <span class="pre">((atom,</span>
+<span class="pre">radius),</span> <span class="pre">...)}</span></code> provenance for one molecule using the same generator
+<code class="docutils literal notranslate"><span class="pre">transform</span></code> uses, so the bit numbering necessarily matches. This is
+what the atom-contribution maps are built on.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">QSARRegressor</span></code> and <code class="docutils literal notranslate"><span class="pre">QSARClassifier</span></code> now accept any
 scikit-learn-compatible estimator — XGBoost, LightGBM, CatBoost or your
 own — as a class or an instance, with <code class="docutils literal notranslate"><span class="pre">model_args</span></code>, <code class="docutils literal notranslate"><span class="pre">model_params</span></code>,
@@ -440,6 +458,18 @@ HTML and JSON, with tables and plots carried into each.</p></li>
 </ul>
 <p><strong>Fixes</strong></p>
 <ul class="simple">
+<li><p>Passing a feature matrix where molecules are needed now says so.
+<code class="docutils literal notranslate"><span class="pre">DiversityAnalyzer</span></code>, <code class="docutils literal notranslate"><span class="pre">ScaffoldAnalyzer</span></code>, <code class="docutils literal notranslate"><span class="pre">ClusterAnalyzer</span></code>,
+<code class="docutils literal notranslate"><span class="pre">NearestNeighborAnalyzer</span></code>, <code class="docutils literal notranslate"><span class="pre">ChemicalSpaceCoverage</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ActivityCliffDetector</span></code> previously surfaced RDKit’s Boost
+<code class="docutils literal notranslate"><span class="pre">ArgumentError</span></code> quoting a C++ signature, from whichever frame happened
+to touch the array first — <code class="docutils literal notranslate"><span class="pre">GetFingerprint</span></code> or <code class="docutils literal notranslate"><span class="pre">MurckoDecompose</span></code>
+— which does not say what to pass instead. A pipeline’s result carries
+both the matrix and the molecules, and <code class="docutils literal notranslate"><span class="pre">.X</span></code> is the more obvious
+attribute than <code class="docutils literal notranslate"><span class="pre">.mols</span></code>, so the error now names the array’s shape and
+the attribute to use. Unparsed SMILES and <code class="docutils literal notranslate"><span class="pre">None</span></code> entries are reported
+the same way. <code class="docutils literal notranslate"><span class="pre">ChemicalSpaceAnalyzer</span></code> still accepts either, as
+documented.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">StructureValidator</span></code> now checks <em>net</em> formal charge. It previously
 flagged every zwitterion — glycine, ciprofloxacin, any betaine — as a
 record that had escaped neutralization.</p></li>
@@ -541,7 +571,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-27</div>
+              Last updated on 2026-10-12</div>
           </div>
           <div class="right-details">
             
@@ -563,7 +593,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Changelog</a><ul>
-<li><a class="reference internal" href="#unreleased">0.10.0 (unreleased)</a></li>
+<li><a class="reference internal" href="#unreleased">0.10.1 (unreleased)</a></li>
 <li><a class="reference internal" href="#changelog-0-2-0">0.2.0</a></li>
 <li><a class="reference internal" href="#changelog-0-1-0">0.1.0</a></li>
 </ul>
@@ -577,7 +607,7 @@ hierarchical clustering with a scikit-learn API.</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=7e54ce6f"></script>
+</div><script src="_static/documentation_options.js?v=d714ba09"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

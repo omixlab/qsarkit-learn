@@ -44,7 +44,7 @@ References
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Sequence, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Mapping, Optional, Sequence, Tuple
 
 import numpy as np
 import numpy.typing as npt
@@ -230,11 +230,33 @@ def bit_weights_to_atom_weights(
             f"got {distribution!r}."
         )
 
-    atom_weights = np.zeros(mol.GetNumAtoms(), dtype=np.float64)
     environments = bit_atom_environments(
         mol, radius=radius, n_bits=n_bits, use_features=use_features
     )
+    return _atom_weights_from_environments(
+        mol, values, environments, distribution=distribution
+    )
 
+
+def _atom_weights_from_environments(
+    mol: Any,
+    values: "npt.NDArray[np.float64]",
+    environments: Dict[int, Tuple[Tuple[int, int], ...]],
+    distribution: _Distribution = "uniform",
+) -> "npt.NDArray[np.float64]":
+    """Spread per-bit weights over the atoms of the environments that set them.
+
+    Split out so the bit provenance can come either from a standalone
+    recomputation (:func:`bit_atom_environments`) or from the fingerprint
+    object itself, without the distribution logic existing twice.
+    """
+    if distribution not in ("uniform", "center", "radius_weighted"):
+        raise ValueError(
+            f"distribution must be 'uniform', 'center' or 'radius_weighted', "
+            f"got {distribution!r}."
+        )
+
+    atom_weights = np.zeros(mol.GetNumAtoms(), dtype=np.float64)
     for bit, envs in environments.items():
         weight = values[bit]
         if weight == 0.0:
@@ -250,6 +272,57 @@ def bit_weights_to_atom_weights(
             for atom in atoms:
                 atom_weights[atom] += share
     return atom_weights
+
+
+def _bit_index(feature: Any) -> int:
+    """Read a bit index out of whatever LIME called the feature.
+
+    LIME labels features ``"x0"``, ``"x1"``, ... when it is given no names,
+    which is how :class:`~qsarkit.explainability.LIMEExplainer` runs it. A
+    caller who supplied their own ``feature_names`` gets those back instead,
+    and names that are not bit indices cannot be placed on atoms.
+    """
+    if isinstance(feature, (int, np.integer)):
+        return int(feature)
+    text = str(feature).strip()
+    if text.startswith("x") and text[1:].isdigit():
+        return int(text[1:])
+    if text.isdigit():
+        return int(text)
+    raise ValueError(
+        f"cannot read a fingerprint bit index from the feature label "
+        f"{feature!r}. Atom mapping needs the explanation to refer to bits by "
+        "index; leave `feature_names` unset on LIMEExplainer so the labels "
+        "stay in the form 'x123'."
+    )
+
+
+def _lime_contributions(explanation: Any) -> List[Tuple[Any, float]]:
+    """Normalise the shapes a LIME explanation arrives in to (feature, weight)."""
+    # The frame LIMEExplainer.explain_one returns.
+    columns = getattr(explanation, "columns", None)
+    if columns is not None and "feature" in columns and "weight" in columns:
+        return [
+            (row.feature, float(row.weight))
+            for row in explanation.itertuples(index=False)
+        ]
+    # A LIME Explanation object.
+    if hasattr(explanation, "as_map"):
+        return [
+            (feature, float(weight))
+            for pairs in explanation.as_map().values()
+            for feature, weight in pairs
+        ]
+    if isinstance(explanation, Mapping):
+        return [(feature, float(weight)) for feature, weight in explanation.items()]
+    try:
+        return [(feature, float(weight)) for feature, weight in explanation]
+    except (TypeError, ValueError):
+        raise TypeError(
+            f"cannot read a LIME explanation from {type(explanation).__name__}. "
+            "Pass the frame from LIMEExplainer.explain_one, a LIME Explanation, "
+            "a {bit: weight} mapping, or (bit, weight) pairs."
+        ) from None
 
 
 class AttributionAtomMapper:
@@ -327,16 +400,33 @@ class AttributionAtomMapper:
     def __init__(
         self, fingerprint: Any, distribution: _Distribution = "uniform"
     ) -> None:
+        if not hasattr(fingerprint, "bit_info"):
+            raise TypeError(
+                f"{type(fingerprint).__name__} cannot report which atoms set "
+                "each bit, so per-bit attributions cannot be placed on atoms. "
+                "Atom mapping needs a fingerprint whose bits correspond to "
+                "local atom environments and that exposes bit_info(mol) -- "
+                "MorganFingerprint and FeatureMorganFingerprint do. A MACCS "
+                "or path-based fingerprint has no such correspondence."
+            )
         self.fingerprint = fingerprint
         self.distribution = distribution
-        self.radius = int(getattr(fingerprint, "radius", 2))
         self.n_bits = int(getattr(fingerprint, "n_bits", 2048))
+        # Kept for `repr` and for callers that read them; the mapping itself
+        # no longer derives from these, because re-deriving the bit numbering
+        # from loose parameters disagrees with the transformer whenever a
+        # setting such as `use_chirality` changes the hashing.
+        self.radius = int(getattr(fingerprint, "radius", 2))
         self.use_features = bool(getattr(fingerprint, "use_features", False))
 
     def atom_weights(
         self, mol: Any, bit_weights: npt.ArrayLike
     ) -> "npt.NDArray[np.float64]":
         """Map one molecule's per-bit attributions onto its atoms.
+
+        The bit provenance comes from the fingerprint object itself, so the
+        bit numbering is the one the model was fitted on whatever the
+        fingerprint's settings.
 
         Parameters
         ----------
@@ -346,13 +436,23 @@ class AttributionAtomMapper:
         Returns
         -------
         ndarray of shape (n_atoms,)
+
+        Raises
+        ------
+        ValueError
+            If ``bit_weights`` is not one-dimensional of length ``n_bits``.
         """
-        return bit_weights_to_atom_weights(
+        weights = np.asarray(bit_weights, dtype=np.float64).ravel()
+        if weights.size != self.n_bits:
+            raise ValueError(
+                f"bit_weights has {weights.size} entries but the fingerprint "
+                f"has {self.n_bits} bits. They must describe the same feature "
+                "matrix."
+            )
+        return _atom_weights_from_environments(
             mol,
-            bit_weights,
-            radius=self.radius,
-            n_bits=self.n_bits,
-            use_features=self.use_features,
+            weights,
+            self.fingerprint.bit_info(mol),
             distribution=self.distribution,
         )
 
@@ -381,14 +481,18 @@ class AttributionAtomMapper:
         OptionalDependencyError
             If ``shap`` is not installed.
         """
-        values = np.asarray(explainer.shap_values(X), dtype=np.float64)
-        # shap returns (n_samples, n_features) for regression and may return
-        # (n_samples, n_features, n_classes) for classification.
-        row = values[index]
-        if row.ndim > 1:
-            # Attribute to the positive class, the one being asked about.
-            row = row[..., -1]
-        return self.atom_weights(mol, row)
+        values = explainer.shap_values(X)
+        # Reduce the class axis before picking the sample, so that a raw shap
+        # explainer -- which returns one array per class -- does not have its
+        # classes read as samples. SHAPExplainer already reduces both forms.
+        if isinstance(values, list):
+            values = values[-1]
+        values = np.asarray(values, dtype=np.float64)
+        if values.ndim == 3:
+            # (n_samples, n_features, n_classes); attribute to the positive
+            # class, the one being asked about.
+            values = values[:, :, -1]
+        return self.atom_weights(mol, values[index])
 
     def from_lime(
         self, mol: Any, explanation: Any
@@ -398,22 +502,53 @@ class AttributionAtomMapper:
         Parameters
         ----------
         mol : Mol
-        explanation : object or mapping
-            Either a LIME ``Explanation`` (``as_map()`` is read), or any
-            mapping of feature index -> weight.
+        explanation : DataFrame, Explanation, mapping or pairs
+            Any of the forms LIME explanations arrive in:
+
+            * the ``feature``/``weight`` frame returned by
+              :meth:`~qsarkit.explainability.LIMEExplainer.explain_one`,
+              whose feature labels are of the form ``"x123"``;
+            * a LIME ``Explanation`` object, whose ``as_map()`` is read;
+            * a mapping of bit index to weight;
+            * a sequence of ``(bit index, weight)`` pairs.
 
         Returns
         -------
         ndarray of shape (n_atoms,)
+
+        Raises
+        ------
+        ValueError
+            If a feature label cannot be read as a bit index, or an index
+            falls outside the fingerprint.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> from rdkit import Chem
+        >>> from qsarkit.explainability import AttributionAtomMapper
+        >>> from qsarkit.representation import MorganFingerprint
+        >>> mol = Chem.MolFromSmiles("CC(=O)Nc1ccc(Cl)cc1")
+        >>> fingerprint = MorganFingerprint(radius=2, n_bits=256)
+        >>> mapper = AttributionAtomMapper(fingerprint)
+        >>> some_bit = next(iter(fingerprint.bit_info(mol)))
+        >>> weights = mapper.from_lime(mol, {some_bit: 1.0})
+        >>> weights.shape == (mol.GetNumAtoms(),)
+        True
+        >>> bool(weights.sum() > 0)
+        True
         """
         weights = np.zeros(self.n_bits, dtype=np.float64)
-        if hasattr(explanation, "as_map"):
-            for pairs in explanation.as_map().values():
-                for feature, weight in pairs:
-                    weights[int(feature)] = float(weight)
-        else:
-            for feature, weight in dict(explanation).items():
-                weights[int(feature)] = float(weight)
+        for feature, weight in _lime_contributions(explanation):
+            index = _bit_index(feature)
+            if not 0 <= index < self.n_bits:
+                raise ValueError(
+                    f"LIME reported feature {feature!r} (bit {index}), which "
+                    f"is outside the {self.n_bits}-bit fingerprint this "
+                    "mapper was built with. The explanation and the mapper "
+                    "must describe the same feature matrix."
+                )
+            weights[index] += float(weight)
         return self.atom_weights(mol, weights)
 
     def collision_rate(self, mol: Any) -> float:
@@ -433,12 +568,7 @@ class AttributionAtomMapper:
         float
             In [0, 1]. ``0.0`` when the molecule sets no bits.
         """
-        environments = bit_atom_environments(
-            mol,
-            radius=self.radius,
-            n_bits=self.n_bits,
-            use_features=self.use_features,
-        )
+        environments = self.fingerprint.bit_info(mol)
         if not environments:
             return 0.0
         collided = sum(1 for envs in environments.values() if len(envs) > 1)

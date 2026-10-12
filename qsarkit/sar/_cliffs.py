@@ -72,6 +72,9 @@ def _fingerprint_matrix(
     """ECFP bit matrix for a molecule sequence."""
     from rdkit.Chem import rdFingerprintGenerator
 
+    from qsarkit.base.transformer import ensure_mol_list
+
+    ensure_mol_list(mols)
     gen = rdFingerprintGenerator.GetMorganGenerator(radius=radius, fpSize=n_bits)
     return np.array(
         [list(gen.GetFingerprint(m)) for m in mols], dtype=np.float64

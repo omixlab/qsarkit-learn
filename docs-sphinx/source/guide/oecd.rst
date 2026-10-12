@@ -77,7 +77,7 @@ size, not from a structure-activity relationship:
    >>> round(scramble["mean_scrambled_score"], 3)
    -0.3
    >>> round(scramble["max_scrambled_score"], 3)
-   0.285
+   0.287
    >>> scramble["p_value"] < 0.05
    True
 
@@ -97,12 +97,12 @@ apparent fit below would suggest.
       >>> round(apparent["real_score"], 3)
       0.921
       >>> round(apparent["mean_scrambled_score"], 3)
-      0.835
+      0.837
       >>> round(apparent["max_scrambled_score"], 3)
-      0.9
+      0.907
 
    The model fits **randomly permuted activities** to R² = 0.84 on average,
-   and one permutation reached 0.90 against the real model's 0.92. Almost all
+   and one permutation reached 0.91 against the real model's 0.92. Almost all
    of that apparent fit is capacity, not chemistry: 18 compounds described by
    256 features will fit essentially anything.
 

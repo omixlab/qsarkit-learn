@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.base.transformer - qsarkit 0.10.0</title>
+        <title>qsarkit.base.transformer - qsarkit 0.10.1</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.10.0</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.10.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.10.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.1</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -309,6 +309,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEstimator</span><span class="p">,</span> <span class="n">TransformerMixin</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.base.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidMoleculeError</span>
@@ -357,18 +358,53 @@
 <span class="sd">    Traceback (most recent call last):</span>
 <span class="sd">        ...</span>
 <span class="sd">    qsarkit.base.exceptions.InvalidMoleculeError: Element 0 is not an rdkit.Chem.Mol...</span>
+
+<span class="sd">    A feature matrix is the easy mistake, since a pipeline&#39;s result carries</span>
+<span class="sd">    both it and the molecules, so that case says which attribute to pass:</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; ensure_mol_list(np.zeros((3, 2048)))</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    qsarkit.base.exceptions.InvalidMoleculeError: Expected molecules, got a 3x2048 array...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
+
+    <span class="c1"># Checked before iterating: a 2-D array iterates into rows, and reporting</span>
+    <span class="c1"># &quot;element 0 is an ndarray&quot; buries what actually happened.</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">mols</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidMoleculeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Expected molecules, got a </span><span class="si">{</span><span class="n">mols</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">mols</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+            <span class="s2">&quot;array. This looks like a feature matrix, and these functions &quot;</span>
+            <span class="s2">&quot;work on the molecules themselves. If it came from a pipeline, &quot;</span>
+            <span class="s2">&quot;pass `.mols` rather than `.X`.&quot;</span>
+        <span class="p">)</span>
 
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mols</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">Chem</span><span class="o">.</span><span class="n">Mol</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">InvalidMoleculeError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Element </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> is not an rdkit.Chem.Mol (got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="si">!r}</span><span class="s2">).&quot;</span>
+                <span class="o">+</span> <span class="n">_not_a_mol_hint</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">out</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_not_a_mol_hint</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The likely cause, for the two types that are actually passed by mistake.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot; Parse SMILES first, with `[Chem.MolFromSmiles(s) for s in &quot;</span>
+            <span class="s2">&quot;smiles]` or `qsarkit.functional.molecules`.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot; If this is a row of a feature matrix, pass the molecules &quot;</span>
+            <span class="s2">&quot;instead --- a pipeline&#39;s `.mols`, not its `.X`.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="MoleculeTransformer">
@@ -516,7 +552,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-27</div>
+              Last updated on 2026-10-12</div>
           </div>
           <div class="right-details">
             
@@ -531,7 +567,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=7e54ce6f"></script>
+</div><script src="../../../_static/documentation_options.js?v=d714ba09"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

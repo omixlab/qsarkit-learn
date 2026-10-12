@@ -10,6 +10,7 @@ import numpy.typing as npt
 
 from qsarkit.base.exceptions import ModelNotFittedError
 from qsarkit.chemspace._fingerprints import (
+    _require_molecules,
     bemis_murcko_smiles,
     compute_fingerprints,
     fingerprints_to_array,
@@ -426,6 +427,7 @@ class DiversityAnalyzer:
         """
         from qsarkit.neighbors import tanimoto_similarity_matrix
 
+        _require_molecules(mols)
         if len(mols) < 2:
             raise ValueError(
                 f"Diversity needs at least 2 molecules, got {len(mols)}."
@@ -596,6 +598,8 @@ class ClusterAnalyzer:
             SphereExclusionClustering,
         )
 
+        _require_molecules(mols)
+
         X = _features(mols, self.radius, self.n_bits)
         if self.method == "butina":
             self.labels_ = ButinaClustering(cutoff=self.cutoff).fit(X).labels_
@@ -745,6 +749,7 @@ class NearestNeighborAnalyzer:
         -------
         NearestNeighborAnalyzer
         """
+        _require_molecules(mols)
         if not mols:
             raise ValueError("Cannot fit on an empty library.")
         self._X = _features(mols, self.radius, self.n_bits)
@@ -897,6 +902,7 @@ class ScaffoldAnalyzer:
         -------
         ScaffoldAnalyzer
         """
+        _require_molecules(mols)
         self.scaffolds_ = [
             bemis_murcko_smiles(m, generic=self.generic) for m in mols
         ]
@@ -1053,6 +1059,8 @@ class ChemicalSpaceCoverage:
         """
         from qsarkit.neighbors import tanimoto_similarity_matrix
 
+        _require_molecules(query)
+        _require_molecules(reference)
         if not query or not reference:
             raise ValueError("Both collections must be non-empty.")
         if not 0.0 <= self.threshold <= 1.0:

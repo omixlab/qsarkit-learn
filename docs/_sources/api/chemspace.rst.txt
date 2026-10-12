@@ -52,7 +52,7 @@ neighbours in fingerprint space, penalised by how far away they really were.
 .. doctest::
 
    >>> round(analyzer.trustworthiness(demo_mols, n_neighbors=5), 2)
-   0.96
+   0.95
 
 Report it with any t-SNE or UMAP figure. Several neighbourhood sizes can be
 asked at once, because the answer depends on the scale: a projection can
@@ -62,7 +62,7 @@ preserve a compound's nearest analogues while misplacing its series.
 
    >>> scores = analyzer.trustworthiness(demo_mols, n_neighbors=[3, 5, 10])
    >>> scores.round(2)
-   array([0.96, 0.96, 0.94])
+   array([0.96, 0.95, 0.94])
 
 The same convention as :mod:`qsarkit.validation`: one size returns a float,
 an iterable returns an array in the order given.
@@ -76,7 +76,7 @@ computed anywhere, including one produced outside qsarkit:
    >>> X = demo_fingerprints(512)
    >>> round(projection_trustworthiness(
    ...     X, analyzer.embedding_, n_neighbors=5, metric="jaccard"), 2)
-   0.96
+   0.95
 
 .. note::
 

@@ -48,8 +48,11 @@ def accepts_parameter(cls: type, name: str) -> bool:
     False
     """
     try:
-        signature = inspect.signature(cls.__init__)
-    except (TypeError, ValueError):  # pragma: no cover - C-level __init__
+        # The class itself, not cls.__init__: this gives the constructor's
+        # signature without `self`, and does not depend on which class in the
+        # hierarchy supplied __init__.
+        signature = inspect.signature(cls)
+    except (TypeError, ValueError):  # pragma: no cover - C-level constructor
         return False
     parameters = signature.parameters
     if name in parameters:

@@ -35,6 +35,29 @@ Fingerprints are sparse. Most bits never fire on a small dataset:
    >>> int((X.sum(axis=0) > 0).sum())
    133
 
+A Morgan bit stands for a concrete atom environment, and ``bit_info``
+says which:
+
+.. doctest::
+
+   >>> fingerprint = MorganFingerprint(radius=2, n_bits=1024)
+   >>> info = fingerprint.bit_info(demo_mols[0])
+   >>> bit, environments = min(info.items())
+   >>> [(atom, radius) for atom, radius in environments]    # doctest: +ELLIPSIS
+   [(..., ...)]
+
+Each entry is a ``(central atom, radius)`` pair: the bit was set by the
+environment of that radius around that atom. This is what makes an
+attribution interpretable — it is how
+:class:`~qsarkit.explainability.AttributionAtomMapper` turns SHAP or LIME
+per-bit values into per-atom weights.
+
+It uses the same generator ``transform`` does, so the bit numbering
+necessarily agrees with the matrix you fitted on. That is worth insisting
+on: ``use_chirality``, ``use_bond_types`` and feature invariants all
+change the hashing, so provenance recomputed from ``radius`` and
+``n_bits`` alone can quietly describe a different fingerprint.
+
 The other families answer different questions:
 
 .. doctest::

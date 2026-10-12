@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.chemspace._fingerprints - qsarkit 0.10.0</title>
+        <title>qsarkit.chemspace._fingerprints - qsarkit 0.10.1</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.10.0</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.10.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.10.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.1</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -290,6 +290,8 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.base.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidMoleculeError</span>
+
 <span class="c1">#: Default ECFP4 settings (Morgan radius 2 folded to 2048 bits), the de-facto</span>
 <span class="c1">#: standard for activity-cliff and matched-pair analyses.</span>
 <span class="n">DEFAULT_RADIUS</span> <span class="o">=</span> <span class="mi">2</span>
@@ -332,6 +334,39 @@
 
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_require_molecules</span><span class="p">(</span><span class="n">mols</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fail readably when handed something other than RDKit molecules.</span>
+
+<span class="sd">    Everything here works on molecules, so a feature matrix is the easy</span>
+<span class="sd">    mistake --- a pipeline&#39;s result carries both, and ``.X`` is the more</span>
+<span class="sd">    obvious attribute than ``.mols``. Handed one, RDKit raises a Boost</span>
+<span class="sd">    ``ArgumentError`` listing a C++ signature, which says nothing about what</span>
+<span class="sd">    to pass instead.</span>
+<span class="sd">    A ``None`` is refused rather than passed through: nothing here has a</span>
+<span class="sd">    sensible answer for a molecule that failed to parse, and RDKit&#39;s own</span>
+<span class="sd">    error for it is no clearer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qsarkit.utils.validation</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_mols</span>
+
+    <span class="c1"># allow_none=True here only to take the type checks; the None case is</span>
+    <span class="c1"># reported separately, because check_mols offers `allow_none=True` as the</span>
+    <span class="c1"># remedy and that is not a parameter these callers expose.</span>
+    <span class="n">mol_list</span> <span class="o">=</span> <span class="n">check_mols</span><span class="p">(</span><span class="n">mols</span><span class="p">,</span> <span class="n">allow_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_size</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mol_list</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidMoleculeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2"> molecule(s) failed to parse, at &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">missing</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="si">}{</span><span class="s1">&#39;...&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">. Drop or &quot;</span>
+            <span class="s2">&quot;repair them first --- these measures have no answer for a &quot;</span>
+            <span class="s2">&quot;molecule that is not there.&quot;</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_require_molecule</span><span class="p">(</span><span class="n">mol</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The one-molecule form. See :func:`_require_molecules`.&quot;&quot;&quot;</span>
+    <span class="n">_require_molecules</span><span class="p">([</span><span class="n">mol</span><span class="p">])</span>
+
+
 <div class="viewcode-block" id="compute_fingerprints">
 <a class="viewcode-back" href="../../../api/chemspace.html#qsarkit.chemspace.compute_fingerprints">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_fingerprints</span><span class="p">(</span>
@@ -355,6 +390,12 @@
 <span class="sd">    list of rdkit.DataStructs.ExplicitBitVect</span>
 <span class="sd">        One fingerprint per input molecule, positionally aligned.</span>
 
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    InvalidMoleculeError</span>
+<span class="sd">        If ``mols`` holds anything other than molecules --- a feature</span>
+<span class="sd">        matrix, unparsed SMILES or a ``None``.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from rdkit import Chem</span>
@@ -362,11 +403,21 @@
 <span class="sd">    &gt;&gt;&gt; len(fps)</span>
 <span class="sd">    1</span>
 
+<span class="sd">    A feature matrix says what went wrong rather than reporting a C++</span>
+<span class="sd">    signature:</span>
+
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; compute_fingerprints(np.zeros((3, 2048)))</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">    qsarkit.base.exceptions.InvalidMoleculeError: Expected molecules, got a 3x2048 array...</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    - Rogers, D. &amp; Hahn, M. (2010). J. Chem. Inf. Model., 50(5), 742-754.</span>
 <span class="sd">      https://doi.org/10.1021/ci100050t</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_require_molecules</span><span class="p">(</span><span class="n">mols</span><span class="p">)</span>
     <span class="n">gen</span> <span class="o">=</span> <span class="n">morgan_generator</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="n">n_bits</span><span class="o">=</span><span class="n">n_bits</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">gen</span><span class="o">.</span><span class="n">GetFingerprint</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mols</span><span class="p">]</span></div>
 
@@ -488,6 +539,7 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chem</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem.Scaffolds</span><span class="w"> </span><span class="kn">import</span> <span class="n">MurckoScaffold</span>
 
+    <span class="n">_require_molecule</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
     <span class="n">scaffold</span> <span class="o">=</span> <span class="n">MurckoScaffold</span><span class="o">.</span><span class="n">GetScaffoldForMol</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">generic</span><span class="p">:</span>
         <span class="n">scaffold</span> <span class="o">=</span> <span class="n">MurckoScaffold</span><span class="o">.</span><span class="n">MakeScaffoldGeneric</span><span class="p">(</span><span class="n">scaffold</span><span class="p">)</span>
@@ -512,7 +564,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-27</div>
+              Last updated on 2026-10-12</div>
           </div>
           <div class="right-details">
             
@@ -527,7 +579,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=7e54ce6f"></script>
+</div><script src="../../../_static/documentation_options.js?v=d714ba09"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

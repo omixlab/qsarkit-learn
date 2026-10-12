@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import numpy.typing as npt
@@ -106,6 +106,68 @@ class MorganFingerprint(BaseFingerprintTransformer):
             useBondTypes=bool(self.use_bond_types),
             atomInvariantsGenerator=invariants,
         )
+
+    def bit_info(self, mol: "Mol") -> Dict[int, Tuple[Tuple[int, int], ...]]:
+        """Which atom environments set each bit, for one molecule.
+
+        The provenance an atom-level attribution needs: a per-bit list of
+        ``(central_atom, radius)`` pairs. It is computed with the *same*
+        generator ``transform`` uses, so the bit indices necessarily agree
+        with the matrix a model was fitted on. Recomputing the map from
+        loose parameters instead silently disagrees whenever a setting such
+        as ``use_chirality`` changes the hashing, which puts attribution on
+        the wrong atoms while looking perfectly plausible.
+
+        Parameters
+        ----------
+        mol : Mol
+
+        Returns
+        -------
+        dict
+            ``{bit index: ((atom index, radius), ...)}``, containing only the
+            bits this molecule sets. A bit reached by several environments
+            lists all of them -- that is a hash collision, and it bounds how
+            specifically the bit's attribution can be assigned.
+
+        Examples
+        --------
+        >>> from rdkit import Chem
+        >>> from qsarkit.representation import MorganFingerprint
+        >>> mol = Chem.MolFromSmiles("c1ccccc1O")
+        >>> fingerprint = MorganFingerprint(radius=2, n_bits=1024)
+        >>> info = fingerprint.bit_info(mol)
+        >>> set(info) == set(int(b) for b in fingerprint.transform([mol])[0].nonzero()[0])
+        True
+        >>> all(0 <= atom < mol.GetNumAtoms() for envs in info.values()
+        ...     for atom, _ in envs)
+        True
+
+        The settings are honoured, so a chirality-aware fingerprint reports
+        the bits it actually sets:
+
+        >>> chiral = MorganFingerprint(radius=2, n_bits=1024, use_chirality=True)
+        >>> set(chiral.bit_info(mol)) == set(
+        ...     int(b) for b in chiral.transform([mol])[0].nonzero()[0])
+        True
+        """
+        from rdkit.Chem import rdFingerprintGenerator
+
+        if mol is None:
+            raise ValueError("bit_info needs a molecule, got None.")
+
+        output = rdFingerprintGenerator.AdditionalOutput()
+        output.AllocateBitInfoMap()
+        generator = self._generator()
+        # The count fingerprint reports the same bit provenance as the binary
+        # one; which of the two transform() returns does not change which
+        # environments set a bit.
+        generator.GetFingerprint(mol, additionalOutput=output)
+
+        return {
+            int(bit): tuple((int(atom), int(radius)) for atom, radius in envs)
+            for bit, envs in output.GetBitInfoMap().items()
+        }
 
     def _fingerprint(self, mol: "Mol") -> npt.NDArray[np.float64]:
         generator = self._generator()

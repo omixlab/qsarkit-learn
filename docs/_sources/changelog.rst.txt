@@ -1,9 +1,9 @@
 Changelog
 =========
 
-.. _changelog-0-10-0:
+.. _changelog-0-10-1:
 
-0.10.0 (unreleased)
+0.10.1 (unreleased)
 -------------------
 
 Narrowed the package back to the QSAR workflow proper, and filled the gaps
@@ -148,7 +148,25 @@ trustworthy. 29 subpackages became 21.
 - ``explainability`` gained ``AttributionAtomMapper``, which projects
   SHAP or LIME per-bit attributions back onto atoms through the
   fingerprint's bit-provenance map, and ``draw_atom_weights``, which
-  renders them as an RDKit similarity map.
+  renders them as an RDKit similarity map. ``from_shap`` takes a
+  ``SHAPExplainer``; ``from_lime`` takes whatever LIME produces --- an
+  ``explain_one`` frame, a LIME ``Explanation``, a ``{bit: weight}``
+  mapping or pairs.
+
+  The mapper asks the fingerprint which atoms set each bit rather than
+  re-deriving the numbering from ``radius`` and ``n_bits``, so the
+  attribution describes the matrix the model was actually fitted on. The
+  two disagree whenever another setting changes the hashing ---
+  ``use_chirality`` is the plain case --- and the disagreement is
+  invisible in the picture. A fingerprint that cannot report provenance is
+  refused at construction: MACCS keys and path-based fingerprints have no
+  bit-to-atom-environment correspondence, so there is nothing to project
+  onto an atom.
+- ``representation`` gained ``MorganFingerprint.bit_info`` (inherited by
+  ``FeatureMorganFingerprint``), which reports the ``{bit: ((atom,
+  radius), ...)}`` provenance for one molecule using the same generator
+  ``transform`` uses, so the bit numbering necessarily matches. This is
+  what the atom-contribution maps are built on.
 - ``QSARRegressor`` and ``QSARClassifier`` now accept any
   scikit-learn-compatible estimator — XGBoost, LightGBM, CatBoost or your
   own — as a class or an instance, with ``model_args``, ``model_params``,
@@ -172,6 +190,18 @@ trustworthy. 29 subpackages became 21.
 
 **Fixes**
 
+- Passing a feature matrix where molecules are needed now says so.
+  ``DiversityAnalyzer``, ``ScaffoldAnalyzer``, ``ClusterAnalyzer``,
+  ``NearestNeighborAnalyzer``, ``ChemicalSpaceCoverage`` and
+  ``ActivityCliffDetector`` previously surfaced RDKit's Boost
+  ``ArgumentError`` quoting a C++ signature, from whichever frame happened
+  to touch the array first --- ``GetFingerprint`` or ``MurckoDecompose``
+  --- which does not say what to pass instead. A pipeline's result carries
+  both the matrix and the molecules, and ``.X`` is the more obvious
+  attribute than ``.mols``, so the error now names the array's shape and
+  the attribute to use. Unparsed SMILES and ``None`` entries are reported
+  the same way. ``ChemicalSpaceAnalyzer`` still accepts either, as
+  documented.
 - ``StructureValidator`` now checks *net* formal charge. It previously
   flagged every zwitterion — glycine, ciprofloxacin, any betaine — as a
   record that had escaped neutralization.

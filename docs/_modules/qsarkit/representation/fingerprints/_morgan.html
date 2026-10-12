@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Search" href="../../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.representation.fingerprints._morgan - qsarkit 0.10.0</title>
+        <title>qsarkit.representation.fingerprints._morgan - qsarkit 0.10.1</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../../index.html"><div class="brand">qsarkit 0.10.0</div></a>
+      <a href="../../../../index.html"><div class="brand">qsarkit 0.10.1</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.10.0</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.1</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -269,7 +269,7 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
@@ -376,6 +376,71 @@
             <span class="n">atomInvariantsGenerator</span><span class="o">=</span><span class="n">invariants</span><span class="p">,</span>
         <span class="p">)</span>
 
+<div class="viewcode-block" id="MorganFingerprint.bit_info">
+<a class="viewcode-back" href="../../../../api/representation.html#qsarkit.representation.MorganFingerprint.bit_info">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bit_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Mol&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="o">...</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Which atom environments set each bit, for one molecule.</span>
+
+<span class="sd">        The provenance an atom-level attribution needs: a per-bit list of</span>
+<span class="sd">        ``(central_atom, radius)`` pairs. It is computed with the *same*</span>
+<span class="sd">        generator ``transform`` uses, so the bit indices necessarily agree</span>
+<span class="sd">        with the matrix a model was fitted on. Recomputing the map from</span>
+<span class="sd">        loose parameters instead silently disagrees whenever a setting such</span>
+<span class="sd">        as ``use_chirality`` changes the hashing, which puts attribution on</span>
+<span class="sd">        the wrong atoms while looking perfectly plausible.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mol : Mol</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            ``{bit index: ((atom index, radius), ...)}``, containing only the</span>
+<span class="sd">            bits this molecule sets. A bit reached by several environments</span>
+<span class="sd">            lists all of them -- that is a hash collision, and it bounds how</span>
+<span class="sd">            specifically the bit&#39;s attribution can be assigned.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from rdkit import Chem</span>
+<span class="sd">        &gt;&gt;&gt; from qsarkit.representation import MorganFingerprint</span>
+<span class="sd">        &gt;&gt;&gt; mol = Chem.MolFromSmiles(&quot;c1ccccc1O&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; fingerprint = MorganFingerprint(radius=2, n_bits=1024)</span>
+<span class="sd">        &gt;&gt;&gt; info = fingerprint.bit_info(mol)</span>
+<span class="sd">        &gt;&gt;&gt; set(info) == set(int(b) for b in fingerprint.transform([mol])[0].nonzero()[0])</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; all(0 &lt;= atom &lt; mol.GetNumAtoms() for envs in info.values()</span>
+<span class="sd">        ...     for atom, _ in envs)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        The settings are honoured, so a chirality-aware fingerprint reports</span>
+<span class="sd">        the bits it actually sets:</span>
+
+<span class="sd">        &gt;&gt;&gt; chiral = MorganFingerprint(radius=2, n_bits=1024, use_chirality=True)</span>
+<span class="sd">        &gt;&gt;&gt; set(chiral.bit_info(mol)) == set(</span>
+<span class="sd">        ...     int(b) for b in chiral.transform([mol])[0].nonzero()[0])</span>
+<span class="sd">        True</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">rdkit.Chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">rdFingerprintGenerator</span>
+
+        <span class="k">if</span> <span class="n">mol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bit_info needs a molecule, got None.&quot;</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="n">rdFingerprintGenerator</span><span class="o">.</span><span class="n">AdditionalOutput</span><span class="p">()</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">AllocateBitInfoMap</span><span class="p">()</span>
+        <span class="n">generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span><span class="p">()</span>
+        <span class="c1"># The count fingerprint reports the same bit provenance as the binary</span>
+        <span class="c1"># one; which of the two transform() returns does not change which</span>
+        <span class="c1"># environments set a bit.</span>
+        <span class="n">generator</span><span class="o">.</span><span class="n">GetFingerprint</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">additionalOutput</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">bit</span><span class="p">):</span> <span class="nb">tuple</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">atom</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">radius</span><span class="p">))</span> <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">radius</span> <span class="ow">in</span> <span class="n">envs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">bit</span><span class="p">,</span> <span class="n">envs</span> <span class="ow">in</span> <span class="n">output</span><span class="o">.</span><span class="n">GetBitInfoMap</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span></div>
+
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_fingerprint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="s2">&quot;Mol&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">npt</span><span class="o">.</span><span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]:</span>
         <span class="n">generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_counts</span><span class="p">:</span>
@@ -469,7 +534,7 @@
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 2026-09-27</div>
+              Last updated on 2026-10-12</div>
           </div>
           <div class="right-details">
             
@@ -484,7 +549,7 @@
       
     </aside>
   </div>
-</div><script src="../../../../_static/documentation_options.js?v=7e54ce6f"></script>
+</div><script src="../../../../_static/documentation_options.js?v=d714ba09"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -42,6 +42,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Iterable, List, Optional
 
+import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 
 from qsarkit.base.exceptions import InvalidMoleculeError
@@ -88,17 +89,52 @@ def ensure_mol_list(mols: Iterable[Any]) -> List[Any]:
     Traceback (most recent call last):
         ...
     qsarkit.base.exceptions.InvalidMoleculeError: Element 0 is not an rdkit.Chem.Mol...
+
+    A feature matrix is the easy mistake, since a pipeline's result carries
+    both it and the molecules, so that case says which attribute to pass:
+
+    >>> import numpy as np
+    >>> ensure_mol_list(np.zeros((3, 2048)))
+    Traceback (most recent call last):
+        ...
+    qsarkit.base.exceptions.InvalidMoleculeError: Expected molecules, got a 3x2048 array...
     """
     from rdkit import Chem
+
+    # Checked before iterating: a 2-D array iterates into rows, and reporting
+    # "element 0 is an ndarray" buries what actually happened.
+    if isinstance(mols, np.ndarray) and mols.ndim >= 2:
+        raise InvalidMoleculeError(
+            f"Expected molecules, got a {mols.shape[0]}x{mols.shape[1]} "
+            "array. This looks like a feature matrix, and these functions "
+            "work on the molecules themselves. If it came from a pipeline, "
+            "pass `.mols` rather than `.X`."
+        )
 
     out = []
     for i, m in enumerate(mols):
         if m is not None and not isinstance(m, Chem.Mol):
             raise InvalidMoleculeError(
                 f"Element {i} is not an rdkit.Chem.Mol (got {type(m)!r})."
+                + _not_a_mol_hint(m)
             )
         out.append(m)
     return out
+
+
+def _not_a_mol_hint(value: Any) -> str:
+    """The likely cause, for the two types that are actually passed by mistake."""
+    if isinstance(value, str):
+        return (
+            " Parse SMILES first, with `[Chem.MolFromSmiles(s) for s in "
+            "smiles]` or `qsarkit.functional.molecules`."
+        )
+    if isinstance(value, np.ndarray):
+        return (
+            " If this is a row of a feature matrix, pass the molecules "
+            "instead --- a pipeline's `.mols`, not its `.X`."
+        )
+    return ""
 
 
 class MoleculeTransformer(BaseEstimator, TransformerMixin, ABC):
