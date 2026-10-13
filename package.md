@@ -7,8 +7,8 @@ This is the orientation document. For executable examples see the five
 [notebooks](notebooks/), and for full parameter-level documentation the
 [API reference](https://omixlab.github.io/qsarkit-learn/).
 
-Current at version 0.10.2: 21 subpackages, 289 public classes and functions,
-2129 tests at 92% branch coverage.
+Current at version 0.10.3: 21 subpackages, 298 public classes and functions,
+2398 tests at 91% coverage (lines and branches, as the badge reports it).
 
 **Contents**
 

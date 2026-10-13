@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.metrics._thresholds - qsarkit 0.10.1</title>
+        <title>qsarkit.metrics._thresholds - qsarkit 0.10.2</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.10.1</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.10.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.10.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -672,7 +672,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">eligible</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;No threshold reaches precision </span><span class="si">{</span><span class="n">min_precision</span><span class="si">}</span><span class="s2">. The best &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;available is </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s1">&#39;precision&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;available is </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s1">&#39;precision&#39;</span><span class="p">]))</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
         <span class="n">masked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">eligible</span><span class="p">,</span> <span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;sensitivity&quot;</span><span class="p">],</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
         <span class="n">best</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">masked</span><span class="p">))</span>
@@ -687,7 +687,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">eligible</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;No threshold reaches recall </span><span class="si">{</span><span class="n">min_recall</span><span class="si">}</span><span class="s2">. The best &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;available is </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s1">&#39;sensitivity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;available is </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">sweep</span><span class="p">[</span><span class="s1">&#39;sensitivity&#39;</span><span class="p">]))</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
         <span class="n">masked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">eligible</span><span class="p">,</span> <span class="n">sweep</span><span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">],</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
         <span class="n">best</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">masked</span><span class="p">))</span>
@@ -835,7 +835,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=d714ba09"></script>
+</div><script src="../../../_static/documentation_options.js?v=f7a520e2"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>

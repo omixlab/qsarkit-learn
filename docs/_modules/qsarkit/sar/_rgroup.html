@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html">
 
     <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
-        <title>qsarkit.sar._rgroup - qsarkit 0.10.1</title>
+        <title>qsarkit.sar._rgroup - qsarkit 0.10.2</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">qsarkit 0.10.1</div></a>
+      <a href="../../../index.html"><div class="brand">qsarkit 0.10.2</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
-  <span class="sidebar-brand-text">qsarkit 0.10.1</span>
+  <span class="sidebar-brand-text">qsarkit 0.10.2</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -504,8 +504,13 @@
                     <span class="sa">f</span><span class="s2">&quot;Column </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> not in the SAR table; available R-groups: &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_analyzer</span><span class="o">.</span><span class="n">r_group_positions</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
+        <span class="c1"># pandas-stubs types aggfunc as a Literal of the names it knows, but</span>
+        <span class="c1"># pandas accepts any aggregation name, so the parameter stays `str`.</span>
         <span class="k">return</span> <span class="n">table</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span>
-            <span class="n">index</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">column</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">&quot;activity&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="n">aggfunc</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">row</span><span class="p">,</span>
+            <span class="n">columns</span><span class="o">=</span><span class="n">column</span><span class="p">,</span>
+            <span class="n">values</span><span class="o">=</span><span class="s2">&quot;activity&quot;</span><span class="p">,</span>
+            <span class="n">aggfunc</span><span class="o">=</span><span class="n">aggfunc</span><span class="p">,</span>  <span class="c1"># type: ignore[arg-type]</span>
         <span class="p">)</span></div>
 
 
@@ -824,7 +829,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=d714ba09"></script>
+</div><script src="../../../_static/documentation_options.js?v=f7a520e2"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
