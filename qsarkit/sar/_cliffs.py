@@ -293,8 +293,8 @@ class ActivityCliffDetector:
             ActivityCliff(
                 index_a=int(i),
                 index_b=int(j),
-                mol_a=mols[i],
-                mol_b=mols[j],
+                mol_a=mols[int(i)],
+                mol_b=mols[int(j)],
                 similarity=float(sim[i, j]),
                 activity_a=float(acts[i]),
                 activity_b=float(acts[j]),
@@ -461,9 +461,9 @@ class SALIAnalyzer:
         graph = nx.Graph()
         for i, activity in enumerate(activities):
             graph.add_node(i, activity=float(activity))
-        for i, j, value in zip(iu[0], iu[1], values):
+        for row, column, value in zip(iu[0], iu[1], values):
             if value >= cutoff:
-                graph.add_edge(int(i), int(j), sali=float(value))
+                graph.add_edge(int(row), int(column), sali=float(value))
         return graph
 
     def sali_curve(

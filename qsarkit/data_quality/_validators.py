@@ -542,7 +542,7 @@ def check_activity_units(
     n_non_positive = int(np.sum(finite <= 0))
     positive = finite[finite > 0]
     log_range = (
-        float(np.log10(positive.max()) - np.log10(positive.min()))
+        float(np.log10(np.max(positive)) - np.log10(np.min(positive)))
         if positive.size > 1
         else 0.0
     )
@@ -554,9 +554,9 @@ def check_activity_units(
     # small, but a pActivity of 1e-9 would mean an IC50 of about 1 M. Real
     # p-scale data sits around 4-10, so at least one value clears 1.
     looks_logarithmic = bool(
-        finite.max() <= 20
-        and finite.max() >= 1.0
-        and finite.min() >= -5
+        np.max(finite) <= 20
+        and np.max(finite) >= 1.0
+        and np.min(finite) >= -5
         and log_range < 2.5
     )
 
@@ -566,9 +566,9 @@ def check_activity_units(
             "raw concentration scale. Convert to pActivity (-log10 molar) "
             "before modeling."
         )
-    if positive.size and positive.max() < 1.0:
+    if positive.size and np.max(positive) < 1.0:
         warnings.append(
-            f"All values are below 1 (max {positive.max():.3g}), which suggests "
+            f"All values are below 1 (max {np.max(positive):.3g}), which suggests "
             "raw molar concentrations rather than a pActivity scale. Convert "
             "with qsarkit.utils.to_pactivity before modeling."
         )
@@ -589,8 +589,8 @@ def check_activity_units(
         "n": int(y.size),
         "n_missing": n_missing,
         "n_non_positive": n_non_positive,
-        "min": float(finite.min()),
-        "max": float(finite.max()),
+        "min": float(np.min(finite)),
+        "max": float(np.max(finite)),
         "median": float(np.median(finite)),
         "log_range": log_range,
         "looks_logarithmic": looks_logarithmic,

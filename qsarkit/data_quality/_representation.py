@@ -252,7 +252,7 @@ def representation_conflicts(
             if len(values) < 2:
                 continue
             majority = values[int(np.argmax(value_counts))]
-            misassigned = int(len(members) - value_counts.max())
+            misassigned = int(len(members) - np.max(value_counts))
             spread = 0.0
             if np.issubdtype(labels.dtype, np.number):
                 spread = float(labels.max() - labels.min())

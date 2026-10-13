@@ -84,8 +84,8 @@ def plot_predicted_vs_observed(
     import plotly.graph_objects as go
 
     true, pred = _as_arrays(y_true, y_pred)
-    low = float(min(true.min(), pred.min()))
-    high = float(max(true.max(), pred.max()))
+    low = float(min(np.min(true), np.min(pred)))
+    high = float(max(np.max(true), np.max(pred)))
 
     fig = go.Figure()
     fig.add_trace(
@@ -615,7 +615,7 @@ def plot_calibration_curve(
 
     counts = curve["counts"]
     # Area-proportional markers, floored so a sparse bin is still visible.
-    sizes = 8.0 + 22.0 * np.sqrt(counts / counts.max()) if counts.size else counts
+    sizes = 8.0 + 22.0 * np.sqrt(counts / np.max(counts)) if counts.size else counts
 
     figure = go.Figure()
     figure.add_trace(
