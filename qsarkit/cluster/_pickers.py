@@ -374,7 +374,7 @@ class HierarchicalClustering(BaseEstimator, ClusterMixin):
             distance_threshold=self.distance_threshold,
         )
         self.labels_ = np.asarray(model.fit_predict(dist), dtype=np.intp)
-        self.n_clusters_ = int(self.labels_.max()) + 1
+        self.n_clusters_ = int(np.max(self.labels_)) + 1
         return self
 
     def fit_predict(

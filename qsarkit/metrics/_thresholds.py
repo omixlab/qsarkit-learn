@@ -400,7 +400,7 @@ def optimal_threshold(
         if not eligible.any():
             raise ValueError(
                 f"No threshold reaches precision {min_precision}. The best "
-                f"available is {float(sweep['precision'].max()):.3f}."
+                f"available is {float(np.max(sweep['precision'])):.3f}."
             )
         masked = np.where(eligible, sweep["sensitivity"], -np.inf)
         best = int(np.argmax(masked))
@@ -415,7 +415,7 @@ def optimal_threshold(
         if not eligible.any():
             raise ValueError(
                 f"No threshold reaches recall {min_recall}. The best "
-                f"available is {float(sweep['sensitivity'].max()):.3f}."
+                f"available is {float(np.max(sweep['sensitivity'])):.3f}."
             )
         masked = np.where(eligible, sweep["precision"], -np.inf)
         best = int(np.argmax(masked))

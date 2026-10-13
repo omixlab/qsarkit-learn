@@ -474,7 +474,7 @@ class DiversityAnalyzer:
             "mean_pairwise_distance": float(distances.mean()),
             "median_pairwise_distance": float(np.median(distances)),
             "internal_diversity": float(distances.mean()),
-            "min_pairwise_distance": float(distances.min()),
+            "min_pairwise_distance": float(np.min(distances)),
             "n_scaffolds": float(len(counts)),
             "scaffold_diversity": float(len(counts) / len(mols)),
             "acyclic_fraction": float(
@@ -670,7 +670,7 @@ class ClusterAnalyzer:
             "n_clusters": float(len(sizes)),
             "n_singletons": float(singletons),
             "singleton_fraction": float(singletons / len(labels)) if len(labels) else 0.0,
-            "largest_cluster": float(sizes.max()) if sizes.size else 0.0,
+            "largest_cluster": float(np.max(sizes)) if sizes.size else 0.0,
             "mean_cluster_size": float(sizes.mean()) if sizes.size else 0.0,
         }
 
@@ -970,9 +970,9 @@ class ScaffoldAnalyzer:
             "n_scaffolds": float(len(cyclic)),
             "scaffold_diversity": float(len(cyclic) / n) if n else 0.0,
             "n_singleton_scaffolds": float((sizes == 1).sum()) if sizes.size else 0.0,
-            "largest_scaffold_group": float(sizes.max()) if sizes.size else 0.0,
+            "largest_scaffold_group": float(np.max(sizes)) if sizes.size else 0.0,
             "acyclic_fraction": float(self.counts_.get("", 0) / n) if n else 0.0,
-            "top_scaffold_share": float(sizes.max() / n) if sizes.size and n else 0.0,
+            "top_scaffold_share": float(np.max(sizes) / n) if sizes.size and n else 0.0,
         }
 
     def to_dataframe(self) -> "pd.DataFrame":

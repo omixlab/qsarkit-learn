@@ -626,7 +626,7 @@ def balance(
 
     rng = np.random.RandomState(random_state)
     classes, counts = np.unique(y, return_counts=True)
-    target = counts.min() if method == "undersample" else counts.max()
+    target = np.min(counts) if method == "undersample" else np.max(counts)
 
     keep = []
     for cls, count in zip(classes, counts):

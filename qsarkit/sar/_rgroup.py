@@ -221,8 +221,13 @@ class SARTable:
                     f"Column {name!r} not in the SAR table; available R-groups: "
                     f"{self._analyzer.r_group_positions(table)}"
                 )
+        # pandas-stubs types aggfunc as a Literal of the names it knows, but
+        # pandas accepts any aggregation name, so the parameter stays `str`.
         return table.pivot_table(
-            index=row, columns=column, values="activity", aggfunc=aggfunc
+            index=row,
+            columns=column,
+            values="activity",
+            aggfunc=aggfunc,  # type: ignore[arg-type]
         )
 
     def substituent_effects(

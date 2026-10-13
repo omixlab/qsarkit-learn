@@ -661,7 +661,7 @@ class PartialDependence:
             )
 
         column = arr[:, feature]
-        grid = np.linspace(column.min(), column.max(), self.grid_resolution)
+        grid = np.linspace(np.min(column), np.max(column), self.grid_resolution)
         averages = np.empty(self.grid_resolution, dtype=np.float64)
         probe = arr.copy()
         for i, value in enumerate(grid):
@@ -697,7 +697,7 @@ class PartialDependence:
         fig.add_trace(
             go.Scatter(
                 x=np.asarray(X, dtype=np.float64)[:, feature],
-                y=np.full(len(np.asarray(X)), average.min()),
+                y=np.full(len(np.asarray(X)), np.min(average)),
                 mode="markers",
                 marker={"symbol": "line-ns-open", "size": 6},
                 name="observed values",

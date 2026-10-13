@@ -1260,7 +1260,7 @@ def resample(
             )
         rng = np.random.RandomState(random_state)
         classes, counts = np.unique(y, return_counts=True)
-        target = counts.min() if sampler == "undersample" else counts.max()
+        target = np.min(counts) if sampler == "undersample" else np.max(counts)
         keep: List[int] = []
         for cls, count in zip(classes, counts):
             idx = np.flatnonzero(y == cls)

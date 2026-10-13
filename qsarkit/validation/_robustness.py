@@ -315,7 +315,7 @@ class YScrambling:
                 scorer.is_at_least_as_good_as(value, real[j]) for value in column
             )
             p_values[j] = (at_least_as_good + 1) / (self.n_iterations + 1)
-            best[j] = column.max() if scorer.greater_is_better else column.min()
+            best[j] = np.max(column) if scorer.greater_is_better else np.min(column)
 
         self.real_score_ = unwrap(real, single)
         self.scrambled_scores_ = scrambled[:, 0] if single else scrambled
