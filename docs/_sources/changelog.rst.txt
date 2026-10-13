@@ -1,9 +1,9 @@
 Changelog
 =========
 
-.. _changelog-0-10-3:
+.. _changelog-0-10-4:
 
-0.10.3 (unreleased)
+0.10.4 (unreleased)
 -------------------
 
 Narrowed the package back to the QSAR workflow proper, and filled the gaps
