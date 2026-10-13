@@ -43,9 +43,12 @@ version:
 # argument. The new version is read back inside the shell rather than through a
 # make variable, because make expands the whole recipe before running any of
 # it, so a $(VERSION) here would still hold the pre-bump number.
+#
+# The script rebuilds docs/ itself, so there is no `$(MAKE) docs` here: it ran
+# in both places otherwise, and putting it in the script is what makes a bump
+# run any other way -- `python tools/bump_version.py patch` -- rebuild too.
 bump-patch bump-minor bump-major:
 	@$(BUMP) $(@:bump-%=%)
-	@$(MAKE) docs
 	@v=$$($(BUMP) show); \
 	echo; \
 	echo "Bumped to $$v and rebuilt docs/. Next:"; \

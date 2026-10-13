@@ -8,11 +8,17 @@ package metadata, the PyPI release and the documentation together. Keeping a
 second copy in ``pyproject.toml`` is how a tag, a wheel and a rendered page
 end up disagreeing about what version they are.
 
+A bump also rebuilds ``docs/``, because that directory holds committed HTML
+served by GitHub Pages: a bump without a rebuild publishes a site labelled with
+the previous release, and nothing about the package itself looks wrong. Pass
+``--no-docs`` to skip it when you intend to rebuild separately.
+
 Usage::
 
     python tools/bump_version.py show
     python tools/bump_version.py patch | minor | major
     python tools/bump_version.py set 1.2.3
+    python tools/bump_version.py patch --no-docs
 
 Normally invoked through the Makefile: ``make bump-patch``, ``make bump-minor``,
 ``make bump-major``, ``make version``.
@@ -22,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -136,10 +143,47 @@ def sync_prose(new: str) -> list[str]:
     return messages
 
 
+def rebuild_docs() -> int:
+    """Rebuild the committed site in ``docs/`` so it names the new version.
+
+    This runs here rather than only in the Makefile so that every route to a
+    bump rebuilds -- calling this script directly used to leave `docs/` naming
+    the previous release, and the two tests in
+    ``tests/docs/test_published_site.py`` that catch it only report after a full
+    suite run.
+    """
+    print("docs: rebuilding docs/ ...", flush=True)
+    try:
+        subprocess.run(["make", "docs"], cwd=ROOT, check=True)
+    except (FileNotFoundError, subprocess.CalledProcessError) as error:
+        reason = (
+            "`make` is not available"
+            if isinstance(error, FileNotFoundError)
+            else f"the build failed (exit {error.returncode})"
+        )
+        # The version is already written, so say so: re-running the bump would
+        # move the version a second time.
+        print(
+            f"\ndocs: {reason}.\n"
+            "docs: the version bump IS applied -- do not run the bump again.\n"
+            "docs: rebuild with `make docs` (needs the `docs` extra:\n"
+            '      pip install -e ".[docs]") and commit docs/ with it.',
+            file=sys.stderr,
+        )
+        return 1
+    print("docs: docs/ rebuilt")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["show", "patch", "minor", "major", "set"])
     parser.add_argument("value", nargs="?", help="the version to set, for `set`")
+    parser.add_argument(
+        "--no-docs",
+        action="store_true",
+        help="skip the docs/ rebuild; you are rebuilding it yourself",
+    )
     args = parser.parse_args(argv)
 
     current = read_version()
@@ -160,7 +204,11 @@ def main(argv: list[str] | None = None) -> int:
     print(f"changelog: {note}")
     for message in sync_prose(new):
         print(f"prose: {message}")
-    return 0
+
+    if args.no_docs:
+        print("docs: skipped (--no-docs); docs/ still names the previous version")
+        return 0
+    return rebuild_docs()
 
 
 if __name__ == "__main__":
