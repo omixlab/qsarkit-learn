@@ -218,7 +218,12 @@ extlinks = {
 
 html_theme = "furo"
 html_title = f"qsarkit {release}"
-html_static_path = ["_static"]
+# No `html_static_path`: the project ships no static assets of its own, and the
+# `_static` directory it pointed at was empty. Git cannot track an empty
+# directory, so it existed only in working copies that had created it -- every
+# fresh clone, CI included, got "html_static_path entry '_static' does not
+# exist", which `make strict` turns into a failed build. Re-add the setting
+# together with the first asset, not before it.
 html_theme_options = {
     "source_repository": "https://github.com/omixlab/qsarkit-learn",
     "source_branch": "main",
